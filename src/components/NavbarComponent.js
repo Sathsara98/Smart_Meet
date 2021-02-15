@@ -5,8 +5,8 @@ import govLogo from "../assets/gov-logo.png";
 function NavbarComponent() {
   return (
     <Navbar expand="lg" bg="light">
-      <Image src={govLogo} rounded style={{ height: 50 }} className="mr-2" />
-      <Navbar.Brand href="#home"> Trade Ministry</Navbar.Brand>
+      <Image src={govLogo} rounded style={{ height: 50 }} className="mr-3 ml-2" />
+      <Navbar.Brand href="#home"> Ministry of Industries</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
