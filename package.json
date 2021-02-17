@@ -8,12 +8,14 @@
     "@testing-library/user-event": "^12.7.1",
     "bootstrap": "^4.6.0",
     "formik": "^2.2.6",
+    "re-carousel": "^2.4.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.2",
     "web-vitals": "^1.1.0",
-    "yup": "^0.32.8"
+    "yup": "^0.32.8",
+    "rss-parser": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
