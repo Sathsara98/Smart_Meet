@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { AdminHeader } from "../components";
+import { AdminHeader, Wrapper, SideBar } from "../components";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -32,166 +32,177 @@ const ManageMembers = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // utype: this.state.utype,
-          // fname: this.state.fname,
-          // lname: this.state.lname,
-          // email: this.state.email.toLowerCase(),
-          // password: this.state.password,
+          utype: event.role,
+          name: event.role,
+          email: event.email.toLowerCase(),
+          tel: event.tel,
+          sector: event.sector,
+          workplace: event.workplace,
         }),
       };
-      // await fetch("http://localhost:5000/register/register", requestOptions);
+      const res = await fetch(
+        "http://localhost:5000/users/register",
+        requestOptions
+      );
 
-      // this.setState({
-      //   fname: "",
-      //   lname: "",
-      //   email: "",
-      //   password: "",
-      // });
+      const data = await res.json();
+
+      console.log(data);
+      if (data.hasOwnProperty("error")) {
+        this.setState({
+          userRegMsg: data.error,
+          userRegAlert: true,
+          userRegTheme: "danger",
+        });
+      }
     } catch (e) {
       console.log(e);
     }
   };
 
   return (
-    <Container>
-      <AdminHeader active="/addmembers" />
-      <h3 className="font-weight-normal text-dark mb-4">
-        Register New Members
-      </h3>
+    <Wrapper>
+      <SideBar />
       <Container>
-        <Formik
-          validationSchema={schema}
-          onSubmit={registerMember}
-          initialValues={{
-            name: "",
-            email: "",
-          }}
-        >
-          {({
-            handleSubmit,
-            handleChange,
-            handleBlur,
-            values,
-            touched,
-            isValid,
-            errors,
-          }) => (
-            <Form noValidate onSubmit={handleSubmit}>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    required
-                    name="name"
-                    type="text"
-                    placeholder="Name"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.name}
-                    isValid={touched.name && !errors.name}
-                    isInvalid={!!errors.name}
-                  />
+        <AdminHeader active="/addmembers" />
+        <h3 className="font-weight-normal text-dark mb-4">
+          Register New Members
+        </h3>
+        <Container>
+          <Formik
+            validationSchema={schema}
+            onSubmit={registerMember}
+            initialValues={{
+              name: "",
+              email: "",
+            }}
+          >
+            {({
+              handleSubmit,
+              handleChange,
+              handleBlur,
+              values,
+              touched,
+              isValid,
+              errors,
+            }) => (
+              <Form noValidate onSubmit={handleSubmit}>
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      required
+                      name="name"
+                      type="text"
+                      placeholder="Name"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.name}
+                      isValid={touched.name && !errors.name}
+                      isInvalid={!!errors.name}
+                    />
 
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name};
-                  </Form.Control.Feedback>
-                </Form.Group>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name};
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    required
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.email}
-                    isValid={touched.email && !errors.email}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
+                  <Form.Group as={Col} controlId="formGridPassword">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      required
+                      name="email"
+                      type="email"
+                      placeholder="Email"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isInvalid={!!errors.email}
+                      isValid={touched.email && !errors.email}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.email}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
 
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Telephone Number</Form.Label>
-                  <Form.Control
-                    type="tel"
-                    name="tel"
-                    placeholder="Telephone Number"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.tel}
-                    isValid={touched.tel && !errors.tel}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.tel}
-                  </Form.Control.Feedback>
-                </Form.Group>
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Telephone Number</Form.Label>
+                    <Form.Control
+                      type="tel"
+                      name="tel"
+                      placeholder="Telephone Number"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isInvalid={!!errors.tel}
+                      isValid={touched.tel && !errors.tel}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.tel}
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>Sector</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="sector"
-                    placeholder="Sector"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.sector}
-                    isValid={touched.sector && !errors.sector}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.sector}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridAddress1">
-                  <Form.Label>Workplace</Form.Label>
-                  <Form.Control
-                    name="workplace"
-                    placeholder="Workplace"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.workplace}
-                    isValid={touched.workplace && !errors.workplace}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.workplace}
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Form.Group as={Col} controlId="formGridPassword">
+                    <Form.Label>Sector</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="sector"
+                      placeholder="Sector"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isInvalid={!!errors.sector}
+                      isValid={touched.sector && !errors.sector}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.sector}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridAddress1">
+                    <Form.Label>Workplace</Form.Label>
+                    <Form.Control
+                      name="workplace"
+                      placeholder="Workplace"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isInvalid={!!errors.workplace}
+                      isValid={touched.workplace && !errors.workplace}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.workplace}
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-                <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
-                  <Form.Label>Member Role</Form.Label>
-                  <Form.Control
-                    as="select"
-                    name="role"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.role}
-                    isValid={touched.role && !errors.role}
-                  >
-                    <option>Select Member Role</option>
-                    <option>Committee Member</option>
-                    <option>Committee Secretary</option>
-                    <option>Administrator</option>
-                  </Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.role}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Form>
-          )}
-        </Formik>
+                  <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
+                    <Form.Label>Member Role</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="role"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      isInvalid={!!errors.role}
+                      isValid={touched.role && !errors.role}
+                    >
+                      <option>Select Member Role</option>
+                      <option>Committee Member</option>
+                      <option>Committee Secretary</option>
+                      <option>Administrator</option>
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.role}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Container>
       </Container>
-    </Container>
+    </Wrapper>
   );
 };
 
