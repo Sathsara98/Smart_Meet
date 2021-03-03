@@ -40,7 +40,7 @@ function ViewQuestions(props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id }),
       };
-      await fetch("http://localhost:5000/questions", requestOptions);
+      await fetch("http://localhost:5000/admin/questions", requestOptions);
       alert("Deleted");
       props.onChange();
     } catch (e) {
@@ -66,7 +66,7 @@ function ViewQuestions(props) {
           message: ques[0].body,
         }),
       };
-      await fetch("http://localhost:5000/questions", requestOptions);
+      await fetch("http://localhost:5000/admin/questions", requestOptions);
       alert("Updated");
       editComment(ques[0]._id);
     } catch (e) {

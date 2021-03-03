@@ -26,7 +26,7 @@ function AddQuestions(props) {
             question: question,
           }),
         };
-        await fetch("http://localhost:5000/new-question", requestOptions);
+        await fetch("http://localhost:5000/admin/new-question", requestOptions);
 
         setQuestion("");
         props.onChange();
@@ -37,7 +37,7 @@ function AddQuestions(props) {
   };
 
   return (
-    <div>
+    <>
       <Form noValidate>
         <Form.Row>
           <Form.Group as={Col}>
@@ -59,7 +59,7 @@ function AddQuestions(props) {
           Submit
         </Button>
       </Form>
-    </div>
+    </>
   );
 }
 
