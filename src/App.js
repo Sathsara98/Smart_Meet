@@ -22,7 +22,6 @@ function App() {
             </Route> */}
         {/* <Route path="/sp/:id" component={SingleProduct} /> */}
         <Route path="/addmembers">
-          <Navbar />
           <ManageMembers />
         </Route>
         <Route path="/members">

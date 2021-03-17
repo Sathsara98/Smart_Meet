@@ -1,69 +1,84 @@
 import React from "react";
-import "./SideBar.css";
+// import "./SideBar.css";
 
 function SideBar() {
   return (
-    <div>
-      <nav id="sidebar">
-        <div className="sidebar-header">
-          <h3 className="text-light">Nimal Lansa</h3>
+    <div className="sidebar" data="red">
+      <div className="sidebar-wrapper">
+        <div className="logo">
+          <a className="simple-text logo-normal">User Name</a>
         </div>
-
-        <ul className="list-unstyled components">
-          <p>Dummy Heading</p>
-          <li className="active">
-            <a
-              href="#homeSubmenu"
-              data-toggle="collapse"
-              aria-expanded="false"
-              className="dropdown-toggle"
-            >
-              Home
+        <ul className="nav">
+          <li className="active ">
+            <a href="./dashboard.html">
+              <i className="tim-icons fas fa-chart-pie"></i>
+              <p>Dashboard</p>
             </a>
-            <ul className="collapse list-unstyled" id="homeSubmenu">
-              <li>
-                <a href="#">Home 1</a>
-              </li>
-              <li>
-                <a href="#">Home 2</a>
-              </li>
-              <li>
-                <a href="#">Home 3</a>
-              </li>
-            </ul>
           </li>
           <li>
-            <a href="#">About</a>
-          </li>
-          <li>
-            <a
-              href="#pageSubmenu"
-              data-toggle="collapse"
-              aria-expanded="false"
-              className="dropdown-toggle"
-            >
-              Pages
+            <a data-toggle="collapse" href="#componentsExamples">
+              <i class="fa fa-users"></i>
+              <p>
+                Users
+                <b class="caret"></b>
+              </p>
             </a>
-            <ul className="collapse list-unstyled" id="pageSubmenu">
-              <li>
-                <a href="#">Page 1</a>
-              </li>
-              <li>
-                <a href="#">Page 2</a>
-              </li>
-              <li>
-                <a href="#">Page 3</a>
-              </li>
-            </ul>
+            <div class="collapse" id="componentsExamples">
+              <ul class="nav">
+                <li>
+                  <a href="../../examples/components/buttons.html">
+                    {/* <i class="fa fa-plus"></i> */}
+                    <span class="sidebar-normal"> Add Users </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="../../examples/components/grid.html">
+                    {/* <i class="fa fa-trash"></i> */}
+                    <span class="sidebar-normal"> View/Delete Users </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </li>
           <li>
-            <a href="#">Portfolio</a>
+            <a data-toggle="collapse" href="#questionsSidebar">
+              <i class="fa fa-question"></i>
+              <p>
+                Questions
+                <b class="caret"></b>
+              </p>
+            </a>
+            <div class="collapse" id="questionsSidebar">
+              <ul class="nav">
+                <li>
+                  <a href="../../examples/components/buttons.html">
+                    {/* <i class="fa fa-plus"></i> */}
+                    <span class="sidebar-normal"> Add Questions </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="../../examples/components/grid.html">
+                    {/* <i class="fa fa-trash"></i> */}
+                    <span class="sidebar-normal"> View/Delete Questions </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </li>
           <li>
-            <a href="#">Contact</a>
+            <a href="./map.html">
+              <i className="fa fa-calendar"></i>
+              <p>Scedules</p>
+            </a>
+          </li>
+          <li>
+            <a href="./notifications.html">
+              <i className="fa fa-handshake"></i>
+              <p>Meetings</p>
+            </a>
           </li>
         </ul>
-      </nav>
+      </div>
     </div>
   );
 }
