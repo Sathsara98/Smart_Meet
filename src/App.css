@@ -1,0 +1,98 @@
+#Group_39 {
+  animation: rotate 5s forwards 1.5s ease infinite alternate;
+  transform-origin: center;
+}
+#Path_3 {
+  border: 1px solid white;
+  transform-box: fill-box;
+  translate: 100px;
+  animation: rotate1 4s linear infinite;
+
+  transform-origin: center;
+  display: block;
+}
+#plant_upper {
+  transform-box: fill-box;
+  animation: rotate2 5s forwards ease infinite alternate-reverse;
+  transform-origin: bottom;
+}
+
+#bulbs {
+  transform-box: fill-box;
+  animation: genie_inside 3s forwards ease infinite alternate,
+    rotate3 3s forwards ease infinite alternate;
+  transform-origin: bottom;
+}
+@keyframes genie_inside {
+  0% {
+    opacity: 0.5;
+  }
+
+  90% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes rotate3 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  80% {
+    transform: rotate(0deg);
+  }
+  90% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(-2deg);
+  }
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  33% {
+    transform: rotate(2deg);
+  }
+
+  66% {
+    transform: rotate(-2deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes rotate2 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(-10deg);
+  }
+
+  66% {
+    transform: rotate(3deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes rotate1 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
