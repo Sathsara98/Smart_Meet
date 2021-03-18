@@ -4,7 +4,7 @@ import govLogo from "../assets/gov-logo.png";
 
 function NavbarComponent() {
   return (
-    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
       <div class="container-fluid">
         <div class="navbar-wrapper">
           <div class="navbar-toggle d-inline">
@@ -14,10 +14,9 @@ function NavbarComponent() {
               <span class="navbar-toggler-bar bar3"></span>
             </button>
           </div>
-          <a class="navbar-brand">
-            <img src={govLogo} class="mr-3 ml-2 logo-nav" />
-            <b class="text-light">Ministry of Industry</b>
-          </a>
+
+          <img src={govLogo} class="mr-3 ml-2 logo-nav" />
+          <b class="text-light">Ministry of Industry</b>
         </div>
         <button
           class="navbar-toggler"
