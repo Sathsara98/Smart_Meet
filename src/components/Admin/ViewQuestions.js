@@ -82,8 +82,8 @@ function ViewQuestions(props) {
       {questions.map((que, key) => (
         <Card key={que._id} style={{ marginTop: "2%" }}>
           <Card.Body>
-            <Card.Title>
-              Question {key + 1}{" "}
+            <Card.Title style={{ fontWeight: "bolder" }}>
+              QUESTION {key + 1}{" "}
               <span style={{ float: "right" }}>
                 {!que.disabled ? (
                   <i
@@ -116,6 +116,8 @@ function ViewQuestions(props) {
               <Form.Control
                 style={{
                   backgroundColor: "transparent",
+                  color: "#E0E0E0",
+                  fontSize: "1em",
                 }}
                 name="question"
                 placeholder=""

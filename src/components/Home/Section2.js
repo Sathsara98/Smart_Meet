@@ -7,7 +7,7 @@ const Section2 = () => {
   return (
     <Row className="col-12">
       <div className="col-12">
-        <h2 className="text-center">Our Services</h2>
+        <h2 className="text-center">OUR SERVICES</h2>
         <div className="row">
           <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
             <div className="card col-12" style={{ margin: "1%" }}>
@@ -102,7 +102,7 @@ const Section2 = () => {
                       Acceleration in time to engagement.
                       <span style={{ visibility: "hidden" }}>
                         {" "}
-                        Saving, money
+                        Saving, money go
                       </span>
                     </p>
                   </div>

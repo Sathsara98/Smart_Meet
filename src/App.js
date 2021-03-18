@@ -29,7 +29,6 @@ function App() {
           <ViewMembers />
         </Route>
         <Route path="/addquestion">
-          <Navbar />
           <AddQuestion />
         </Route>
         <Route path="/login">

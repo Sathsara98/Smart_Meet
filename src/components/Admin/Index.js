@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
-import { AdminHeader, Wrapper, SideBar } from "../../components";
+import { BreadCrum, SideBar, Navbar, AdminCard } from "../../components";
 import {
   Container,
   Form,
@@ -35,26 +35,31 @@ function Index() {
       console.log(e);
     }
   };
-
+  const pathToPage = ["Home", "Admin", "Add Questions"];
   return (
-    <Wrapper>
+    <div className="wrapper">
       <SideBar />
-      <Container>
-        <AdminHeader active="/problems" />
-        <Alert variant={"primary"}>
-          <Row>
-            <Container as={Col}>
-              <h6 className="text-center ">Developing area - Policy</h6>
-            </Container>
-          </Row>
-        </Alert>
-        <AddQuestion onChange={fetchQuestions}></AddQuestion>
-        <ViewQuestion
-          questions={questions}
-          onChange={fetchQuestions}
-        ></ViewQuestion>
-      </Container>
-    </Wrapper>
+      <div class="main-panel">
+        <Navbar />
+        <div class="content">
+          <BreadCrum path={pathToPage} />
+          <AdminCard title="Insert Questions">
+            <Alert variant={"default"}>
+              <Row>
+                <Container as={Col}>
+                  <h6 className="text-center ">Developing area - Policy</h6>
+                </Container>
+              </Row>
+            </Alert>
+            <AddQuestion onChange={fetchQuestions}></AddQuestion>
+            <ViewQuestion
+              questions={questions}
+              onChange={fetchQuestions}
+            ></ViewQuestion>
+          </AdminCard>
+        </div>
+      </div>
+    </div>
   );
 }
 
