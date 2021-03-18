@@ -55,11 +55,9 @@ function App() {
             /> */}
 
         <Route path="/home">
-          <Navbar />
           <HomePage />
         </Route>
         <Route path="*">
-          <Navbar />
           <HomePage />
         </Route>
       </Switch>

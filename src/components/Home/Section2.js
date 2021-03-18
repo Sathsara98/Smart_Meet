@@ -5,68 +5,114 @@ import CardColumns from "react-bootstrap/CardColumns";
 
 const Section2 = () => {
   return (
-    <div>
-      <Container>
-        <Row className="p-3">
-          <Col xs={12} md={9} lg={9}>
-            <CardColumns>
-              <Card>
-                <Card.Img
-                  variant="top"
-                  src="http://www.industry.gov.lk/web/images/stories/new/modules/industry-m.jpg"
-                />
-                <Card.Body>
-                  <Card.Text>
-                    <span className="">Research and Development</span>
-                    <br />
-                    <span>Common Facility Centers</span>
-                    <br />
-                    <span className="p-0 mb-2">Value Chain Development</span>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-              <Card>
-                <Card.Img
-                  variant="top"
-                  src="http://www.industry.gov.lk/web/images/stories/new/modules/industry-2.jpg"
-                />
-                <Card.Body>
-                  <Card.Text>
-                    <span>Regional Industrial Development Programme</span>
-                    <br />
-                    <br />
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-              <Card>
-                <Card.Img
-                  variant="top"
-                  src="http://www.industry.gov.lk/web/images/stories/new/modules/industry-3.jpg"
-                />
-                <Card.Body>
-                  <Card.Text>
-                    <span>Current Business Strategy</span>
-                    <br />
-                    <br />
-                    <br />
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </CardColumns>
-          </Col>
-          <Col xs={12} md={3} lg={3} className="border border-primary p-0">
-            <Card.Header as="h5" className="">
-              Investment Opportunities
-            </Card.Header>
-
-            <Card.Img
-              variant="top"
-              src="http://www.industry.gov.lk/web/images/stories/new/map.jpg"
-            />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <Row className="col-12">
+      <div className="col-12">
+        <h2 className="text-center">Our Services</h2>
+        <div className="row">
+          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+            <div className="card col-12" style={{ margin: "1%" }}>
+              <div className="row align-items-center ">
+                <Col xs={3} className="p-0">
+                  <div>
+                    <img
+                      className="ml-2 p-3"
+                      src="https://img.icons8.com/carbon-copy/100/ffffff/time.png"
+                      alt="Card image cap"
+                    />
+                  </div>
+                </Col>
+                <Col xs={9}>
+                  <div class="card-body pl-0">
+                    <h4 class="card-title">Time Saving</h4>
+                    <p class="card-text">
+                      Saving valuble time on writing, printing, distributing.
+                    </p>
+                  </div>
+                </Col>
+              </div>
+            </div>
+          </div>
+          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+            <div className="card col-12" style={{ margin: "1%" }}>
+              <div className="row align-items-center ">
+                <Col xs={3} className="p-0">
+                  <div>
+                    <img
+                      className="ml-2 p-3"
+                      src="https://img.icons8.com/carbon-copy/100/ffffff/money.png"
+                      alt="Card image cap"
+                    />
+                  </div>
+                </Col>
+                <Col xs={9}>
+                  <div class="card-body pl-0">
+                    <h4 class="card-title">Cost Saving</h4>
+                    <p class="card-text">
+                      Saving money on too much papers.
+                      <span style={{ visibility: "hidden" }}>
+                        {" "}
+                        Saving money on
+                      </span>
+                    </p>
+                  </div>
+                </Col>
+              </div>
+            </div>
+          </div>
+          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+            <div className="card col-12" style={{ margin: "1%" }}>
+              <div className="row align-items-center ">
+                <Col xs={3} className="p-0">
+                  <div>
+                    <img
+                      className="ml-2 p-3"
+                      src="https://img.icons8.com/dotty/80/ffffff/overtime.png"
+                      alt="Card image cap"
+                    />
+                  </div>
+                </Col>
+                <Col xs={9}>
+                  <div class="card-body pl-0">
+                    <h4 class="card-title">Schedule Once</h4>
+                    <p class="card-text">
+                      Easy to schedule a meeting in less time at once.
+                      <span style={{ visibility: "hidden" }}> Saving on</span>
+                    </p>
+                  </div>
+                </Col>
+              </div>
+            </div>
+          </div>
+          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+            <div className="card col-12" style={{ margin: "1%" }}>
+              <div className="row align-items-center ">
+                <Col xs={3} className="p-0">
+                  <div>
+                    <img
+                      className="ml-2 p-3"
+                      src="https://img.icons8.com/wired/50/ffffff/satisfaction.png"
+                      alt="Card image cap"
+                    />
+                  </div>
+                </Col>
+                <Col xs={9}>
+                  <div class="card-body pl-0">
+                    <h4 class="card-title">Satisfaction</h4>
+                    <p class="card-text">
+                      Acceleration in time to engagement.
+                      <span style={{ visibility: "hidden" }}>
+                        {" "}
+                        Saving, money
+                      </span>
+                    </p>
+                  </div>
+                </Col>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Row>
   );
 };
 

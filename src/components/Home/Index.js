@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Section1 from "./Section1";
 import Section2 from "./Section2";
-import Parser from "rss-parser";
+import { BreadCrum, SideBar, Navbar, AdminCard } from "../";
+
 function Index() {
   return (
-    <div>
-      <Section1 />
-      <Section2 />
+    <div className="wrapper">
+      <Navbar />
+      <div class="main-panel ">
+        <Section1 />
+        <Section2 />
+      </div>
     </div>
   );
 }
