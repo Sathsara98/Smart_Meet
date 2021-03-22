@@ -44,6 +44,7 @@ function AddQuestions(props) {
             <Form.Label>Enter your query in the following area</Form.Label>
 
             <Form.Control
+              className="inputBackground "
               name="question"
               placeholder=""
               as="textarea"
@@ -51,11 +52,12 @@ function AddQuestions(props) {
               value={question}
               required
               onChange={myChangeHandler}
+              style={{ border: "none", backgroundColor: "#eefbfd" }}
             />
             {errormessage}
           </Form.Group>
         </Form.Row>
-        <Button variant="dark" type="submit" onClick={onSubmit}>
+        <Button variant="info" type="submit" onClick={onSubmit}>
           Submit
         </Button>
       </Form>

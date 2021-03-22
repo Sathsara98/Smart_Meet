@@ -44,13 +44,13 @@ function Index() {
         <div class="content">
           <BreadCrum path={pathToPage} />
           <AdminCard title="Insert Questions">
-            <Alert variant={"default"}>
+            {/* <Alert variant={"default"}>
               <Row>
                 <Container as={Col}>
                   <h6 className="text-center ">Developing area - Policy</h6>
                 </Container>
               </Row>
-            </Alert>
+            </Alert> */}
             <AddQuestion onChange={fetchQuestions}></AddQuestion>
             <ViewQuestion
               questions={questions}

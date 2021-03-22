@@ -2638,7 +2638,7 @@ textarea.form-control.is-invalid {
   text-align: center;
   vertical-align: middle;
   user-select: none;
-  background-color: transparent;
+  background-color: #09b5e9;
   border: 1px solid transparent;
   padding: 11px 40px;
   font-size: 0.875rem;
@@ -2688,7 +2688,7 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #ffffff;
-  background-color: #e14eca;
+  background-color: #09b5e9;
   border-color: #e14eca;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }

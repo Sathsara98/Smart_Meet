@@ -80,7 +80,10 @@ function ViewQuestions(props) {
     <div>
       <br />
       {questions.map((que, key) => (
-        <Card key={que._id} style={{ marginTop: "2%" }}>
+        <Card
+          key={que._id}
+          style={{ marginTop: "2%", backgroundColor: "#eefbfd" }}
+        >
           <Card.Body>
             <Card.Title style={{ fontWeight: "bolder" }}>
               QUESTION {key + 1}{" "}
@@ -116,7 +119,7 @@ function ViewQuestions(props) {
               <Form.Control
                 style={{
                   backgroundColor: "transparent",
-                  color: "#E0E0E0",
+                  color: "#37474F",
                   fontSize: "1em",
                 }}
                 name="question"

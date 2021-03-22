@@ -96,3 +96,35 @@
     transform: rotate(360deg);
   }
 }
+.carousel-indicators li {
+  height: 0.01em;
+  width: 1.2em;
+  background: rgb(160, 155, 155);
+  border-radius: 100px;
+}
+.carousel-item:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.inputBackground {
+  background-color: #eefbfd;
+}
+
+.btnPrimary {
+  border-radius: 20px;
+}
+.caro {
+  /* min-height: 100%; */
+  max-height: 100vh;
+  overflow: hidden;
+}
+.navbar {
+  opacity: 0.9;
+}

@@ -5,18 +5,20 @@ import CardColumns from "react-bootstrap/CardColumns";
 
 const Section2 = () => {
   return (
-    <Row className="col-12">
-      <div className="col-12">
-        <h2 className="text-center">OUR SERVICES</h2>
+    <Row className="col-12 mt-3">
+      <div className="col-10 mx-auto">
+        <h2 className="text-center">
+          <strong>OUR SERVICES</strong>
+        </h2>
         <div className="row">
-          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
             <div className="card col-12" style={{ margin: "1%" }}>
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
                     <img
                       className="ml-2 p-3"
-                      src="https://img.icons8.com/carbon-copy/100/ffffff/time.png"
+                      src="https://img.icons8.com/carbon-copy/100/time.png"
                       alt="Card image cap"
                     />
                   </div>
@@ -32,14 +34,14 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
             <div className="card col-12" style={{ margin: "1%" }}>
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
                     <img
                       className="ml-2 p-3"
-                      src="https://img.icons8.com/carbon-copy/100/ffffff/money.png"
+                      src="https://img.icons8.com/carbon-copy/100/money.png"
                       alt="Card image cap"
                     />
                   </div>
@@ -59,14 +61,14 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
             <div className="card col-12" style={{ margin: "1%" }}>
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
                     <img
                       className="ml-2 p-3"
-                      src="https://img.icons8.com/dotty/80/ffffff/overtime.png"
+                      src="https://img.icons8.com/dotty/80/overtime.png"
                       alt="Card image cap"
                     />
                   </div>
@@ -83,14 +85,14 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-3 col-md-6 col-sm-12 p-1">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
             <div className="card col-12" style={{ margin: "1%" }}>
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
                     <img
-                      className="ml-2 p-3"
-                      src="https://img.icons8.com/wired/50/ffffff/satisfaction.png"
+                      className="ml-3 p-3"
+                      src="https://img.icons8.com/wired/80/satisfaction.png"
                       alt="Card image cap"
                     />
                   </div>
@@ -102,7 +104,7 @@ const Section2 = () => {
                       Acceleration in time to engagement.
                       <span style={{ visibility: "hidden" }}>
                         {" "}
-                        Saving, money go
+                        Saving, money go ss
                       </span>
                     </p>
                   </div>
