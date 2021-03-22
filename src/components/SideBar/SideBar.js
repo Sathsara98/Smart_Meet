@@ -3,7 +3,7 @@ import React from "react";
 
 function SideBar() {
   return (
-    <div className="sidebar" data="red">
+    <div className="sidebar" data="custom">
       <div className="sidebar-wrapper">
         <div className="logo">
           <a className="simple-text logo-normal">User Name</a>

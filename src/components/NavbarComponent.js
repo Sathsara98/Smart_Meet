@@ -4,7 +4,10 @@ import govLogo from "../assets/gov-logo.png";
 
 function NavbarComponent() {
   return (
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <nav
+      class="navbar navbar-expand-lg fixed-top navbar-default"
+      data-color="orange"
+    >
       <div class="container-fluid">
         <div class="navbar-wrapper">
           <div class="navbar-toggle d-inline">
@@ -34,12 +37,12 @@ function NavbarComponent() {
           <ul class="navbar-nav ml-auto">
             <li class="nav-item mt-2">
               <a href="home">
-                <h4>Home</h4>
+                <h4 class="text-light">Home</h4>
               </a>
             </li>
             <li class="nav-item mt-2">
               <a href="home">
-                <h4>Dashboard</h4>
+                <h4 class="text-light">Dashboard</h4>
               </a>
             </li>
             <li class="dropdown nav-item">
