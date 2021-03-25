@@ -64,7 +64,7 @@ const Section1 = () => {
             Ministry of industry
           </h4>
           <div className="row">
-            <Button className=" mx-auto btnPrimary" variant="info">
+            <Button className=" mx-auto btnPrimary" variant="info" href="login">
               Login
             </Button>
           </div>
