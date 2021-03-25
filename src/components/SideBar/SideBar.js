@@ -1,4 +1,5 @@
 import React from "react";
+import logo from "../../assets/logo.png";
 // import "./SideBar.css";
 
 function SideBar() {
@@ -6,7 +7,12 @@ function SideBar() {
     <div className="sidebar" data="custom">
       <div className="sidebar-wrapper">
         <div className="logo">
-          <a className="simple-text logo-normal">User Name</a>
+          <center>
+            <img src={logo} className="mt-2 logo-sidebar" />
+            <h4 className="text-secondary">
+              <b>Admin Panel</b>
+            </h4>
+          </center>
         </div>
         <ul className="nav">
           <li className="active ">

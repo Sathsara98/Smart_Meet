@@ -153,3 +153,7 @@
 .separator:not(:empty)::after {
   margin-left: 0.25em;
 }
+
+.logo-sidebar {
+  height: 50px;
+}
