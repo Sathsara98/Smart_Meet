@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { Navbar } from "../components";
 import "./Login.css";
 import * as yup from "yup";
@@ -6,6 +7,8 @@ import { Formik } from "formik";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 
 function Login() {
+  const [error, setError] = useState("");
+  const [redirect, setRedirect] = useState(false);
   const schema = yup.object({
     email: yup
       .string()
@@ -13,6 +16,39 @@ function Login() {
       .required("Email is required!"),
     password: yup.string().required("Password is required!"),
   });
+
+  const login = async (event) => {
+    console.log(event);
+
+    try {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: event.email,
+          password: event.password,
+        }),
+      };
+      const res = await fetch(
+        "http://localhost:5000/users/login",
+        requestOptions
+      );
+
+      const data = await res.json();
+
+      if (data.hasOwnProperty("accessToken")) {
+        localStorage.setItem("token", data.accessToken);
+        setRedirect(true);
+      } else {
+        setError(data.error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  if (redirect) {
+    return <Redirect to="/home" />;
+  }
   return (
     <div>
       <Navbar varient="transparent" />
@@ -23,9 +59,9 @@ function Login() {
           </h1>
           <Formik
             validationSchema={schema}
-            //   onSubmit={registerMember}
+            onSubmit={login}
             initialValues={{
-              name: "",
+              password: "",
               email: "",
             }}
           >
@@ -66,7 +102,7 @@ function Login() {
                       className="form-control-lg bg-secondary"
                       required
                       name="password"
-                      type="text"
+                      type="password"
                       placeholder="Password"
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -80,6 +116,12 @@ function Login() {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Row>
+                {error != "" ? (
+                  <div class="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                ) : null}
+
                 <center>
                   <Button
                     variant="info"
