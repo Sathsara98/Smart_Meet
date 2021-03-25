@@ -5,7 +5,9 @@ import Card from "react-bootstrap/Card";
 import Parser from "rss-parser";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 import { BreadCrum, SideBar, Navbar, AdminCard } from "../";
+import backImg from "../../assets/home_page/metal.jpg";
 
+import logo from "../../assets/logo.png";
 const Section1 = () => {
   const [axis, setaxis] = useState("y");
   const [items, setItems] = useState([]);
@@ -32,38 +34,35 @@ const Section1 = () => {
   return (
     <>
       <div className="row mx-auto align-items-center ">
-        <Carouselll className=" w-100 caro">
-          <Carouselll.Item interval={3000} fade>
+        <Carouselll className=" w-100 caro" controls={false}>
+          <Carouselll.Item interval={7000}>
             <img
               className="d-block w-100"
               src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4832.jpg"
               alt="First slide"
             />
           </Carouselll.Item>
-          <Carouselll.Item interval={3000} fade>
+          <Carouselll.Item interval={7000}>
             <img
               className="d-block w-100"
               src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4787.jpg"
               alt="Third slide"
             />
           </Carouselll.Item>
-          <Carouselll.Item interval={3000} fade={true}>
-            <img
-              className="d-block w-100"
-              src="https://image.freepik.com/free-photo/mechanic-with-lamp-checks-car-brake-hoses_266732-7301.jpg"
-              alt="Third slide"
-            />
+          <Carouselll.Item interval={7000}>
+            <img className="d-block w-100" src={backImg} alt="Third slide" />
           </Carouselll.Item>
         </Carouselll>
 
         <div className="float-right col-lg-8 w-100 position-absolute">
-          <h1 className="text-center text-white">
-            <strong>Scheduler</strong>
-          </h1>
-          <h6 className="text-center text-white">
-            THE OFFICIAL MEETING SCHEDULER OF ADVISORY COMMITTEE OF MINISTRY OF
-            INDUSTRY
-          </h6>
+          <div className="row">
+            <img className="w-25 mx-auto" src={logo} />
+          </div>
+
+          <h4 className="text-center text-white">
+            The official meeting scheduler of advisory committee of <br />{" "}
+            Ministry of industry
+          </h4>
           <div className="row">
             <Button className=" mx-auto btnPrimary" variant="info">
               Login
