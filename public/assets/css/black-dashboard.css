@@ -4837,6 +4837,7 @@ input[type="button"].btn-block {
   align-items: center;
   justify-content: space-between;
   padding: 0.625rem 0.9375rem;
+ 
 }
 
 .navbar > .container,
@@ -5174,7 +5175,7 @@ input[type="button"].btn-block {
 }
 
 .navbar-dark {
-  background-color: rgba(29, 29, 46, 0.9) !important;
+  background-color: rgba(29, 29, 46, 1) !important;
 }
 
 .navbar-dark .navbar-brand {
@@ -16851,7 +16852,6 @@ img {
   padding: 10px 30px 10px 15px;
   width: 100%;
   z-index: 1050;
-  background: #1a1e34;
 }
 
 .navbar .photo {
@@ -16925,6 +16925,14 @@ img {
 
 .navbar.bg-primary {
   background-color: #e14eca !important;
+}
+
+.navbar.bg-custom {
+  background-color: rgba(9, 19, 79, 0.8) !important;
+}
+
+.navbar.bg-darkcustom {
+  background-color: rgba(9, 19, 79, 1) !important;
 }
 
 .navbar.bg-warning {
@@ -17033,7 +17041,7 @@ img {
   .navbar .navbar-nav .btn span:focus,
   .navbar .navbar-nav .btn span:active,
   .navbar .navbar-nav .btn span:active:focus {
-    color: #222a42 !important;
+    color: #09134f !important;
   }
 
   .navbar .navbar-nav a.nav-link i {
@@ -19022,7 +19030,7 @@ table.tablesorter thead tr .headerSortDown {
   background: -webkit-linear-gradient(0deg, #001569 0%, #1d8cf8 100%);
   background: -o-linear-gradient(0deg, #283593 0%, #1d8cf8 100%);
   background: -moz-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%);
-  background: linear-gradient(0deg, #525f7f 0%, #1a1e34 100%);
+  background: linear-gradient(0deg, #525f7f 0%, #09134f 100%);
 }
 
 .sidebar .user,

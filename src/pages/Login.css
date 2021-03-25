@@ -1,0 +1,20 @@
+.login-cover {
+  background: url(../assets/login_bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login-box {
+  border-radius: 12px;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  padding-right: 25px;
+  padding-left: 25px;
+  max-width: 480px;
+  background-color: rgba(9, 19, 79, 0.6);
+  align-items: center;
+}
+/* Rectangle 5 */

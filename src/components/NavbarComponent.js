@@ -2,120 +2,142 @@ import React from "react";
 import { Navbar, Nav, NavDropdown, Button, Image } from "react-bootstrap";
 import govLogo from "../assets/gov-logo.png";
 
-function NavbarComponent() {
+function NavbarComponent(props) {
+  var varient = "navbar navbar-expand-lg fixed-top bg-darkcustom";
+  if (props.varient == "transparent") {
+    varient = "navbar navbar-expand-lg fixed-top bg-custom";
+  }
   return (
-    <nav
-      class="navbar navbar-expand-lg fixed-top navbar-default"
-      data-color="orange"
-    >
-      <div class="container-fluid">
-        <div class="navbar-wrapper">
-          <div class="navbar-toggle d-inline">
-            <button type="button" class="navbar-toggler">
-              <span class="navbar-toggler-bar bar1"></span>
-              <span class="navbar-toggler-bar bar2"></span>
-              <span class="navbar-toggler-bar bar3"></span>
+    <nav className={varient} data-color="orange">
+      <div className="container-fluid">
+        <div className="navbar-wrapper">
+          <div className="navbar-toggle d-inline">
+            <button type="button" className="navbar-toggler">
+              <span className="navbar-toggler-bar bar1"></span>
+              <span className="navbar-toggler-bar bar2"></span>
+              <span className="navbar-toggler-bar bar3"></span>
             </button>
           </div>
 
-          <img src={govLogo} class="mr-3 ml-2 logo-nav" />
-          <b class="text-light">Ministry of Industry</b>
+          <img src={govLogo} className="mr-3 ml-2 logo-nav" />
+          <b className="text-light">Ministry of Industry</b>
         </div>
         <button
-          class="navbar-toggler"
+          className="navbar-toggler"
           type="button"
           data-toggle="collapse"
           data-target="#navigation"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-bar navbar-kebab"></span>
-          <span class="navbar-toggler-bar navbar-kebab"></span>
-          <span class="navbar-toggler-bar navbar-kebab"></span>
+          <span className="navbar-toggler-bar navbar-kebab"></span>
+          <span className="navbar-toggler-bar navbar-kebab"></span>
+          <span className="navbar-toggler-bar navbar-kebab"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navigation">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item mt-2">
+        <div className="collapse navbar-collapse" id="navigation">
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item mt-2">
               <a href="home">
-                <h4 class="text-light">Home</h4>
+                <h4 className="text-light">Home</h4>
               </a>
             </li>
-            <li class="nav-item mt-2">
-              <a href="home">
-                <h4 class="text-light">Dashboard</h4>
+            <li className="nav-item mt-2">
+              <a href="addquestion">
+                <h4 className="text-light">Dashboard</h4>
               </a>
             </li>
-            <li class="dropdown nav-item">
+            <li className="dropdown nav-item">
               <a
                 href="javascript:void(0)"
-                class="dropdown-toggle nav-link"
+                className="dropdown-toggle nav-link"
                 data-toggle="dropdown"
               >
-                <div class="notification d-none d-lg-block d-xl-block"></div>
-                <i class="fa fa-bell"></i>
-                <p class="d-lg-none">Notifications</p>
+                <div className="notification d-none d-lg-block d-xl-block"></div>
+                <i className="fa fa-bell"></i>
+                <p className="d-lg-none">Notifications</p>
               </a>
-              <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
-                <li class="nav-link">
-                  <a href="#" class="nav-item dropdown-item">
+              <ul className="dropdown-menu dropdown-menu-right dropdown-navbar">
+                <li className="nav-link">
+                  <a href="#" className="nav-item dropdown-item">
                     Mike John responded to your email
                   </a>
                 </li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     You have 5 more tasks
                   </a>
                 </li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Your friend Michael is in town
                   </a>
                 </li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Another notification
                   </a>
                 </li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Another one
                   </a>
                 </li>
               </ul>
             </li>
 
-            <li class="dropdown nav-item">
+            <li className="dropdown nav-item">
               <a
                 href="#"
-                class="dropdown-toggle nav-link"
+                className="dropdown-toggle nav-link"
                 data-toggle="dropdown"
               >
-                <div class="photo">
+                <div className="photo">
                   <img src="../assets/img/anime3.png" alt="Profile Photo" />
                 </div>
-                <b class="caret d-none d-lg-block d-xl-block"></b>
-                <p class="d-lg-none">Log out</p>
+                <b className="caret d-none d-lg-block d-xl-block"></b>
+                <p className="d-lg-none">Log out</p>
               </a>
-              <ul class="dropdown-menu dropdown-navbar">
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+              <ul className="dropdown-menu dropdown-navbar">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Profile
                   </a>
                 </li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Settings
                   </a>
                 </li>
-                <li class="dropdown-divider"></li>
-                <li class="nav-link">
-                  <a href="javascript:void(0)" class="nav-item dropdown-item">
+                <li className="dropdown-divider"></li>
+                <li className="nav-link">
+                  <a
+                    href="javascript:void(0)"
+                    className="nav-item dropdown-item"
+                  >
                     Log out
                   </a>
                 </li>
               </ul>
             </li>
-            <li class="separator d-lg-none"></li>
+            <li className="separator d-lg-none"></li>
           </ul>
         </div>
       </div>

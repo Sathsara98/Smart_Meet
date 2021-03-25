@@ -26,7 +26,7 @@ function SideBar() {
             <div class="collapse" id="componentsExamples">
               <ul class="nav">
                 <li>
-                  <a href="../../examples/components/buttons.html">
+                  <a href="addmembers">
                     {/* <i class="fa fa-plus"></i> */}
                     <span class="sidebar-normal"> Add Users </span>
                   </a>
@@ -34,7 +34,7 @@ function SideBar() {
                 <li>
                   <a href="../../examples/components/grid.html">
                     {/* <i class="fa fa-trash"></i> */}
-                    <span class="sidebar-normal"> View/Delete Users </span>
+                    <span class="managemembers"> View/Delete Users </span>
                   </a>
                 </li>
               </ul>

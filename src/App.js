@@ -5,6 +5,7 @@ import HomePage from "./components/Home/Index";
 import AddQuestion from "./components/Admin/Index";
 import ManageMembers from "./pages/ManageMembers";
 import ViewMembers from "./pages/ViewMembers";
+import Login from "./pages/Login";
 import {
   BrowserRouter as Router,
   Route,
@@ -31,10 +32,7 @@ function App() {
         <Route path="/addquestion">
           <AddQuestion />
         </Route>
-        <Route path="/login">
-          <Navbar />
-          {/* <Login /> */}
-        </Route>
+       
         {/* <Route
           path="/logout"
           render={() => {
@@ -52,7 +50,9 @@ function App() {
               component={StoreManagerPage}
               role="sm"
             /> */}
-
+        <Route path="/login">
+          <Login />
+        </Route>
         <Route path="/home">
           <HomePage />
         </Route>
