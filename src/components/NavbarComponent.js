@@ -20,7 +20,16 @@ function NavbarComponent(props) {
           </div>
 
           <img src={govLogo} className="mr-3 ml-2 logo-nav" />
-          <b className="text-light">Ministry of Industry</b>
+          <b className="text-light">
+            <span style={{ fontSize: "1.2em" }}>
+              Ministry of Industry and Commerce
+            </span>{" "}
+            <br />
+            <span style={{ fontSize: "0.9em" }}>
+              {" "}
+              කර්මාන්ත හා වාණිජ කටයුතු අමාත්‍යාංශය
+            </span>
+          </b>
         </div>
         <button
           className="navbar-toggler"
