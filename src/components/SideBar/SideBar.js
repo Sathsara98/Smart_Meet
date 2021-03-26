@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../../assets/logo.png";
 // import "./SideBar.css";
 
-function SideBar() {
+function SideBar(props) {
   return (
     <div className="sidebar" data="custom">
       <div className="sidebar-wrapper">
@@ -15,17 +15,17 @@ function SideBar() {
           </center>
         </div>
         <ul className="nav">
-          <li className="active ">
+          <li className={props.dashboard == true ? "active" : ""}>
             <a href="./dashboard.html">
               <i className="tim-icons fas fa-chart-pie"></i>
               <p>Dashboard</p>
             </a>
           </li>
-          <li>
+          <li className={props.users == true ? "active" : ""}>
             <a data-toggle="collapse" href="#componentsExamples">
               <i class="fa fa-users"></i>
               <p>
-                Users
+                Members
                 <b class="caret"></b>
               </p>
             </a>
@@ -34,19 +34,19 @@ function SideBar() {
                 <li>
                   <a href="addmembers">
                     {/* <i class="fa fa-plus"></i> */}
-                    <span class="sidebar-normal"> Add Users </span>
+                    <span class="sidebar-normal"> Add Members </span>
                   </a>
                 </li>
                 <li>
-                  <a href="../../examples/components/grid.html">
+                  <a href="managemembers">
                     {/* <i class="fa fa-trash"></i> */}
-                    <span class="managemembers"> View/Delete Users </span>
+                    <span class="managemembers"> View/Delete Members </span>
                   </a>
                 </li>
               </ul>
             </div>
           </li>
-          <li>
+          <li className={props.questions == true ? "active" : ""}>
             <a data-toggle="collapse" href="#questionsSidebar">
               <i class="fa fa-question"></i>
               <p>
@@ -57,13 +57,13 @@ function SideBar() {
             <div class="collapse" id="questionsSidebar">
               <ul class="nav">
                 <li>
-                  <a href="../../examples/components/buttons.html">
+                  <a href="addquestion">
                     {/* <i class="fa fa-plus"></i> */}
                     <span class="sidebar-normal"> Add Questions </span>
                   </a>
                 </li>
                 <li>
-                  <a href="../../examples/components/grid.html">
+                  <a href="managequestion">
                     {/* <i class="fa fa-trash"></i> */}
                     <span class="sidebar-normal"> View/Delete Questions </span>
                   </a>
@@ -71,16 +71,23 @@ function SideBar() {
               </ul>
             </div>
           </li>
-          <li>
-            <a href="./map.html">
+          <li className={props.events == true ? "active" : ""}>
+            <a href="/events">
               <i className="fa fa-calendar"></i>
-              <p>Scedules</p>
+              <p>All Events</p>
             </a>
           </li>
-          <li>
-            <a href="./notifications.html">
-              <i className="fa fa-handshake"></i>
-              <p>Meetings</p>
+
+          <li className={props.profile == true ? "active" : ""}>
+            <a href="/profile">
+              <i className="tim-icons fas fa-user"></i>
+              <p>Profile</p>
+            </a>
+          </li>
+          <li className={props.settings == true ? "active" : ""}>
+            <a href="/settings">
+              <i className="tim-icons fas fa-cog"></i>
+              <p>Settings</p>
             </a>
           </li>
         </ul>

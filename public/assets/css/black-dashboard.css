@@ -19032,11 +19032,11 @@ table.tablesorter thead tr .headerSortDown {
 
 .sidebar[data="custom"],
 .off-canvas-sidebar[data="blue"] {
-  background: #1a1e34;
-  background: -webkit-linear-gradient(0deg, #001569 0%, #1d8cf8 100%);
+  background: #0A2057;
+  /* background: -webkit-linear-gradient(0deg, #001569 0%, #1d8cf8 100%);
   background: -o-linear-gradient(0deg, #283593 0%, #1d8cf8 100%);
   background: -moz-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%);
-  background: linear-gradient(0deg, #525f7f 0%, #09134f 100%);
+  background: linear-gradient(0deg, #525f7f 0%, #09134f 100%); */
 }
 
 .sidebar .user,
