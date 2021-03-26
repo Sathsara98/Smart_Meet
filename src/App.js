@@ -5,6 +5,7 @@ import HomePage from "./components/Home/Index";
 import AddQuestion from "./components/Admin/Index";
 import ManageMembers from "./pages/ManageMembers";
 import ViewMembers from "./pages/ViewMembers";
+import ForgetPassword from "./pages/ForgetPassword";
 import Login from "./pages/Login";
 import {
   BrowserRouter as Router,
@@ -32,7 +33,7 @@ function App() {
         <Route path="/addquestion">
           <AddQuestion />
         </Route>
-       
+
         {/* <Route
           path="/logout"
           render={() => {
@@ -52,6 +53,9 @@ function App() {
             /> */}
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/forget">
+          <ForgetPassword />
         </Route>
         <Route path="/home">
           <HomePage />

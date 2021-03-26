@@ -55,13 +55,12 @@ function Login() {
       <div class="login-cover center">
         <div className="container login-box">
           <h1 className="text-center text-secondary">
-            <b>Login</b>
+            <b>Forget Password</b>
           </h1>
           <Formik
             validationSchema={schema}
             onSubmit={login}
             initialValues={{
-              password: "",
               email: "",
             }}
           >
@@ -95,27 +94,6 @@ function Login() {
                   </Form.Group>
                 </Form.Row>
 
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label className="text-secondary">Password</Form.Label>
-                    <Form.Control
-                      className="form-control-lg bg-secondary"
-                      required
-                      name="password"
-                      type="password"
-                      placeholder="Password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      isValid={touched.password && !errors.password}
-                      isInvalid={!!errors.password}
-                    />
-
-                    <Form.Control.Feedback type="invalid">
-                      {errors.password};
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
                 {error != "" ? (
                   <div class="alert alert-danger" role="alert">
                     {error}
@@ -128,12 +106,8 @@ function Login() {
                     className="align-self-center"
                     type="submit"
                   >
-                    Login
+                    Reset
                   </Button>
-                  <br />
-                  <a href="/forget">
-                    <h4 className="text-info">Forget Password?</h4>
-                  </a>
                 </center>
               </Form>
             )}

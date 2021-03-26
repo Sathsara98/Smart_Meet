@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import { BreadCrum, SideBar, Navbar, AdminCard } from "../components";
-import { Container, Form, Col, Row, Button } from "react-bootstrap";
+import { Container, Form, Col, Row, Button, Alert } from "react-bootstrap";
 import * as yup from "yup";
 import { Formik } from "formik";
 
 const ManageMembers = () => {
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState("");
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const schema = yup.object({
@@ -49,11 +51,11 @@ const ManageMembers = () => {
 
       console.log(data);
       if (data.hasOwnProperty("error")) {
-        this.setState({
-          userRegMsg: data.error,
-          userRegAlert: true,
-          userRegTheme: "danger",
-        });
+        setError(data.error);
+        setShow(true);
+      } else {
+        setError("");
+        setShow(true);
       }
     } catch (e) {
       console.log(e);
@@ -62,7 +64,7 @@ const ManageMembers = () => {
   const pathToPage = ["Home", "Users", "ManageMembers"];
   return (
     <div className="wrapper">
-      <SideBar />
+      <SideBar members={true} addmembers={true} />
       <div class="main-panel">
         <Navbar />
         <div class="content">
@@ -193,7 +195,42 @@ const ManageMembers = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Form.Row>
-                  <Button variant="dark" type="submit">
+                  <Alert
+                    show={show}
+                    variant={error == "" ? "success" : "danger"}
+                  >
+                    <Alert.Heading>
+                      {error != "" ? (
+                        error
+                      ) : (
+                        <>
+                          Member Registered Successfully !
+                          <p className="text-secondary">
+                            Email containing loging details has been
+                            Successfully sent to the Member.
+                          </p>
+                        </>
+                      )}
+                    </Alert.Heading>
+
+                    <hr />
+                    <div className="d-flex justify-content-end">
+                      {error == "" ? (
+                        <Button
+                          onClick={() => setShow(false)}
+                          variant="info"
+                        ></Button>
+                      ) : (
+                        <Button
+                          onClick={() => setShow(false)}
+                          variant="primary"
+                        >
+                          OK
+                        </Button>
+                      )}
+                    </div>
+                  </Alert>
+                  <Button variant="info" type="submit">
                     Submit
                   </Button>
                 </Form>

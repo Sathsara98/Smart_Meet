@@ -18817,7 +18817,7 @@ table.tablesorter thead tr .headerSortDown {
 
 .sidebar .nav li.active > a[data-toggle="collapse"],
 .off-canvas-sidebar .nav li.active > a[data-toggle="collapse"] {
-  background: transparent;
+  background: #00d0ff;
   box-shadow: none;
   color: #ffffff;
 }

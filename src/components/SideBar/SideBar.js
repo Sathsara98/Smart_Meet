@@ -21,7 +21,7 @@ function SideBar(props) {
               <p>Dashboard</p>
             </a>
           </li>
-          <li className={props.users == true ? "active" : ""}>
+          <li className={props.members == true ? "active" : ""}>
             <a data-toggle="collapse" href="#componentsExamples">
               <i class="fa fa-users"></i>
               <p>
@@ -31,7 +31,7 @@ function SideBar(props) {
             </a>
             <div class="collapse" id="componentsExamples">
               <ul class="nav">
-                <li>
+                <li className={props.addmembers == true ? "active" : ""}>
                   <a href="addmembers">
                     {/* <i class="fa fa-plus"></i> */}
                     <span class="sidebar-normal"> Add Members </span>
