@@ -16927,7 +16927,7 @@ img {
 }
 
 .navbar.bg-custom {
-  background-color: rgba(9, 19, 79, 0.8) !important;
+  background-color: rgba(9, 19, 79, 0.6) !important;
 }
 
 .navbar.bg-darkcustom {
@@ -18750,13 +18750,13 @@ table.tablesorter thead tr .headerSortDown {
 
 .sidebar .nav li > a,
 .off-canvas-sidebar .nav li > a {
-  margin: 10px 0px 0;
   color: #ffffff;
   display: block;
   position: relative;
   cursor: pointer;
   font-size: 1rem;
-  padding: 10px 8px;
+  font-weight: 600 !important;
+  padding: 15px 8px;
   line-height: 1.625rem;
   background: linear-gradient(
     180deg,
@@ -18790,7 +18790,10 @@ table.tablesorter thead tr .headerSortDown {
 
 .sidebar .nav li.active > a:not([data-toggle="collapse"]),
 .off-canvas-sidebar .nav li.active > a:not([data-toggle="collapse"]) {
-  background: #00D0FF;
+  background: #00d0ff;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
 }
 
 .sidebar .nav li.active > a:not([data-toggle="collapse"]) i,
@@ -18915,6 +18918,7 @@ table.tablesorter thead tr .headerSortDown {
   display: block;
   height: auto;
   white-space: nowrap;
+  font-weight: 600 !important;
 }
 
 .sidebar .nav i,
