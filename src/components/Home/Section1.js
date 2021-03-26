@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Carousell from "re-carousel";
 import Carouselll from "react-bootstrap/Carousel";
 import Card from "react-bootstrap/Card";
 import Parser from "rss-parser";
@@ -11,61 +10,62 @@ import logo from "../../assets/logo.png";
 const Section1 = () => {
   const [axis, setaxis] = useState("y");
   const [items, setItems] = useState([]);
-  const images = [
-    {
-      url:
-        "https://image.freepik.com/free-photo/group-business-people-having-meeting_53876-14819.jpg",
-    },
-    {
-      url:
-        "https://image.freepik.com/free-photo/closeup-computer-laptop-screen-showing-calenda-with-date-month_53876-30070.jpg",
-    },
-    {
-      url:
-        "https://image.freepik.com/free-photo/bearded-male-organizing-his-tasks-using-sticky-notes_273609-37359.jpg",
-    },
-    {
-      url:
-        "https://image.freepik.com/free-photo/scheduling-agenda_53876-88433.jpg",
-    },
-  ];
+
   useEffect(() => {}, []);
 
   return (
     <>
       <div className="row mx-auto align-items-center ">
         <Carouselll className=" w-100 caro" controls={false}>
-          <Carouselll.Item interval={7000}>
+          <Carouselll.Item interval={7000} className="caro h-100">
             <img
-              className="d-block w-100"
+              className="d-block w-100 h-100 caro"
               src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4832.jpg"
               alt="First slide"
+              style={{ objectFit: "cover" }}
             />
           </Carouselll.Item>
-          <Carouselll.Item interval={7000}>
+          <Carouselll.Item interval={7000} className="caro">
             <img
-              className="d-block w-100"
+              className="d-block w-100 h-100 caro"
               src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4787.jpg"
               alt="Third slide"
+              style={{ objectFit: "cover" }}
             />
           </Carouselll.Item>
-          <Carouselll.Item interval={7000}>
-            <img className="d-block w-100" src={backImg} alt="Third slide" />
+          <Carouselll.Item interval={7000} className="caro">
+            <img
+              className="d-block w-100 h-100 caro"
+              src={backImg}
+              alt="Third slide"
+              style={{ objectFit: "cover" }}
+            />
           </Carouselll.Item>
         </Carouselll>
 
-        <div className="float-right col-lg-8 w-100 position-absolute">
+        <div className="float-right col-lg-6 w-100 position-absolute ">
           <div className="row">
-            <img className="w-25 mx-auto" src={logo} />
+            <img className="w-50 mx-auto" src={logo} />
           </div>
 
-          <h4 className="text-center text-white">
-            The official meeting scheduler of advisory committee of <br />{" "}
-            Ministry of industry
+          <h4 className="text-center text-white" style={{ fontSize: "1.3em" }}>
+            <strong>
+              The official meeting scheduler of advisory committee of <br />{" "}
+              Ministry of industry
+            </strong>
           </h4>
           <div className="row">
-            <Button className=" mx-auto btnPrimary" variant="info" href="login">
-              Login
+            <Button
+              className=" mx-auto btnPrimary "
+              variant="info"
+              href="login"
+            >
+              <span
+                className="pt-1 pb-1 pr-2 pl-2 text-strong font-weight-bold"
+                style={{ fontSize: "1.2em" }}
+              >
+                <strong> Login</strong>
+              </span>
             </Button>
           </div>
         </div>

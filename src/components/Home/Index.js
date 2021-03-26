@@ -8,7 +8,7 @@ function Index() {
   return (
     <div className="wrapper">
       <Navbar varient="transparent" />
-      <div class="main-panel ">
+      <div className="main-panel ">
         <Section1 />
         <Section2 />
         <Section3 />

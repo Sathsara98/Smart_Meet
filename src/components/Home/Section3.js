@@ -15,7 +15,10 @@ const Section2 = () => {
 
         <div className="row m-0 p-0">
           <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
-            <div className="card col-12" style={{ margin: "1%" }}>
+            <div
+              className="card col-12"
+              style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
+            >
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
@@ -27,11 +30,11 @@ const Section2 = () => {
                   </div>
                 </Col>
                 <Col xs={9}>
-                  <div class="card-body pl-0">
-                    <h4 class="card-title">
+                  <div className="card-body pl-0">
+                    <h4 className="card-title">
                       <strong>Time Saving</strong>
                     </h4>
-                    <p class="card-text">
+                    <p className="card-text">
                       Saving valuble time on writing, printing, distributing.
                     </p>
                   </div>
@@ -40,7 +43,10 @@ const Section2 = () => {
             </div>
           </div>
           <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
-            <div className="card col-12" style={{ margin: "1%" }}>
+            <div
+              className="card col-12"
+              style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
+            >
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
@@ -52,11 +58,11 @@ const Section2 = () => {
                   </div>
                 </Col>
                 <Col xs={9}>
-                  <div class="card-body pl-0">
-                    <h4 class="card-title">
+                  <div className="card-body pl-0">
+                    <h4 className="card-title">
                       <strong>Cost Saving</strong>
                     </h4>
-                    <p class="card-text">
+                    <p className="card-text">
                       Saving money on too much papers.
                       <span style={{ visibility: "hidden" }}>
                         {" "}
@@ -68,8 +74,11 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
-            <div className="card col-12" style={{ margin: "1%" }}>
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 ">
+            <div
+              className="card col-12"
+              style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
+            >
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
@@ -81,11 +90,11 @@ const Section2 = () => {
                   </div>
                 </Col>
                 <Col xs={9}>
-                  <div class="card-body pl-0">
-                    <h4 class="card-title">
+                  <div className="card-body pl-0">
+                    <h4 className="card-title">
                       <strong>Schedule Once</strong>
                     </h4>
-                    <p class="card-text">
+                    <p className="card-text">
                       Easy to schedule a meeting in less time at once.
                       <span style={{ visibility: "hidden" }}> Saving on</span>
                     </p>
@@ -94,8 +103,11 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
-            <div className="card col-12" style={{ margin: "1%" }}>
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 mb-5">
+            <div
+              className="card col-12"
+              style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
+            >
               <div className="row align-items-center ">
                 <Col xs={3} className="p-0">
                   <div>
@@ -107,11 +119,11 @@ const Section2 = () => {
                   </div>
                 </Col>
                 <Col xs={9}>
-                  <div class="card-body pl-0">
-                    <h4 class="card-title">
+                  <div className="card-body pl-0">
+                    <h4 className="card-title">
                       <strong>Satisfaction</strong>
                     </h4>
-                    <p class="card-text">
+                    <p className="card-text">
                       Acceleration in time to engagement.
                       <span style={{ visibility: "hidden" }}>
                         {" "}

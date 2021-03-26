@@ -8,7 +8,6 @@
     "@testing-library/user-event": "^12.7.1",
     "bootstrap": "^4.6.0",
     "formik": "^2.2.6",
-    "re-carousel": "^2.4.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",

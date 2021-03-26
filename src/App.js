@@ -57,9 +57,7 @@ function App() {
         <Route path="/forget">
           <ForgetPassword />
         </Route>
-        <Route path="/home">
-          <HomePage />
-        </Route>
+
         <Route path="*">
           <HomePage />
         </Route>
