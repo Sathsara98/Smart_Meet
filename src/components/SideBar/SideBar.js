@@ -16,7 +16,7 @@ function SideBar(props) {
         </div>
         <ul className="nav">
           <li className={props.dashboard == true ? "active" : ""}>
-            <a href="./dashboard.html">
+            <a href="dashboard">
               <i className="tim-icons fas fa-chart-pie"></i>
               <p>Dashboard</p>
             </a>
@@ -47,29 +47,10 @@ function SideBar(props) {
             </div>
           </li>
           <li className={props.questions == true ? "active" : ""}>
-            <a data-toggle="collapse" href="#questionsSidebar">
+            <a href="addquestion">
               <i class="fa fa-question"></i>
-              <p>
-                Questions
-                <b class="caret"></b>
-              </p>
+              <p>Questions</p>
             </a>
-            <div class="collapse" id="questionsSidebar">
-              <ul class="nav">
-                <li>
-                  <a href="addquestion">
-                    {/* <i class="fa fa-plus"></i> */}
-                    <span class="sidebar-normal"> Add Questions </span>
-                  </a>
-                </li>
-                <li>
-                  <a href="managequestion">
-                    {/* <i class="fa fa-trash"></i> */}
-                    <span class="sidebar-normal"> View/Delete Questions </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
           <li className={props.events == true ? "active" : ""}>
             <a href="/events">

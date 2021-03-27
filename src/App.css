@@ -113,8 +113,8 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-.inputBackground {
-  background-color: #eefbfd;
+.cards {
+  background-color: #e0f9ff !important;
 }
 
 .btnPrimary {
@@ -181,4 +181,11 @@
   .subdropdowns {
     color: #000 !important;
   }
+}
+
+.rbc-calendar {
+  background-color: #e0f9ff;
+  padding: 2%;
+  min-height: 72vh;
+  max-height: 80vh !important;
 }

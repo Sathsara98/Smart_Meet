@@ -38,7 +38,7 @@ function Index() {
   const pathToPage = ["Home", "Admin", "Add Questions"];
   return (
     <div className="wrapper">
-      <SideBar />
+      <SideBar questions={true} />
       <div class="main-panel">
         <Navbar />
         <div class="content">
