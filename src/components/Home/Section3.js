@@ -39,7 +39,7 @@ const Section2 = () => {
                         Time Saving
                       </strong>
                     </h4>
-                    <p className="card-text">
+                    <p className="card-text" style={{ fontSize: "1.15em" }}>
                       Saving valuble time on writing, printing, distributing.
                     </p>
                   </div>
@@ -69,7 +69,7 @@ const Section2 = () => {
                         Cost Saving
                       </strong>
                     </h4>
-                    <p className="card-text">
+                    <p className="card-text" style={{ fontSize: "1.15em" }}>
                       Saving money on too much papers.
                       <span style={{ visibility: "hidden" }}>
                         {" "}
@@ -103,7 +103,7 @@ const Section2 = () => {
                         Schedule Once
                       </strong>
                     </h4>
-                    <p className="card-text">
+                    <p className="card-text" style={{ fontSize: "1.15em" }}>
                       Easy to schedule a meeting in less time at once.
                       <span style={{ visibility: "hidden" }}> Saving on</span>
                     </p>
@@ -134,7 +134,7 @@ const Section2 = () => {
                         Satisfaction
                       </strong>
                     </h4>
-                    <p className="card-text">
+                    <p className="card-text" style={{ fontSize: "1.15em" }}>
                       Acceleration in time to engagement.
                       <span style={{ visibility: "hidden" }}>
                         {" "}
