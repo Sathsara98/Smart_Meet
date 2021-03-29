@@ -5,7 +5,7 @@ import CardColumns from "react-bootstrap/CardColumns";
 
 const Section2 = () => {
   return (
-    <Row className="col-12 mt-4 p-0 mr-0 ml-0">
+    <Row className="col-12 mt-4 p-0 mr-0 ml-0" id="services">
       <div className="col-10 mx-auto">
         <div className="w-50 mx-auto ">
           <h2

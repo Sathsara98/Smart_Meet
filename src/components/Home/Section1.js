@@ -61,6 +61,7 @@ const Section1 = () => {
               href="login"
             >
               <span
+                id="loginButton"
                 className="pt-1 pb-1 pr-2 pl-2 text-strong font-weight-bold"
                 style={{ fontSize: "1.2em" }}
               >

@@ -63,14 +63,14 @@ function NavbarComponent(props) {
               </a>
             </li>
             <li className="nav-item mt-2">
-              <a href="home">
+              <a href="#loginButton">
                 <h4 className="text-white">
                   <strong>About Us</strong>
                 </h4>
               </a>
             </li>
             <li className="nav-item mt-2">
-              <a href="home">
+              <a href="#services">
                 <h4 className="text-white">
                   <strong>Services</strong>
                 </h4>
