@@ -46,7 +46,7 @@ function NavbarComponent(props) {
           style={{
             position: "fixed",
             right: "5%",
-            top: "3%",
+            top: "5%",
           }}
         >
           <span className="navbar-toggler-bar navbar-kebab"></span>
@@ -76,7 +76,7 @@ function NavbarComponent(props) {
                 </h4>
               </a>
             </li>
-
+            {/* 
             <li className="dropdown nav-item ">
               <a
                 href=""
@@ -159,7 +159,7 @@ function NavbarComponent(props) {
                 </li>
               </ul>
             </li>
-            <li className="separator d-lg-none"></li>
+            <li className="separator d-lg-none"></li> */}
           </ul>
         </div>
       </div>

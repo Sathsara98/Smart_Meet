@@ -10,7 +10,7 @@ const Section2 = () => {
   return (
     <Row className="col-12 mt-4 m-0 p-0">
       <div className="col-lg-9 col-md-12 col-sm-12 mx-auto">
-        <div className="w-50 mx-auto">
+        <div className="w-50 mx-auto fade">
           <h2 className="text-center separator " style={{ color: "#0071BF" }}>
             <strong>About Us</strong>
           </h2>
@@ -20,10 +20,10 @@ const Section2 = () => {
           <div className=" col-lg-8 col-md-8 col-sm-12 ">
             <div className=" col-12" style={{ margin: "1%" }}>
               <div className="row align-items-center ">
-                <h3 className="mt-5 mb-2">
+                <h3 className="mt-5 mb-2 fade">
                   Value Chain Development Programmes
                 </h3>
-                <p className="text-justify" style={{ fontSize: "1.15em" }}>
+                <p className="text-justify fade" style={{ fontSize: "1.15em" }}>
                   The ministry has initiated value chain development programmes
                   to increase the value addition in manufacturing industry.
                   These programmes are focused on the improvement of different
@@ -33,8 +33,10 @@ const Section2 = () => {
                   industry.{" "}
                 </p>
                 <br />
-                <h3 className="mt-3 mb-2">Advisory Committee Activities</h3>
-                <p className="text-justify" style={{ fontSize: "1.15em" }}>
+                <h3 className="mt-3 mb-2 fade">
+                  Advisory Committee Activities
+                </h3>
+                <p className="text-justify fade" style={{ fontSize: "1.15em" }}>
                   Ministry is in the process of setting up the sector Advisory
                   committees for the identified potential Sectors. Chairman and
                   the Secretary of these committees will be selected from the
@@ -54,23 +56,27 @@ const Section2 = () => {
             style={{ minHeight: "100%" }}
           >
             <div className="row m-0">
-              <div className=" col-5 p-0">
+              <div className=" col-5 p-0 ">
                 <img
-                  className="w-100 p-1"
+                  className="w-100 p-1 fade"
                   src={picind1}
                   alt="Card image cap"
                   style={{ marginTop: "100%" }}
                 />
                 <img
-                  className="w-100 mt-5 p-1"
+                  className="w-100 mt-5 p-1 fade"
                   src={picind2}
                   alt="Card image cap"
                 />
               </div>
-              <div className=" col-7 m-0 p-0">
-                <img className="w-100 p-2" src={picind3} alt="Card image cap" />
+              <div className=" col-7 m-0 p-0 ">
                 <img
-                  className="w-100 mt-4  p-2"
+                  className="w-100 p-2 fade"
+                  src={picind3}
+                  alt="Card image cap"
+                />
+                <img
+                  className="w-100 mt-4  p-2 fade"
                   src={picind4}
                   alt="Card image cap"
                 />

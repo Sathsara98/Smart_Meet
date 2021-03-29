@@ -15,7 +15,7 @@ const Section1 = () => {
 
   return (
     <>
-      <div className="row mx-auto align-items-center ">
+      <div className="row mx-auto align-items-center">
         <Carouselll className=" w-100 caro" controls={false}>
           <Carouselll.Item interval={7000} className="caro h-100">
             <img

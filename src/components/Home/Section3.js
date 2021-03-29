@@ -7,16 +7,19 @@ const Section2 = () => {
   return (
     <Row className="col-12 mt-4 p-0 mr-0 ml-0">
       <div className="col-10 mx-auto">
-        <div className="w-50 mx-auto">
-          <h2 className="text-center separator " style={{ color: "#0071BF" }}>
+        <div className="w-50 mx-auto ">
+          <h2
+            className="text-center separator fade"
+            style={{ color: "#0071BF" }}
+          >
             <strong>Services</strong>
           </h2>
         </div>
 
-        <div className="row m-0 p-0">
-          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
+        <div className="row m-0 p-0 ">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 ">
             <div
-              className="card col-12"
+              className="card col-12 fade"
               style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
             >
               <div className="row align-items-center ">
@@ -32,7 +35,9 @@ const Section2 = () => {
                 <Col xs={9}>
                   <div className="card-body pl-0">
                     <h4 className="card-title">
-                      <strong>Time Saving</strong>
+                      <strong style={{ fontWeight: "700", fontSize: "1.1em" }}>
+                        Time Saving
+                      </strong>
                     </h4>
                     <p className="card-text">
                       Saving valuble time on writing, printing, distributing.
@@ -42,9 +47,9 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-6 col-md-6 col-sm-12 p-1">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 ">
             <div
-              className="card col-12"
+              className="card col-12 fade"
               style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
             >
               <div className="row align-items-center ">
@@ -60,7 +65,9 @@ const Section2 = () => {
                 <Col xs={9}>
                   <div className="card-body pl-0">
                     <h4 className="card-title">
-                      <strong>Cost Saving</strong>
+                      <strong style={{ fontWeight: "700", fontSize: "1.1em" }}>
+                        Cost Saving
+                      </strong>
                     </h4>
                     <p className="card-text">
                       Saving money on too much papers.
@@ -76,7 +83,7 @@ const Section2 = () => {
           </div>
           <div className=" col-lg-6 col-md-6 col-sm-12 p-1 ">
             <div
-              className="card col-12"
+              className="card col-12 fade"
               style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
             >
               <div className="row align-items-center ">
@@ -92,7 +99,9 @@ const Section2 = () => {
                 <Col xs={9}>
                   <div className="card-body pl-0">
                     <h4 className="card-title">
-                      <strong>Schedule Once</strong>
+                      <strong style={{ fontWeight: "700", fontSize: "1.1em" }}>
+                        Schedule Once
+                      </strong>
                     </h4>
                     <p className="card-text">
                       Easy to schedule a meeting in less time at once.
@@ -103,9 +112,9 @@ const Section2 = () => {
               </div>
             </div>
           </div>
-          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 mb-5">
+          <div className=" col-lg-6 col-md-6 col-sm-12 p-1 mb-5 ">
             <div
-              className="card col-12"
+              className="card col-12 fade"
               style={{ margin: "1%", backgroundColor: "#e0f9ff" }}
             >
               <div className="row align-items-center ">
@@ -121,7 +130,9 @@ const Section2 = () => {
                 <Col xs={9}>
                   <div className="card-body pl-0">
                     <h4 className="card-title">
-                      <strong>Satisfaction</strong>
+                      <strong style={{ fontWeight: "700", fontSize: "1.1em" }}>
+                        Satisfaction
+                      </strong>
                     </h4>
                     <p className="card-text">
                       Acceleration in time to engagement.
@@ -135,6 +146,7 @@ const Section2 = () => {
               </div>
             </div>
           </div>
+          <div style={{ minHeight: "20vh" }}></div>
         </div>
       </div>
     </Row>
