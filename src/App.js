@@ -27,7 +27,7 @@ function App() {
         <Route path="/addmembers">
           <ManageMembers />
         </Route>
-        <Route path="/members">
+        <Route path="/managemembers">
           <Navbar />
           <ViewMembers />
         </Route>
