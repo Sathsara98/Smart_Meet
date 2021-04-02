@@ -1,0 +1,45 @@
+.member-card {
+  /* Rectangle 26 */
+  width: 200px;
+  height: 210px;
+  margin-top: 20px;
+  border-radius: 0.5px 43px;
+  background-color: slateblue;
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: border-radius 0.6s linear;
+}
+
+.member-card:hover {
+  /* Rectangle 26 */
+  border-radius: 0px;
+}
+
+.member-card[data="public"] {
+  background: linear-gradient(90deg, #00020d 1.56%, #070d43 100%);
+}
+.member-card[data="private"] {
+  background: linear-gradient(90deg, #00020d 0%, #0939b5 100%);
+}
+.member-card[data="academic"] {
+  background: linear-gradient(
+    90deg,
+    #000000 -5.93%,
+    rgba(5, 94, 145, 0.81) 100%
+  );
+}
+.member-card[data="association"] {
+  background: linear-gradient(90deg, #000000 -7.14%, #3dc9f9 100%);
+}
+.card-icon {
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 50px;
+  color: rgb(180, 180, 180);
+}
+
+.member-card h3 {
+  margin-top: 20px;
+  color: white;
+}
