@@ -13,6 +13,8 @@
 .member-card:hover {
   /* Rectangle 26 */
   border-radius: 0px;
+  box-shadow: 2px 4px 8px 0 rgba(47, 127, 255, 0.4),
+    2px 6px 20px 0 rgba(0, 166, 207, 0.39);
 }
 
 .member-card[data="public"] {

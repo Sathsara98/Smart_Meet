@@ -23,7 +23,10 @@ import { Formik } from "formik";
 const ManageMembers = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+    console.log("Show True");
+  };
 
   const registerMember = async (event) => {
     // event.preventDefault();
@@ -89,6 +92,7 @@ const ManageMembers = () => {
               </Button>
             </Modal.Footer>
           </Modal>
+
 
           <BreadCrum path={pathToPage} />
           <AdminCard title="Members">

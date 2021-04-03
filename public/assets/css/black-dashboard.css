@@ -19032,7 +19032,7 @@ table.tablesorter thead tr .headerSortDown {
 
 .sidebar[data="custom"],
 .off-canvas-sidebar[data="blue"] {
-  background: #0A2057;
+  background: #0a2057;
   /* background: -webkit-linear-gradient(0deg, #001569 0%, #1d8cf8 100%);
   background: -o-linear-gradient(0deg, #283593 0%, #1d8cf8 100%);
   background: -moz-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%);
@@ -19893,8 +19893,8 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
 }
 
 .modal.show .modal-dialog {
-  -webkit-transform: translate(0, 30%);
-  transform: translate(0, 30%);
+  -webkit-transform: translate(0, 10%);
+  transform: translate(0, 10%);
 }
 
 code {
