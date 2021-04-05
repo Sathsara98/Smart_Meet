@@ -9,7 +9,6 @@
     "bootstrap": "^4.6.0",
     "datatables.net-dt": "^1.10.24",
     "formik": "^2.2.6",
-    "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-big-calendar": "^0.33.2",
