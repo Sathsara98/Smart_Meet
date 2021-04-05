@@ -27,7 +27,7 @@ function App() {
         <Route path="/addmembers">
           <ManageMembers />
         </Route>
-        <Route path="/managemembers">
+        <Route path="/managemembers/:type">
           <Navbar />
           <ViewMembers />
         </Route>

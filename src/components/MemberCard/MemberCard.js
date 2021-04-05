@@ -13,7 +13,7 @@ function MemberCard(props) {
     }
   }
   return (
-    <a href="/managemembers">
+    <a href={"/managemembers/" + props.type}>
       <div className="member-card" data={props.type} onClick={"/managemembers"}>
         <center>
           <i className={"fas " + icon + " card-icon"}></i>

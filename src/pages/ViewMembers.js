@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-
+import { useParams } from "react-router";
 import { Table, Container } from "react-bootstrap";
 import { BreadCrum, SideBar, Navbar, AdminCard } from "../components";
 
-function ViewMembers() {
+function ViewMembers(props) {
+  const { type } = useParams();
+  console.log(type);
   const [page, setPage] = useState(1);
   const [memberList, setMemberList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const tableDATA = memberList.map((p, index) => {
     return (
-      <tr key={index} >
+      <tr key={index}>
         <td>{index + 1}</td>
         <td></td>
         <td>{p.name}</td>
@@ -27,7 +29,7 @@ function ViewMembers() {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:5000/users/register`, {
+    fetch(`http://localhost:5000/users/register/` + type, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",

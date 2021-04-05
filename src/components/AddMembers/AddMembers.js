@@ -3,8 +3,9 @@ import { BreadCrum, SideBar, Navbar, AdminCard } from "../../components";
 import { Container, Form, Col, Row, Button, Alert } from "react-bootstrap";
 import * as yup from "yup";
 import { Formik } from "formik";
+import "./AddMember.css";
 
-const AddMembers = () => {
+const AddMembers = (props) => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -21,9 +22,19 @@ const AddMembers = () => {
       .min(10, "Phone no should be atleast 10 numbers long")
       .max(10, "Phone no should not more than 10 numbers long")
       .required("Phone no is required!"),
-    sector: yup.string().required("Sector is required!"),
+    sector: yup
+      .string()
+      .required("Sector is required!")
+      .notOneOf(["Select Sector"], "Selection Invalid"),
     workplace: yup.string().required("Workplace is required!"),
-    role: yup.string().required("Role is required!"),
+    role: yup
+      .string()
+      .required("Role is required!")
+      .notOneOf(["Select Member Role"], "Selection Invalid"),
+    gender: yup
+      .string()
+      .required("Gender is required!")
+      .notOneOf(["Select Gender"], "Selection Invalid"),
   });
 
   const registerMember = async (event) => {
@@ -35,11 +46,12 @@ const AddMembers = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           utype: event.role,
-          name: event.role,
+          name: event.name,
           email: event.email.toLowerCase(),
           tel: event.tel,
           sector: event.sector,
           workplace: event.workplace,
+          gender: event.gender,
         }),
       };
       const res = await fetch(
@@ -64,168 +76,205 @@ const AddMembers = () => {
   const pathToPage = ["Home", "Users", "ManageMembers"];
   return (
     <div class="content">
-      <AdminCard title="Register New Members">
-        <Formik
-          validationSchema={schema}
-          onSubmit={registerMember}
-          initialValues={{
-            name: "",
-            email: "",
-          }}
-        >
-          {({
-            handleSubmit,
-            handleChange,
-            handleBlur,
-            values,
-            touched,
-            isValid,
-            errors,
-          }) => (
-            <Form noValidate onSubmit={handleSubmit}>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    required
-                    name="name"
-                    type="text"
-                    placeholder="Name"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.name}
-                    isValid={touched.name && !errors.name}
-                    isInvalid={!!errors.name}
-                  />
+      <Formik
+        validationSchema={schema}
+        onSubmit={registerMember}
+        initialValues={{
+          name: "",
+          email: "",
+        }}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+          handleBlur,
+          values,
+          touched,
+          isValid,
+          errors,
+        }) => (
+          <Form noValidate onSubmit={handleSubmit}>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  required
+                  name="name"
+                  type="text"
+                  placeholder="Name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.name}
+                  isValid={touched.name && !errors.name}
+                  isInvalid={!!errors.name}
+                />
 
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name};
-                  </Form.Control.Feedback>
-                </Form.Group>
+                <Form.Control.Feedback type="invalid">
+                  {errors.name};
+                </Form.Control.Feedback>
+              </Form.Group>
 
-                <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    required
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.email}
-                    isValid={touched.email && !errors.email}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
+              <Form.Group as={Col} controlId="formGridPassword">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  required
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.email}
+                  isValid={touched.email && !errors.email}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
 
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Telephone Number</Form.Label>
-                  <Form.Control
-                    type="tel"
-                    name="tel"
-                    placeholder="Telephone Number"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.tel}
-                    isValid={touched.tel && !errors.tel}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.tel}
-                  </Form.Control.Feedback>
-                </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Label>Telephone Number</Form.Label>
+                <Form.Control
+                  type="tel"
+                  name="tel"
+                  placeholder="Telephone Number"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.tel}
+                  isValid={touched.tel && !errors.tel}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.tel}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-                <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>Sector</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="sector"
-                    placeholder="Sector"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.sector}
-                    isValid={touched.sector && !errors.sector}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.sector}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridAddress1">
-                  <Form.Label>Workplace</Form.Label>
-                  <Form.Control
-                    name="workplace"
-                    placeholder="Workplace"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.workplace}
-                    isValid={touched.workplace && !errors.workplace}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.workplace}
-                  </Form.Control.Feedback>
-                </Form.Group>
+              <Form.Group as={Col} controlId="formGridPassword">
+                <Form.Label>Sector</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="sector"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.sector}
+                  isValid={touched.sector && !errors.sector}
+                >
+                  <option>Select Sector</option>
+                  <option>Public</option>
+                  <option>Private</option>
+                  <option>Academic</option>
+                  <option>Association</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.sector}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridAddress1">
+                <Form.Label>Workplace</Form.Label>
+                <Form.Control
+                  name="workplace"
+                  placeholder="Workplace"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.workplace}
+                  isValid={touched.workplace && !errors.workplace}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.workplace}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-                <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
-                  <Form.Label>Member Role</Form.Label>
-                  <Form.Control
-                    as="select"
-                    name="role"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={!!errors.role}
-                    isValid={touched.role && !errors.role}
+              <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
+                <Form.Label>Member Role</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="role"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.role}
+                  isValid={touched.role && !errors.role}
+                >
+                  <option>Select Member Role</option>
+                  <option>Committee Member</option>
+                  <option>Committee Secretary</option>
+                  <option>Administrator</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.role}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
+
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Gender</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="gender"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.gender}
+                  isValid={touched.gender && !errors.gender}
+                >
+                  <option>Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.gender}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col}></Form.Group>
+            </Form.Row>
+            <Alert show={show} variant={error == "" ? "success" : "danger"}>
+              <Alert.Heading>
+                {error != "" ? (
+                  error
+                ) : (
+                  <>
+                    Member Registered Successfully !
+                    <p className="text-secondary">
+                      Email containing loging details has been Successfully sent
+                      to the Member.
+                    </p>
+                  </>
+                )}
+              </Alert.Heading>
+
+              <hr />
+              <div className="d-flex justify-content-end">
+                {error == "" ? (
+                  <Button
+                    onClick={() => setShow(false)}
+                    variant="info"
+                    onClick={props.close}
                   >
-                    <option>Select Member Role</option>
-                    <option>Committee Member</option>
-                    <option>Committee Secretary</option>
-                    <option>Administrator</option>
-                  </Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.role}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Alert show={show} variant={error == "" ? "success" : "danger"}>
-                <Alert.Heading>
-                  {error != "" ? (
-                    error
-                  ) : (
-                    <>
-                      Member Registered Successfully !
-                      <p className="text-secondary">
-                        Email containing loging details has been Successfully
-                        sent to the Member.
-                      </p>
-                    </>
-                  )}
-                </Alert.Heading>
+                    Done
+                  </Button>
+                ) : (
+                  <Button onClick={() => setShow(false)} variant="primary">
+                    OK
+                  </Button>
+                )}
+              </div>
+            </Alert>
 
-                <hr />
-                <div className="d-flex justify-content-end">
-                  {error == "" ? (
-                    <Button onClick={() => setShow(false)} variant="info">
-                      {" "}
-                      Done{" "}
-                    </Button>
-                  ) : (
-                    <Button onClick={() => setShow(false)} variant="primary">
-                      OK
-                    </Button>
-                  )}
-                </div>
-              </Alert>
+            <Form.Row
+              id="footer-modal-addMember"
+              className="d-flex justify-content-between"
+            >
               <Button variant="info" type="submit">
                 Submit
               </Button>
-            </Form>
-          )}
-        </Formik>
-      </AdminCard>
+              <Button variant="danger" onClick={props.close}>
+                Cancel
+              </Button>
+            </Form.Row>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };
