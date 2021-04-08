@@ -22,30 +22,12 @@ function SideBar(props) {
             </a>
           </li>
           <li className={props.members == true ? "active" : ""}>
-            <a data-toggle="collapse" href="#componentsExamples">
-              <i class="fa fa-users"></i>
-              <p>
-                Members
-                <b class="caret"></b>
-              </p>
+            <a href="addmembers">
+              <i className="fa fa-users"></i>
+              <p>Members</p>
             </a>
-            <div class="collapse" id="componentsExamples">
-              <ul class="nav">
-                <li className={props.addmembers == true ? "active" : ""}>
-                  <a href="addmembers">
-                    {/* <i class="fa fa-plus"></i> */}
-                    <span class="sidebar-normal"> Add Members </span>
-                  </a>
-                </li>
-                <li>
-                  <a href="managemembers">
-                    {/* <i class="fa fa-trash"></i> */}
-                    <span class="managemembers"> View/Delete Members </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
+
           <li className={props.questions == true ? "active" : ""}>
             <a href="addquestion">
               <i class="fa fa-question"></i>
