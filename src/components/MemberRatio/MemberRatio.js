@@ -1,8 +1,26 @@
 import { getByPlaceholderText } from "@testing-library/dom";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Chart } from "react-google-charts";
 
 function MemberRatio() {
+  const [page, setPage] = useState(1);
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/users/stats/`, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        setStats(response);
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  }, [page]);
+
   const styleTitle = {
     fontSize: 20,
     fontWeight: "bold",
@@ -19,10 +37,10 @@ function MemberRatio() {
         loader={<div>Loading Chart</div>}
         data={[
           ["Task", "Hours per Day"],
-          ["Private", 11],
-          ["Public", 2],
-          ["Association", 2],
-          ["Academic", 2],
+          ["Public", stats.Public],
+          ["Private", stats.Private],
+          ["Association", stats.Association],
+          ["Academic", stats.Academic],
         ]}
         options={{
           is3D: true,

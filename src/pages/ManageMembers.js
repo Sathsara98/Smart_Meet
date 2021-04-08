@@ -96,15 +96,14 @@ const ManageMembers = () => {
           <BreadCrum path={pathToPage} />
           <AdminCard title="Members">
             <Container>
-              <Row>
-                <Col sm={9}></Col>
-                <Col sm={3}>
+              <Row className="d-flex justify-content-end ">
+                <Col>
                   <Button variant="custom" onClick={handleShow}>
                     <i className="tim-icons fas fa-plus" /> Add New User
                   </Button>
                 </Col>
               </Row>
-              <Row>
+              <Row className="d-flex justify-content-between">
                 <Col sm>
                   <MemberCard type="public" text="Public Sector" />
                 </Col>

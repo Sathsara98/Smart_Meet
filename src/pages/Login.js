@@ -125,7 +125,7 @@ function Login() {
                 <center>
                   <Button
                     variant="info"
-                    className="align-self-center"
+                    className="align-self-center btnPrimary"
                     type="submit"
                   >
                     Login
