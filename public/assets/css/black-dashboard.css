@@ -18424,8 +18424,8 @@ table.tablesorter thead tr .headerSortDown {
   background: -o-linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   background: -moz-linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   background: linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
-  height: calc(100vh - 90px);
-  width: 230px;
+  /* height: calc(100vh - 90px); */
+  width:280px;
   position: fixed;
   top: 0;
   left: 0;
@@ -18437,7 +18437,7 @@ table.tablesorter thead tr .headerSortDown {
   /* margin-top: 80px;
   margin-left: 20px;
   border-radius: 5px; */
-  margin-top: 65px;
+  /* margin-top: 65px; */
   transition: 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
 }
 
@@ -19147,7 +19147,7 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .main-panel > .content {
-  padding: 78px 30px 30px 280px;
+  padding: 78px 30px 30px 310px;
   min-height: calc(100vh - 70px);
 }
 

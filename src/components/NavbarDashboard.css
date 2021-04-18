@@ -1,0 +1,14 @@
+#navdash {
+  height: 4rem !important;
+  width: calc(100vw - 280px);
+  background-color: black;
+  margin-left: 280px !important;
+}
+
+@media (max-width: 990px) {
+  #navdash {
+    height: 5.2rem !important;
+    width: 100vw;
+    margin-left: 0px !important;
+  }
+}

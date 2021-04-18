@@ -7,6 +7,7 @@ import {
   AddMembers,
   MemberCard,
   MemberRatio,
+  NavbarDashboard,
 } from "../components";
 import {
   Container,
@@ -66,8 +67,8 @@ const ManageMembers = () => {
     <div className="wrapper">
       <SideBar members={true} addmembers={true} />
       <div class="main-panel">
-        <Navbar />
         <div class="content">
+          <NavbarDashboard title="Members" />
           <Modal
             show={show}
             size="lg"
@@ -92,18 +93,20 @@ const ManageMembers = () => {
               </Button>
             </Modal.Footer> */}
           </Modal>
-
           <BreadCrum path={pathToPage} />
           <AdminCard title="Members">
             <Container>
-              <Row className="d-flex justify-content-end ">
-                <Col>
-                  <Button variant="custom" onClick={handleShow}>
-                    <i className="tim-icons fas fa-plus" /> Add New User
-                  </Button>
-                </Col>
-              </Row>
-              <Row className="d-flex justify-content-between">
+              <div class="row mb-2">
+                <div class="col-md">
+                  <div class="d-flex justify-content-end">
+                    <Button variant="custom" onClick={handleShow}>
+                      <i className="tim-icons fas fa-plus" /> Add New User
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <Row className="d-flex justify-space-end">
                 <Col sm>
                   <MemberCard type="public" text="Public Sector" />
                 </Col>
