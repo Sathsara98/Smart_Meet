@@ -16,20 +16,20 @@ function SideBar(props) {
         </div>
         <ul className="nav">
           <li className={props.dashboard == true ? "active" : ""}>
-            <a href="dashboard">
+            <a href="/dashboard">
               <i className="tim-icons fas fa-chart-pie"></i>
               <p>Dashboard</p>
             </a>
           </li>
           <li className={props.members == true ? "active" : ""}>
-            <a href="addmembers">
+            <a href="/addmembers">
               <i className="fa fa-users"></i>
               <p>Members</p>
             </a>
           </li>
 
           <li className={props.questions == true ? "active" : ""}>
-            <a href="addquestion">
+            <a href="/addquestion">
               <i class="fa fa-question"></i>
               <p>Questions</p>
             </a>

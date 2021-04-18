@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
-import { BreadCrum, SideBar, Navbar, AdminCard } from "../../components";
+import { BreadCrum, SideBar, Navbar, AdminCard , NavbarDashboard} from "../../components";
 import {
   Container,
   Form,
@@ -40,7 +40,7 @@ function Index() {
     <div className="wrapper">
       <SideBar questions={true} />
       <div class="main-panel">
-        <Navbar />
+        <NavbarDashboard title="Questions" />
         <div class="content">
           <BreadCrum path={pathToPage} />
           <AdminCard title="Insert Questions">

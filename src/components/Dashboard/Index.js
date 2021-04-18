@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Calender from "./DashCalender";
 
-import { BreadCrum, SideBar, Navbar, AdminCard } from "../../components";
+import {
+  BreadCrum,
+  SideBar,
+  Navbar,
+  AdminCard,
+  NavbarDashboard,
+} from "../../components";
 import {
   Container,
   Form,
@@ -18,7 +24,7 @@ function Index() {
     <div className="wrapper">
       <SideBar dashboard={true} />
       <div class="main-panel">
-        <Navbar />
+        <NavbarDashboard title="Dashboard" />
         <div class="content">
           <BreadCrum path={pathToPage} />
 

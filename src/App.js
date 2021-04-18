@@ -28,7 +28,7 @@ function App() {
           <ManageMembers />
         </Route>
         <Route path="/managemembers/:type">
-          <Navbar />
+          {/* <Navbar /> */}
           <ViewMembers />
         </Route>
         <Route path="/addquestion">

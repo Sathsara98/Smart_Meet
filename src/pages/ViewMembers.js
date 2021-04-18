@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useParams } from "react-router";
 import { Table, Container } from "react-bootstrap";
-import { BreadCrum, SideBar, Navbar, AdminCard } from "../components";
+import {
+  BreadCrum,
+  SideBar,
+  Navbar,
+  AdminCard,
+  NavbarDashboard,
+} from "../components";
 
 function ViewMembers(props) {
   const { type } = useParams();
@@ -47,7 +53,7 @@ function ViewMembers(props) {
     <div className="wrapper">
       <SideBar members={true} viewmembers={true} />
       <div class="main-panel">
-        <Navbar />
+        <NavbarDashboard title="Members" />
         <div class="content">
           <BreadCrum path={["Home", "Users", "View Members"]} />
           <AdminCard title="View Members">
