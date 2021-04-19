@@ -6679,7 +6679,7 @@ a.close.disabled {
 }
 
 .modal-backdrop.show {
-  opacity: 0.16;
+  opacity: 0.66;
 }
 
 .modal-header {
@@ -15327,7 +15327,7 @@ img {
 }
 
 .modal-content .modal-header .modal-title {
-  color: #222a42;
+  color: #000000;
 }
 
 .modal-content .modal-header i.tim-icons {
