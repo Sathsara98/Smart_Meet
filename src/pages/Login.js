@@ -47,7 +47,7 @@ function Login() {
     }
   };
   if (redirect) {
-    return <Redirect to="/addquestion" />;
+    return <Redirect to="/dashboard" />;
   }
   return (
     <div>

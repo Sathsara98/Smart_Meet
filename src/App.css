@@ -184,7 +184,6 @@
 }
 
 .rbc-calendar {
-  background-color: #e0f9ff;
   padding: 2%;
   min-height: 72vh;
   max-height: 80vh !important;
@@ -194,3 +193,10 @@
   opacity: 1;
 }
 
+.rbc-date-cell a {
+  color: #000;
+  font-weight: 600;
+}
+.rbc-toolbar-label {
+  font-weight: 700;
+}
