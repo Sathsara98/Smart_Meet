@@ -24,7 +24,7 @@ function Index() {
     <div className="wrapper">
       <SideBar dashboard={true} />
       <div className="main-panel">
-        <Navbar />
+        <NavbarDashboard title="Dashboard" />
         <div className="content">
           <BreadCrum path={pathToPage} />
 
