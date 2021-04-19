@@ -57,7 +57,7 @@ function ViewMembers(props) {
         <div class="content">
           <BreadCrum path={["Home", "Users", "View Members"]} />
           <AdminCard title="View Members">
-            <table id="example" class="table table-striped table-bordered">
+            <table id="example" className="table table-bordered">
               <thead>
                 <tr>
                   <th>No</th>

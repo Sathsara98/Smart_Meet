@@ -1643,7 +1643,8 @@ pre code {
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  color: #525f7f;
+  color: #000000 !important;
+  font-weight: 500;
   background-color: transparent;
 }
 
@@ -1657,6 +1658,11 @@ pre code {
 .table thead th {
   vertical-align: bottom;
   border-bottom: 0.125rem solid #e3e3e3;
+}
+
+.table thead tr th {
+  vertical-align: bottom;
+  border: 0.125rem solid #e3e3e3 !important;
 }
 
 .table tbody + tbody {
@@ -5551,8 +5557,8 @@ input[type="button"].btn-block {
 .page-item.active .page-link {
   z-index: 1;
   color: #ffffff;
-  background-color: #e14eca;
-  border-color: #e14eca;
+  background-color: #1C4778;
+  border-color: #1C4778;
 }
 
 .page-item.disabled .page-link {
@@ -18425,7 +18431,7 @@ table.tablesorter thead tr .headerSortDown {
   background: -moz-linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   background: linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   /* height: calc(100vh - 90px); */
-  width:280px;
+  width: 280px;
   position: fixed;
   top: 0;
   left: 0;
