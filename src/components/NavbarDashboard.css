@@ -1,8 +1,8 @@
 #navdash {
   height: 4rem !important;
-  width: calc(100vw - 280px);
+  width: calc(100vw - 240px);
   background-color: black;
-  margin-left: 280px !important;
+  margin-left: 240px !important;
 }
 
 @media (max-width: 990px) {
