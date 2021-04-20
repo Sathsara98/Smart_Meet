@@ -57,7 +57,12 @@ function AddQuestions(props) {
             {errormessage}
           </Form.Group>
         </Form.Row>
-        <Button variant="info" type="submit" onClick={onSubmit}>
+        <Button
+          variant="info"
+          className="btnPrimary "
+          type="submit"
+          onClick={onSubmit}
+        >
           Submit
         </Button>
       </Form>

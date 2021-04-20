@@ -75,7 +75,7 @@ const AddMembers = (props) => {
   };
   const pathToPage = ["Home", "Users", "ManageMembers"];
   return (
-    <div class="content">
+    <div className="content">
       <Formik
         validationSchema={schema}
         onSubmit={registerMember}

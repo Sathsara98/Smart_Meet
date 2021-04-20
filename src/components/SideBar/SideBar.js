@@ -30,7 +30,7 @@ function SideBar(props) {
 
           <li className={props.questions == true ? "active" : ""}>
             <a href="/addquestion">
-              <i class="fa fa-question"></i>
+              <i className="fa fa-question"></i>
               <p>Questions</p>
             </a>
           </li>

@@ -199,4 +199,6 @@
 }
 .rbc-toolbar-label {
   font-weight: 700;
+  text-align: right !important;
+  font-size: 1.5em;
 }

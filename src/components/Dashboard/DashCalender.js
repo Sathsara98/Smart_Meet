@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 const localizer = momentLocalizer(moment);
@@ -20,6 +20,8 @@ const DashCalender = (props) => {
         events={myEventsList}
         startAccessor="start"
         endAccessor="end"
+        defaultView={Views.Month}
+        views={["month"]}
       />
     </div>
   );
