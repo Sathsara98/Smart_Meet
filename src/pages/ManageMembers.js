@@ -79,7 +79,7 @@ const ManageMembers = () => {
             aria-labelledby="contained-modal-title-vcenter"
           >
             <Modal.Header closeButton>
-              <Modal.Title>Register New Member</Modal.Title>
+              <h2>Register New Member</h2>
             </Modal.Header>
             <Modal.Body>
               <AddMembers close={handleClose} />

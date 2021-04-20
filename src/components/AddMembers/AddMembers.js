@@ -249,12 +249,17 @@ const AddMembers = (props) => {
                   <Button
                     onClick={() => setShow(false)}
                     variant="info"
+                    className="btnPrimary"
                     onClick={props.close}
                   >
                     Done
                   </Button>
                 ) : (
-                  <Button onClick={() => setShow(false)} variant="primary">
+                  <Button
+                    onClick={() => setShow(false)}
+                    variant="primary"
+                    className="btnPrimary"
+                  >
                     OK
                   </Button>
                 )}
@@ -265,10 +270,14 @@ const AddMembers = (props) => {
               id="footer-modal-addMember"
               className="d-flex justify-content-between"
             >
-              <Button variant="info" type="submit">
+              <Button variant="info" type="submit" className="btnPrimary">
                 Submit
               </Button>
-              <Button variant="danger" onClick={props.close}>
+              <Button
+                variant="danger"
+                onClick={props.close}
+                className="btnPrimary"
+              >
                 Cancel
               </Button>
             </Form.Row>
