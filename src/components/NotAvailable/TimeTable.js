@@ -38,6 +38,11 @@ function TimeTable() {
     0,
     0,
     0,
+    0,
+    0,
+    0,
+    0,
+    0,
   ]);
 
   const CenText = (props) => {
@@ -70,8 +75,8 @@ function TimeTable() {
   }
   function name() {}
   return (
-    <div className="w-100">
-      <div className="timetable w-100">
+    <div className="">
+      <div className="timetable w-100 ">
         <div>
           <Button variant="info" className="btnPrimary " type="submit">
             Save
@@ -97,6 +102,9 @@ function TimeTable() {
         <div className="time-interval">
           <div>
             <b>8:30 - 9:15</b>
+          </div>
+          <div>
+            <b>9:15 - 10:00</b>
           </div>
           <div>
             <b>10:00 - 10:45</b>
