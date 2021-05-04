@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { Navbar } from "./components";
 import HomePage from "./components/Home/Index";
+import NotAvailable from "./components/NotAvailable/Index";
 import AddQuestion from "./components/Questions/Index";
 import ManageMembers from "./pages/ManageMembers";
 import ManageEvents from "./pages/ManageEvents";
@@ -65,7 +66,9 @@ function App() {
         <Route path="/dashboard">
           <Dashboard />
         </Route>
-
+        <Route path="/notAvailable">
+          <NotAvailable />
+        </Route>
         <Route path="*">
           <HomePage />
         </Route>

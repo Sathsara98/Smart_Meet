@@ -121,9 +121,13 @@ const ManageEvents = () => {
                         overflow: "auto",
                       }}
                     >
-                      <img class="  " src={backImg} alt="Card image cap"></img>
+                      <img
+                        className="  "
+                        src={backImg}
+                        alt="Card image cap"
+                      ></img>
                     </div>
-                    <Card.Text
+                    <div
                       className="col-9 float-right"
                       style={{ fontWeight: "bolder" }}
                     >
@@ -143,7 +147,7 @@ const ManageEvents = () => {
                       >
                         More
                       </Button>
-                    </Card.Text>
+                    </div>
 
                     {/* <Card.Text>sss</Card.Text> */}
                   </Card.Body>

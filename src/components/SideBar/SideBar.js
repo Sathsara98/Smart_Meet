@@ -40,13 +40,19 @@ function SideBar(props) {
               <p>All Events</p>
             </a>
           </li>
-
+          <li className={props.notAvailable == true ? "active" : ""}>
+            <a href="/notAvailable">
+              <i className="icon-time-alarm"></i>
+              <p>Not Available</p>
+            </a>
+          </li>
           <li className={props.profile == true ? "active" : ""}>
             <a href="/profile">
               <i className="tim-icons fas fa-user"></i>
               <p>Profile</p>
             </a>
           </li>
+
           <li className={props.settings == true ? "active" : ""}>
             <a href="/settings">
               <i className="tim-icons fas fa-cog"></i>
