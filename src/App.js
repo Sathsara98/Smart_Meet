@@ -4,6 +4,7 @@ import { Navbar } from "./components";
 import HomePage from "./components/Home/Index";
 import AddQuestion from "./components/Questions/Index";
 import ManageMembers from "./pages/ManageMembers";
+import ManageEvents from "./pages/ManageEvents";
 import ViewMembers from "./pages/ViewMembers";
 import ForgetPassword from "./pages/ForgetPassword";
 import Dashboard from "./components/Dashboard/Index";
@@ -26,6 +27,9 @@ function App() {
         {/* <Route path="/sp/:id" component={SingleProduct} /> */}
         <Route path="/addmembers">
           <ManageMembers />
+        </Route>
+        <Route path="/events">
+          <ManageEvents />
         </Route>
         <Route path="/managemembers/:type">
           {/* <Navbar /> */}

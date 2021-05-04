@@ -170,16 +170,27 @@
 .subdropdowns {
   color: #ffffff !important;
 }
+.memberCards {
+  width: 20%;
+}
 
 @media (min-width: 576px) {
   .subdropdowns {
     color: #ffffff !important;
   }
 }
+@media (min-width: 977px) {
+  .memberCards {
+    width: 10%;
+  }
+}
 
 @media (min-width: 992px) {
   .subdropdowns {
     color: #000 !important;
+  }
+  .memberCards {
+    width: 10%;
   }
 }
 
@@ -206,5 +217,3 @@
 .form-label {
   color: black;
 }
-
-
