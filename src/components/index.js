@@ -11,3 +11,4 @@ export { default as MemberCard } from "./MemberCard/MemberCard";
 export { default as AddMembers } from "./AddMembers/AddMembers";
 export { default as AddEvents } from "./AddEvents/AddEvents";
 export { default as MemberRatio } from "./MemberRatio/MemberRatio";
+export { default as MapWithAMarker } from "./Map/MapWithAMarker";

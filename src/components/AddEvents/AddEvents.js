@@ -1,5 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
-import { BreadCrum, SideBar, Navbar, AdminCard } from "../../components";
+import {
+  BreadCrum,
+  SideBar,
+  Navbar,
+  AdminCard,
+  MapWithAMarker,
+} from "../../components";
 import profile from "../../assets/profile.png";
 import {
   Container,
@@ -13,6 +19,7 @@ import {
 import * as yup from "yup";
 import { Formik } from "formik";
 import "./AddEvent.css";
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 const AddEvents = (props) => {
   const [show, setShow] = useState(false);
@@ -181,9 +188,12 @@ const AddEvents = (props) => {
             <Form.Row>
               <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>Venue Location</Form.Label>
-                <div
-                  style={{ height: "150px", border: "1px solid black" }}
-                ></div>
+                <MapWithAMarker
+                  googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDNwCv-VFlb6sKsDpbt8ptidHZOS_ETuI&v=3.exp&libraries=geometry,drawing,places"
+                  loadingElement={<div style={{ height: `100%` }} />}
+                  containerElement={<div style={{ height: `400px` }} />}
+                  mapElement={<div style={{ height: `100%` }} />}
+                />
               </Form.Group>
             </Form.Row>
 
