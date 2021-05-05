@@ -52,9 +52,9 @@ function ViewMembers(props) {
   return (
     <div className="wrapper">
       <SideBar members={true} viewmembers={true} />
-      <div class="main-panel">
+      <div className="main-panel">
         <NavbarDashboard title="Members" />
-        <div class="content">
+        <div className="content">
           <BreadCrum path={["Home", "Users", "View Members"]} />
           <AdminCard title="View Members">
             <table id="example" className="table table-bordered">

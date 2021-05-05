@@ -52,7 +52,7 @@ function Login() {
   return (
     <div>
       <Navbar varient="transparent" />
-      <div class="login-cover center">
+      <div className="login-cover center">
         <div className="container login-box">
           <h1 className="text-center text-secondary">
             <b>Login</b>
@@ -117,7 +117,7 @@ function Login() {
                   </Form.Group>
                 </Form.Row>
                 {error != "" ? (
-                  <div class="alert alert-danger" role="alert">
+                  <div className="alert alert-danger" role="alert">
                     {error}
                   </div>
                 ) : null}

@@ -136,7 +136,7 @@ const AddMembers = (props) => {
     printWorkplaces = workPlaces.Association;
   }
   return (
-    <div class="content">
+    <div className="content">
       <Formik
         validationSchema={schema}
         onSubmit={registerMember}

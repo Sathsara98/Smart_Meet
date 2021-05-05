@@ -2,11 +2,13 @@ import React, { useState, useEffect, H1 } from "react";
 import { Card, Form, Col, Row, Button, Container } from "react-bootstrap";
 
 function ViewQuestions(props) {
-  const [questions, setquestions] = useState([]);
-
+  const [questions, setquestions] = useState(props.questions);
   useEffect(() => {
     setquestions(props.questions);
-  }, [props.questions, questions]);
+  }, []);
+  useEffect(() => {
+    setquestions(props.questions);
+  }, [props.questions]);
 
   function editComment(id) {
     console.log(id);
@@ -73,8 +75,8 @@ function ViewQuestions(props) {
       console.log(e);
     }
   }
-  if (questions == null) {
-    return <H1>Loading Table...</H1>;
+  if (props.loading == true) {
+    return <h1>Loading..</h1>;
   }
   return (
     <div>
@@ -86,7 +88,7 @@ function ViewQuestions(props) {
         >
           <Card.Body>
             <Card.Title style={{ fontWeight: "bolder" }}>
-              QUESTION {key + 1}{" "}
+              QUESTION {key + 1} - {que.dArea}
               <span style={{ float: "right" }}>
                 {!que.disabled ? (
                   <i

@@ -4,14 +4,13 @@ import {
   SideBar,
   Navbar,
   AdminCard,
-  AddMembers,
+  AddEvents,
   MemberCard,
-  MemberRatio,
   NavbarDashboard,
 } from "../components";
 import {
   Container,
-  Form,
+  Card,
   Col,
   Row,
   Button,
@@ -20,8 +19,9 @@ import {
 } from "react-bootstrap";
 import * as yup from "yup";
 import { Formik } from "formik";
+import backImg from "../assets/home_page/metal.jpg";
 
-const ManageMembers = () => {
+const ManageEvents = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -62,10 +62,10 @@ const ManageMembers = () => {
       console.log(e);
     }
   };
-  const pathToPage = ["Home", "Users", "ManageMembers"];
+  const pathToPage = ["Home", "Users", "ManageEvents"];
   return (
     <div className="wrapper">
-      <SideBar members={true} addmembers={true} />
+      <SideBar events={true} />
       <div className="main-panel">
         <div className="content">
           <NavbarDashboard title="Members" />
@@ -79,10 +79,10 @@ const ManageMembers = () => {
             aria-labelledby="contained-modal-title-vcenter"
           >
             <Modal.Header closeButton>
-              <h2>Register New Member</h2>
+              <h2>Add Events</h2>
             </Modal.Header>
             <Modal.Body>
-              <AddMembers close={handleClose} />
+              <AddEvents close={handleClose} />
             </Modal.Body>
             {/* <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
@@ -100,31 +100,60 @@ const ManageMembers = () => {
                 <div className="col-md">
                   <div className="d-flex justify-content-end">
                     <Button variant="custom" onClick={handleShow}>
-                      <i className="tim-icons fas fa-plus" /> Add New User
+                      <i className="tim-icons fas fa-plus" /> Add New Event
                     </Button>
                   </div>
                 </div>
               </div>
+              <Card
+                style={{
+                  marginTop: "2%",
+                  backgroundColor: "#eefbfd",
+                  borderRadius: "15px",
+                }}
+              >
+                <Row>
+                  <Card.Body>
+                    <div
+                      className=" col-3 float-left"
+                      style={{
+                        borderRadius: "20px",
+                        overflow: "auto",
+                      }}
+                    >
+                      <img
+                        className="  "
+                        src={backImg}
+                        alt="Card image cap"
+                      ></img>
+                    </div>
+                    <div
+                      className="col-9 float-right"
+                      style={{ fontWeight: "bolder" }}
+                    >
+                      <div style={{ textAlign: "left", marginLeft: "7%" }}>
+                        <h4 style={{ fontWeight: "bold" }}>Name : Meeting 1</h4>
+                        <h4 style={{ fontWeight: "bold" }}>
+                          Date<span style={{ color: "transparent" }}>d</span> :
+                          2021/01/01 - 1:30 PM
+                        </h4>
+                        <h4 style={{ fontWeight: "bold" }}>Venue : Homagama</h4>
+                      </div>
+                      <Button
+                        variant="info"
+                        className="btnPrimary float-right"
+                        type="submit"
+                        // onClick={onSubmit}
+                      >
+                        More
+                      </Button>
+                    </div>
 
-              <Row className="d-flex justify-space-end">
-                <Col sm>
-                  <MemberCard type="public" text="Public Sector" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="private" text="Private Sector" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="academic" text="Academic" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="association" text="Association" />
-                </Col>
-              </Row>
+                    {/* <Card.Text>sss</Card.Text> */}
+                  </Card.Body>
+                </Row>
+              </Card>
             </Container>
-            <br />
-            <center className="mt-4">
-              <MemberRatio />
-            </center>
           </AdminCard>
         </div>
       </div>
@@ -132,4 +161,4 @@ const ManageMembers = () => {
   );
 };
 
-export default ManageMembers;
+export default ManageEvents;

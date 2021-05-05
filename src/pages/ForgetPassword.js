@@ -52,7 +52,7 @@ function Login() {
   return (
     <div>
       <Navbar varient="transparent" />
-      <div class="login-cover center">
+      <div className="login-cover center">
         <div className="container login-box">
           <h1 className="text-center text-secondary">
             <b>Forget Password</b>
@@ -95,7 +95,7 @@ function Login() {
                 </Form.Row>
 
                 {error != "" ? (
-                  <div class="alert alert-danger" role="alert">
+                  <div className="alert alert-danger" role="alert">
                     {error}
                   </div>
                 ) : null}
@@ -103,7 +103,7 @@ function Login() {
                 <center>
                   <Button
                     variant="info"
-                    className="align-self-center"
+                    className="align-self-center btnPrimary "
                     type="submit"
                   >
                     Reset

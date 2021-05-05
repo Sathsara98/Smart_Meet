@@ -3,18 +3,21 @@ import "./AdminHeader.css";
 
 function BreadCrum(props) {
   let pathPrint = null;
-  console.log(props.path);
   if (props.path != undefined) {
     pathPrint = props.path.map((p, index) => {
       if (props.path.length == index + 1) {
         return (
-          <li class="breadcrumb-item active" key={index} aria-current="page">
+          <li
+            className="breadcrumb-item active"
+            key={index}
+            aria-current="page"
+          >
             {p}
           </li>
         );
       } else {
         return (
-          <li class="breadcrumb-item" key={index}>
+          <li className="breadcrumb-item" key={index}>
             <a href={p}>{p}</a>
           </li>
         );
@@ -27,7 +30,7 @@ function BreadCrum(props) {
   // } else {
   return (
     <nav aria-label="breadcrumb" role="navigation">
-      <ol class="breadcrumb">{pathPrint}</ol>
+      <ol className="breadcrumb">{pathPrint}</ol>
     </nav>
   );
   // }
