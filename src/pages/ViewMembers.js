@@ -66,7 +66,7 @@ function ViewMembers(props) {
                   <th>Email</th>
                   <th>Mobile No</th>
                   <th>Gender</th>
-                  <th>Workplace</th>
+                  <th>Ofiice</th>
                   <th>Action</th>
                 </tr>
               </thead>

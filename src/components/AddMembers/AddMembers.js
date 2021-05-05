@@ -9,6 +9,55 @@ const AddMembers = (props) => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const [workplace, setWorkplace] = useState("");
+  const workPlaces = {
+    public: [
+      <option>Ministry of industries</option>,
+      <option>Ministry of transport</option>,
+      <option>Ministry of vocational training and skills development</option>,
+      <option>Ministry of plantation</option>,
+      <option>Department of sri lanka custome</option>,
+      <option>Department of import export control</option>,
+      <option>Department of trade and tariff</option>,
+      <option>Sri Lanka standard institute</option>,
+      <option>Industrial development board </option>,
+      <option>Export development board</option>,
+      <option>Board of investment</option>,
+    ],
+    Association: [
+      <option>Sri Lanka Automotive Component Manufacturers Association</option>,
+    ],
+    private: [
+      <option>CEAT-Kelani International Tyres (Pvt) Ltd</option>,
+      <option>Kelani cables PLC</option>,
+      <option>Laugfs Lanka</option>,
+      <option>ACL cable</option>,
+      <option>Global rubber industries</option>,
+      <option> Rigid tyre corporation</option>,
+      <option>Micro cars (Pvt) Ltd</option>,
+      <option>United Motors</option>,
+      <option>IDL motors</option>,
+      <option>Sierra cables</option>,
+    ],
+    Academic: [
+      <option>University of Moratuwa</option>,
+      <option>Ceylon German Technical Institute</option>,
+    ],
+  };
+
+  const Association = [
+    "Sri Lanka Automotive Component Manufacturers Association",
+  ];
+
+  const Academic = [
+    "University of Moratuwa",
+    "Ceylon German Technical Institute",
+  ];
+
+  const handleChangeWork = (e) => {
+    console.log(e.target.value);
+    setWorkplace(e.target.value);
+  };
 
   const schema = yup.object({
     name: yup.string().required("Name is required!"),
@@ -26,7 +75,7 @@ const AddMembers = (props) => {
       .string()
       .required("Sector is required!")
       .notOneOf(["Select Sector"], "Selection Invalid"),
-    workplace: yup.string().required("Workplace is required!"),
+    workplace: yup.string().required("Office is required!"),
     role: yup
       .string()
       .required("Role is required!")
@@ -74,6 +123,18 @@ const AddMembers = (props) => {
     }
   };
   const pathToPage = ["Home", "Users", "ManageMembers"];
+
+  var printWorkplaces;
+
+  if (workplace == "Public") {
+    printWorkplaces = workPlaces.public;
+  } else if (workplace == "Private") {
+    printWorkplaces = workPlaces.Association;
+  } else if (workplace == "Academic") {
+    printWorkplaces = workPlaces.Academic;
+  } else if (workplace == "Association") {
+    printWorkplaces = workPlaces.Association;
+  }
   return (
     <div class="content">
       <Formik
@@ -154,7 +215,10 @@ const AddMembers = (props) => {
                 <Form.Control
                   as="select"
                   name="sector"
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    handleChangeWork(e);
+                  }}
                   onBlur={handleBlur}
                   isInvalid={!!errors.sector}
                   isValid={touched.sector && !errors.sector}
@@ -170,17 +234,22 @@ const AddMembers = (props) => {
                 </Form.Control.Feedback>
               </Form.Group>
             </Form.Row>
+
             <Form.Row>
               <Form.Group as={Col} controlId="formGridAddress1">
                 <Form.Label>Workplace</Form.Label>
                 <Form.Control
+                  as="select"
                   name="workplace"
                   placeholder="Workplace"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   isInvalid={!!errors.workplace}
                   isValid={touched.workplace && !errors.workplace}
-                />
+                >
+                  <option>Select Office</option>
+                  {printWorkplaces}
+                </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   {errors.workplace}
                 </Form.Control.Feedback>

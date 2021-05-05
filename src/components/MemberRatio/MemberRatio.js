@@ -25,10 +25,11 @@ function MemberRatio() {
     fontSize: 20,
     fontWeight: "bold",
   };
+
   return (
     <div className="mt-4">
       <span className="heading" style={styleTitle}>
-        The Ratio Of The Advisory Committee
+        The Ratio Of The Registered Users
       </span>
       <Chart
         height={"250px"}

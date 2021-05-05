@@ -12,7 +12,7 @@ function AddQuestions(props) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
+    
     let err;
     if (question == "") {
       err = <strong style={{ color: "red" }}>Please enter something!</strong>;
