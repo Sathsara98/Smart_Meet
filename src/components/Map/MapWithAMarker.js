@@ -7,8 +7,15 @@ import {
 
 const MapWithAMarker = withScriptjs(
   withGoogleMap((props) => (
-    <GoogleMap defaultZoom={8} defaultCenter={{ lat: -34.397, lng: 150.644 }}>
-      <Marker position={{ lat: -34.397, lng: 150.644 }} />
+    <GoogleMap
+      zoom={props.camera.zoom}
+      center={{ lat: props.camera.lat, lng: props.camera.lng }}
+    >
+      <Marker
+        position={{ lat: props.lat, lng: props.lng }}
+        draggable={true}
+        onDragEnd={(coordinate) => props.onDragged(coordinate)}
+      />
     </GoogleMap>
   ))
 );
