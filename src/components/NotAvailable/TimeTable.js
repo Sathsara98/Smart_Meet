@@ -1,49 +1,31 @@
 import React, { useState, useEffect, H1 } from "react";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 import "./TimeTable.css";
+import Auth from "../../authentication/Auth";
+
 function TimeTable() {
   const [days, setdays] = useState([
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/users/register/` + Auth.getUserId(), {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+        token: Auth.getToken(),
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.nat) setdays(response.nat);
+        // setIsLoading(false);
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  }, [page]);
 
   const CenText = (props) => {
     if (props.availability > 0) {
@@ -61,12 +43,45 @@ function TimeTable() {
     }
   };
 
+  const saveNat = async (event) => {
+    // event.preventDefault();
+    console.log(event);
+    try {
+      const requestOptions = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: Auth.getUserId(),
+          nat: days,
+        }),
+      };
+      const res = await fetch(
+        "http://localhost:5000/users/nat",
+        requestOptions
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+      // if (data.hasOwnProperty("error")) {
+      //   setError(data.error);
+      //   setShow(true);
+      // } else {
+      //   setError("");
+      //   setShow(true);
+      // }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   function cellClick(props) {
     let items = [...days];
     if (items[props.target.attributes.cell.value - 1] == 0) {
-      items[props.target.attributes.cell.value - 1] = parseInt(
-        props.target.attributes.cell.value
-      );
+      items[props.target.attributes.cell.value - 1] = 1;
+        // parseInt(
+        // props.target.attributes.cell.value
+      // );
     } else {
       items[props.target.attributes.cell.value - 1] = 0;
     }
@@ -78,7 +93,7 @@ function TimeTable() {
     <div className="">
       <div className="timetable w-100 ">
         <div>
-          <Button variant="info" className="btnPrimary " type="submit">
+          <Button variant="info" className="btnPrimary " onClick={saveNat}>
             Save
           </Button>
         </div>

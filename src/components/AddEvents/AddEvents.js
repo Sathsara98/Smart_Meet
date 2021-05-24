@@ -21,6 +21,8 @@ import { Formik } from "formik";
 import "./AddEvent.css";
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import Geocode from "react-geocode";
+import Auth from "../../authentication/Auth";
+import { Day } from "react-big-calendar";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
 Geocode.setApiKey("AIzaSyCDNwCv-VFlb6sKsDpbt8ptidHZOS_ETuI");
@@ -28,11 +30,115 @@ Geocode.setLanguage("en");
 Geocode.setRegion("lk");
 
 class AddEvents extends Component {
-  state = {
-    lat: 6.817796083692221,
-    lng: 79.89032876923123,
-    camZoom: { lat: 6.817796083692221, lng: 79.89032876923123, zoom: 15 },
+  constructor(props) {
+    super(props);
+    // Don't call this.setState() here!
+    this.state = {
+      lat: 6.817796083692221,
+      lng: 79.89032876923123,
+      camZoom: { lat: 6.817796083692221, lng: 79.89032876923123, zoom: 15 },
+      usersNat: null,
+    };
+    // this.handleClick = this.handleClick.bind(this);
+  }
+
+  fetchUsers = () => {
+    fetch(`http://localhost:5000/users/usersnat/`, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+        token: Auth.getToken(),
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response)
+          this.setState({
+            usersNat: response,
+          });
+        console.log(response);
+      })
+
+      .catch((error) => console.log(error));
   };
+
+  calculateNatArray = () => {
+    var arr2d = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    this.state.usersNat.map((arr, i) => {
+      var nats = arr.nat;
+      for (var i = 0; i < 40; i++) {
+        arr2d[i] = nats[i] + arr2d[i];
+      }
+    });
+
+    var minIndex = arr2d.reduce(function (highestIndex, element, index, array) {
+      return element < array[highestIndex] ? index : highestIndex;
+    }, 0);
+
+    console.log(arr2d);
+    console.log(minIndex);
+    this.getSlotFromIndex(29);
+  };
+
+  getSlotFromIndex = (x) => {
+    var slot;
+    if (x < 5) {
+      slot = "8:30 - 9:15 ";
+      slot = slot + this.getDayFromIndex(x + 1);
+    } else if (x < 10) {
+      slot = "9:15 - 10:00 ";
+      slot = slot + this.getDayFromIndex(x + 1 - 5);
+    } else if (x < 15) {
+      slot = "10:00 - 10:45 ";
+      slot = slot + this.getDayFromIndex(x + 1 - 10);
+    } else if (x < 20) {
+      slot = "10:45 - 11:30 ";
+      slot = slot + this.getDayFromIndex(x + 1 - 15);
+    } else if (x < 25) {
+      slot = "11:30 - 12:15  ";
+      slot = slot + this.getDayFromIndex(x + 1 - 20);
+    } else if (x < 30) {
+      slot = "12:15 - 13:00 ";
+      slot = slot + this.getDayFromIndex(x + 1 - 25);
+    } else if (x < 35) {
+      slot = "14:30 - 15:15";
+      slot = slot + this.getDayFromIndex(x + 1 - 30);
+    } else if (x < 40) {
+      slot = "15:15 - 16:00 ";
+      slot = slot + this.getDayFromIndex(x + 1 - 35);
+    } 
+    console.log(slot);
+  };
+  getDayFromIndex(x){
+    console.log("get day called" + x);
+    var day = "npda";
+    if (x == 1) {
+      day = "Monday";
+    } else if (x == 2) {
+      day = "Tuesday";
+    } else if (x == 3) {
+      day = "Wendsday";
+    } else if (x == 4) {
+      day = "Thursday";
+    } else if (x == 5) {
+      day = "Friday";
+    }
+    return day;
+  };
+
+  calculateBestTime = () => {
+    this.calculateNatArray();
+  };
+
+  getMeetingDate() {}
+
+  componentDidMount() {
+    this.fetchUsers();
+  }
 
   onMarkerDragEnd = (coord) => {
     console.log(coord.latLng.lat(), " ", coord.latLng.lng());
@@ -81,7 +187,8 @@ class AddEvents extends Component {
   render() {
     // const [show, setShow] = useState(false);
     // const [error, setError] = useState("");
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+    const phoneRegExp =
+      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     // const markerRef = React.useRef();
 
     const schema = yup.object({
@@ -278,6 +385,11 @@ class AddEvents extends Component {
                       camera={this.state.camZoom}
                     />
                   </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <Button onClick={this.calculateBestTime}>
+                    Calculate Best Meeting Time
+                  </Button>
                 </Form.Row>
 
                 <Form.Row>
