@@ -38,11 +38,13 @@ class AddEvents extends Component {
       lng: 79.89032876923123,
       camZoom: { lat: 6.817796083692221, lng: 79.89032876923123, zoom: 15 },
       usersNat: null,
+      loading: false,
+      timeSlot: null,
     };
     // this.handleClick = this.handleClick.bind(this);
   }
 
-  fetchUsers = () => {
+  fetchUsers = async () => {
     fetch(`http://localhost:5000/users/usersnat/`, {
       method: "GET",
       headers: new Headers({
@@ -53,9 +55,13 @@ class AddEvents extends Component {
       .then((res) => res.json())
       .then((response) => {
         if (response)
-          this.setState({
-            usersNat: response,
-          });
+          this.setState(
+            {
+              usersNat: response,
+              loading: false,
+            },
+            this.calculateNatArray
+          );
         console.log(response);
       })
 
@@ -81,10 +87,11 @@ class AddEvents extends Component {
 
     console.log(arr2d);
     console.log(minIndex);
-    this.getSlotFromIndex(29);
+    this.getSlotFromIndex(minIndex);
   };
 
   getSlotFromIndex = (x) => {
+    console.log("slot : "+x)
     var slot;
     if (x < 5) {
       slot = "8:30 - 9:15 ";
@@ -110,10 +117,10 @@ class AddEvents extends Component {
     } else if (x < 40) {
       slot = "15:15 - 16:00 ";
       slot = slot + this.getDayFromIndex(x + 1 - 35);
-    } 
-    console.log(slot);
+    }
+    this.setState({timeSlot:slot});
   };
-  getDayFromIndex(x){
+  getDayFromIndex(x) {
     console.log("get day called" + x);
     var day = "npda";
     if (x == 1) {
@@ -128,16 +135,16 @@ class AddEvents extends Component {
       day = "Friday";
     }
     return day;
-  };
+  }
 
   calculateBestTime = () => {
-    this.calculateNatArray();
+    this.setState({ loading: true }, this.fetchUsers);
   };
 
   getMeetingDate() {}
 
   componentDidMount() {
-    this.fetchUsers();
+    // this.fetchUsers();
   }
 
   onMarkerDragEnd = (coord) => {
@@ -387,9 +394,21 @@ class AddEvents extends Component {
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                  <Button onClick={this.calculateBestTime}>
-                    Calculate Best Meeting Time
-                  </Button>
+                  <Col className={"col-7"}>
+                    <Form.Label>
+                      <span>
+                        Time : <span style={{fontSize:22}}>{this.state.timeSlot}</span>
+                        {this.state.loading ? (
+                          <div className="loader ml-4 mb-4">Loading...</div>
+                        ) : null}
+                      </span>
+                    </Form.Label>
+                  </Col>
+                  <Col>
+                    <Button className="btnPrimary" variant="info"  onClick={this.calculateBestTime}>
+                      Calculate Optimal Event Time
+                    </Button>
+                  </Col>
                 </Form.Row>
 
                 <Form.Row>
