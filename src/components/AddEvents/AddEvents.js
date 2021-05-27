@@ -23,6 +23,7 @@ import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import Geocode from "react-geocode";
 import Auth from "../../authentication/Auth";
 import { Day } from "react-big-calendar";
+import MeetingMember from "../MeetingMember";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
 Geocode.setApiKey("AIzaSyCDNwCv-VFlb6sKsDpbt8ptidHZOS_ETuI");
@@ -40,6 +41,9 @@ class AddEvents extends Component {
       usersNat: null,
       loading: false,
       timeSlot: null,
+      loadingDevArea: false,
+      devArea: null,
+      meetingMembers: null,
     };
     // this.handleClick = this.handleClick.bind(this);
   }
@@ -91,7 +95,7 @@ class AddEvents extends Component {
   };
 
   getSlotFromIndex = (x) => {
-    console.log("slot : "+x)
+    console.log("slot : " + x);
     var slot;
     if (x < 5) {
       slot = "8:30 - 9:15 ";
@@ -118,7 +122,8 @@ class AddEvents extends Component {
       slot = "15:15 - 16:00 ";
       slot = slot + this.getDayFromIndex(x + 1 - 35);
     }
-    this.setState({timeSlot:slot});
+    this.setState({ timeSlot: slot });
+    this.getMembers(x, this.state.devArea);
   };
   getDayFromIndex(x) {
     console.log("get day called" + x);
@@ -137,14 +142,194 @@ class AddEvents extends Component {
     return day;
   }
 
+  getMembers = (slot, da) => {
+    var members = [];
+    var publicS = 0;
+    var privateS = 0;
+    var associate = 0;
+    var academic = 0;
+    var availableMembers = [];
+    availableMembers[0] = this.state.usersNat.filter(function (el) {
+      return el.sector == "Private" && el.nat[slot] == 0;
+    });
+    availableMembers[1] = this.state.usersNat.filter(function (el) {
+      return el.sector == "Public" && el.nat[slot] == 0;
+    });
+    availableMembers[2] = this.state.usersNat.filter(function (el) {
+      return el.sector == "Academic" && el.nat[slot] == 0;
+    });
+    availableMembers[3] = this.state.usersNat.filter(function (el) {
+      return el.sector == "Association" && el.nat[slot] == 0;
+    });
+    console.log(availableMembers);
+    if (da == "Policy") {
+      publicS = 9;
+      privateS = 7;
+      academic = 3;
+      associate = 1;
+    } else if (da == "R&D") {
+      publicS = 3;
+      privateS = 7;
+      academic = 9;
+      associate = 1;
+    } else if (da == "Technology") {
+      publicS = 3;
+      privateS = 9;
+      academic = 7;
+      associate = 1;
+    } else if (da == "Work force") {
+      publicS = 7;
+      privateS = 9;
+      academic = 3;
+      associate = 1;
+    } else if (da == "Productivity") {
+      publicS = 8;
+      privateS = 9;
+      academic = 3;
+      associate = 1;
+    } else if (da == "Marketing") {
+      publicS = 9;
+      privateS = 7;
+      academic = 3;
+      associate = 1;
+    }
+
+    for (var x = 0; x < 4; x++) {
+      for (var i = 0; i < availableMembers[x].length; i++) {
+        if (x == 0 && i == privateS) {
+          break;
+        }
+        if (x == 1 && i == publicS) {
+          break;
+        }
+        if (x == 2 && i == academic) {
+          break;
+        }
+        if (x == 3 && i == associate) {
+          break;
+        }
+        members.push(availableMembers[x][i]);
+      }
+    }
+
+    console.log(members);
+    this.setState({ meetingMembers: members });
+  };
   calculateBestTime = () => {
     this.setState({ loading: true }, this.fetchUsers);
+  };
+  fetchQuestions = async () => {
+    this.setState({ loadingDevArea: true });
+    try {
+      const res = await fetch("http://localhost:5000/admin/questions")
+        .then(function (response) {
+          return response.json();
+        })
+        .then((res) => {
+          console.log(res);
+          let promise = res.map(async (que) => {
+            const requestOptions = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                text: que.body,
+              }),
+            };
+
+            const res1 = await fetch(
+              "http://localhost:5000/admin/developing-area",
+              requestOptions
+            );
+            const data1 = await res1.json();
+            return {
+              _id: que._id,
+              body: que.body,
+              dArea: data1.SVM,
+              disabled: false,
+            };
+          });
+          console.log(res);
+          return Promise.all(promise);
+        })
+        .then((res) => {
+          console.log(res);
+          // setquestions(res);
+
+          this.findMax(res);
+        });
+    } catch (e) {
+      //if failed to communicate with api this code block will run
+      console.log(e);
+    }
+  };
+
+  findMax = (data_new) => {
+    console.log(data_new);
+    let policy = 0;
+    let randd = 0;
+    let technology = 0;
+    let workforce = 0;
+    let productivity = 0;
+    let marketing = 0;
+
+    if (data_new != null) {
+      for (let index = 0; index < data_new.length; index++) {
+        const element = data_new[index];
+      }
+      const saman = data_new;
+      data_new.forEach((element) => {
+        if (element.dArea == "Policy") {
+          policy++;
+        } else if (element.dArea == "R&D") {
+          randd++;
+        } else if (element.dArea == "Technology") {
+          technology++;
+        } else if (element.dArea == "Work force") {
+          workforce++;
+        } else if (element.dArea == "Productivity") {
+          productivity++;
+        } else if (element.dArea == "Marketing") {
+          marketing++;
+        }
+      });
+
+      let dAreaArr = [
+        policy,
+        productivity,
+        randd,
+        technology,
+        marketing,
+        workforce,
+      ];
+      console.log(dAreaArr);
+      let max = dAreaArr[0];
+      dAreaArr.forEach((element) => {
+        if (max < element) {
+          max = element;
+        }
+      });
+      if (max == policy) {
+        this.setState({ devArea: "Policy" });
+      } else if (max == randd) {
+        this.setState({ devArea: "R&D" });
+      } else if (max == productivity) {
+        this.setState({ devArea: "Productivity" });
+      } else if (max == technology) {
+        this.setState({ devArea: "Technology" });
+      } else if (max == marketing) {
+        this.setState({ devArea: "Marketing" });
+      } else if (max == workforce) {
+        this.setState({ devArea: "Workforce" });
+      }
+    }
+    this.setState({ loadingDevArea: false });
+    this.calculateBestTime();
   };
 
   getMeetingDate() {}
 
   componentDidMount() {
-    // this.fetchUsers();
+    this.fetchQuestions();
   }
 
   onMarkerDragEnd = (coord) => {
@@ -192,6 +377,10 @@ class AddEvents extends Component {
   };
 
   render() {
+    var membersRender = null;
+
+    if (this.state.meetingMembers != null) {
+    }
     // const [show, setShow] = useState(false);
     // const [error, setError] = useState("");
     const phoneRegExp =
@@ -286,6 +475,21 @@ class AddEvents extends Component {
             }) => (
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>Event Sector</Form.Label>
+                    <br />
+                    <span style={{ fontSize: 22 }}>
+                      {this.state.loadingDevArea ? (
+                        <div className="loader ml-4 mb-4">
+                          Analyisng Development Area ...
+                        </div>
+                      ) : (
+                        this.state.devArea
+                      )}
+                    </span>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Event Name</Form.Label>
                     <Form.Control
@@ -299,13 +503,9 @@ class AddEvents extends Component {
                       // isValid={touched.name && !errors.name}
                       // isInvalid={!!errors.name}
                     />
-
-                    <Form.Control.Feedback type="invalid">
-                      {/* {errors.name}; */}
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Row>
-                <Form.Row>
+                {/* <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Date</Form.Label>
                     <Form.Control
@@ -316,12 +516,12 @@ class AddEvents extends Component {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.name}
-                      // isValid={touched.name && !errors.name}
-                      // isInvalid={!!errors.name}
+                      isValid={touched.name && !errors.name}
+                      isInvalid={!!errors.name}
                     />
 
                     <Form.Control.Feedback type="invalid">
-                      {/* {errors.name}; */}
+                      {errors.name};
                     </Form.Control.Feedback>
                   </Form.Group>
 
@@ -334,14 +534,14 @@ class AddEvents extends Component {
                       placeholder=""
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      // isInvalid={!!errors.email}
-                      // isValid={touched.email && !errors.email}
+                      isInvalid={!!errors.email}
+                      isValid={touched.email && !errors.email}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {/* {errors.email} */}
+                      {errors.email}
                     </Form.Control.Feedback>
                   </Form.Group>
-                </Form.Row>
+                </Form.Row> */}
 
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
@@ -397,7 +597,10 @@ class AddEvents extends Component {
                   <Col className={"col-7"}>
                     <Form.Label>
                       <span>
-                        Time : <span style={{fontSize:22}}>{this.state.timeSlot}</span>
+                        Time :{" "}
+                        <span style={{ fontSize: 18 }}>
+                          {this.state.timeSlot}
+                        </span>
                         {this.state.loading ? (
                           <div className="loader ml-4 mb-4">Loading...</div>
                         ) : null}
@@ -405,9 +608,13 @@ class AddEvents extends Component {
                     </Form.Label>
                   </Col>
                   <Col>
-                    <Button className="btnPrimary" variant="info"  onClick={this.calculateBestTime}>
+                    {/* <Button
+                      className="btnPrimary"
+                      variant="info"
+                      onClick={this.calculateBestTime}
+                    >
                       Calculate Optimal Event Time
-                    </Button>
+                    </Button> */}
                   </Col>
                 </Form.Row>
 
@@ -415,188 +622,15 @@ class AddEvents extends Component {
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Members</Form.Label>
                     <div className="row col-12 m-auto">
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
-                      <div className="p-1 memberCards">
-                        <Card
-                          style={{
-                            borderTopLeftRadius: "50%",
-                            borderTopRightRadius: "50%",
-                            float: "left",
-                            margin: "5px",
-                          }}
-                        >
-                          <Card.Img variant="top" src={profile} />
-
-                          <Card.Title className="text-center">Saman</Card.Title>
-                        </Card>
-                      </div>
+                      {this.state.meetingMembers != null ? (
+                        this.state.meetingMembers.map((e) => {
+                          return <MeetingMember name={e.name} sector={e.sector}/>;
+                        })
+                      ) : (
+                        <div className="loader ml-4 mb-4">
+                          Analyisng Development Area ...
+                        </div>
+                      )}
                     </div>
                   </Form.Group>
                 </Form.Row>
