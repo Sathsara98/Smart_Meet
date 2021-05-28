@@ -171,7 +171,7 @@
   color: #ffffff !important;
 }
 .memberCards {
-  width: 30%;
+  width: 25%;
 }
 
 @media (min-width: 576px) {
@@ -181,7 +181,7 @@
 }
 @media (min-width: 977px) {
   .memberCards {
-    width: 10%;
+    width: 20%;
   }
 }
 
@@ -190,7 +190,7 @@
     color: #000 !important;
   }
   .memberCards {
-    width: 10%;
+    width: 12.5%;
   }
 }
 
