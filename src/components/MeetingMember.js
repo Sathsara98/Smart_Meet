@@ -15,8 +15,8 @@ function MeetingMember(props) {
       >
         <Card.Img variant="top" src={profile} />
 
-        <Card.Title className="text-center">{name[0]}</Card.Title>
-        <Card.Title className="text-center">
+        <Card.Title className="text-center pb-0 mb-0">{name[0]}</Card.Title>
+        <Card.Title className="text-center mb-2 pt-0">
           <b>{props.sector}</b>
         </Card.Title>
       </Card>
