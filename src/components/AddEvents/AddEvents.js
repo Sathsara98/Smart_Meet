@@ -634,8 +634,7 @@ class AddEvents extends Component {
                       <>
                         Event added Successfully !
                         <p className="text-secondary">
-                          Email containing loging details has been Successfully
-                          sent to the Member.
+                          Email containing event details will be send to the members
                         </p>
                       </>
                     )}

@@ -42,7 +42,7 @@ function SideBar(props) {
           </li>
           <li className={props.notAvailable == true ? "active" : ""}>
             <a href="/notAvailable">
-              <i className="icon-time-alarm"></i>
+              <i className="fa fa-table"></i>
               <p>Not Available</p>
             </a>
           </li>
