@@ -100,28 +100,28 @@ class AddEvents extends Component {
     console.log("slot : " + x);
     var slot;
     if (x < 5) {
-      slot = "8:30 - 9:15 ";
+      slot = "8:30 - 9:15  ";
       slot = slot + this.getDayFromIndex(x + 1);
     } else if (x < 10) {
-      slot = "9:15 - 10:00 ";
+      slot = "9:15 - 10:00  ";
       slot = slot + this.getDayFromIndex(x + 1 - 5);
     } else if (x < 15) {
-      slot = "10:00 - 10:45 ";
+      slot = "10:00 - 10:45  ";
       slot = slot + this.getDayFromIndex(x + 1 - 10);
     } else if (x < 20) {
-      slot = "10:45 - 11:30 ";
+      slot = "10:45 - 11:30  ";
       slot = slot + this.getDayFromIndex(x + 1 - 15);
     } else if (x < 25) {
       slot = "11:30 - 12:15  ";
       slot = slot + this.getDayFromIndex(x + 1 - 20);
     } else if (x < 30) {
-      slot = "12:15 - 13:00 ";
+      slot = "12:15 - 13:00   ";
       slot = slot + this.getDayFromIndex(x + 1 - 25);
     } else if (x < 35) {
-      slot = "14:30 - 15:15";
+      slot = "14:30 - 15:15  ";
       slot = slot + this.getDayFromIndex(x + 1 - 30);
     } else if (x < 40) {
-      slot = "15:15 - 16:00 ";
+      slot = "15:15 - 16:00  ";
       slot = slot + this.getDayFromIndex(x + 1 - 35);
     }
     this.setState({ timeSlot: slot });
@@ -580,28 +580,25 @@ class AddEvents extends Component {
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                  <Col className={"col-7"}>
-                    <Form.Label>
-                      <span>
-                        Time :{" "}
-                        <span style={{ fontSize: 18 }}>
-                          {this.state.timeSlot}
-                        </span>
-                        {this.state.loading ? (
-                          <div className="loader ml-4 mb-4">Loading...</div>
-                        ) : null}
-                      </span>
-                    </Form.Label>
-                  </Col>
-                  <Col>
-                    {/* <Button
-                      className="btnPrimary"
-                      variant="info"
-                      onClick={this.calculateBestTime}
-                    >
-                      Calculate Optimal Event Time
-                    </Button> */}
-                  </Col>
+                  {this.state.loading ? (
+                    <div className="loader ml-4 mb-4">Loading...</div>
+                  ) : (
+                    <Form.Group as={Col}>
+                      <Form.Label>
+                        Time Slot
+                      </Form.Label>
+
+                      <Form.Control
+                        className="inputBackground "
+                        name="question"
+                        placeholder=""
+                        disabled={true}
+                        value={this.state.timeSlot}
+                        required
+                        style={{ backgroundColor: "#ffffff" }}
+                      />
+                    </Form.Group>
+                  )}
                 </Form.Row>
 
                 <Form.Row>
@@ -634,7 +631,8 @@ class AddEvents extends Component {
                       <>
                         Event added Successfully !
                         <p className="text-secondary">
-                          Email containing event details will be send to the members
+                          Email containing event details will be send to the
+                          members
                         </p>
                       </>
                     )}
