@@ -34,7 +34,7 @@ function Event(props) {
             <div style={{ textAlign: "left", marginLeft: "7%" }}>
               <h4 style={{ fontWeight: "bold" }}>Name : {props.event.name}</h4>
               <h4 style={{ fontWeight: "bold" }}>
-                Date<span style={{ color: "transparent" }}>d</span> :
+                Date<span style={{ color: "transparent" }}>d</span> : {" "}
                 {props.event.time}
               </h4>
               <h4 style={{ fontWeight: "bold" }}>
