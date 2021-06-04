@@ -9,6 +9,7 @@ import {
   AdminCard,
   NavbarDashboard,
 } from "../components";
+import Auth from '../authentication/Auth'
 
 function ViewMembers(props) {
   const { type } = useParams();
@@ -28,14 +29,47 @@ function ViewMembers(props) {
         <td>{p.gender}</td>
         <td>{p.workplace}</td>
         <td>
-          <button className="btn btn-danger">Delete</button>
+          <button className="btn btn-danger" onClick={()=>deleteMember(p._id)}>Delete</button>
         </td>
       </tr>
     );
   });
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/users/register/` + type, {
+   const deleteMember = async (event) => {
+    // event.preventDefault();
+    
+    console.log(event);
+    try {
+      const requestOptions = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+           token: Auth.getToken()},
+        body: JSON.stringify({
+          id: event,
+        }),
+      };
+      const res = await fetch(
+        "http://localhost:5000/users/delete",
+        requestOptions
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+      loadMembers();
+      // if (data.hasOwnProperty("error")) {
+      //   setShow(true);
+      // } else {
+      //   setShow(true);
+      // }
+    } catch (e) {
+      console.log(e);
+    }
+   }
+  
+  const loadMembers = ()=>{
+     fetch(`http://localhost:5000/users/register/` + type, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -48,6 +82,10 @@ function ViewMembers(props) {
         console.log(response);
       })
       .catch((error) => console.log(error));
+  }
+
+  useEffect(() => {
+    loadMembers();
   }, [page]);
   return (
     <div className="wrapper">

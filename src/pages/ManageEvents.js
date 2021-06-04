@@ -7,6 +7,8 @@ import {
   AddEvents,
   MemberCard,
   NavbarDashboard,
+  Event,
+  EventDetails,
 } from "../components";
 import {
   Container,
@@ -23,44 +25,47 @@ import backImg from "../assets/home_page/metal.jpg";
 
 const ManageEvents = () => {
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    loadMembers();
+  };
   const handleShow = () => {
     setShow(true);
     console.log("Show True");
   };
 
-  const registerMember = async (event) => {
-    // event.preventDefault();
+  const [show2, setShow2] = useState(false);
+  const handleClose2 = () => setShow2(false);
+  const handleShow2 = () => {
+    setShow2(true);
+    console.log("Show2 True");
+  };
+  const [page, setPage] = useState(1);
+  const [eventList, setEventList] = useState([]);
+  const [event, setEvent] = useState(null);
+
+  const loadMembers = () => {
+    fetch(`http://localhost:5000/events/all/`, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        setEventList(response);
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    loadMembers();
+  }, [page]);
+  const showDetails = (event) => {
     console.log(event);
-    try {
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          utype: event.role,
-          name: event.role,
-          email: event.email.toLowerCase(),
-          tel: event.tel,
-          sector: event.sector,
-          workplace: event.workplace,
-        }),
-      };
-      const res = await fetch(
-        "http://localhost:5000/users/register",
-        requestOptions
-      );
-
-      const data = await res.json();
-
-      console.log(data);
-      if (data.hasOwnProperty("error")) {
-        setShow(true);
-      } else {
-        setShow(true);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    setEvent(event);
+    setShow2(true);
   };
   const pathToPage = ["Home", "Users", "ManageEvents"];
   return (
@@ -93,6 +98,30 @@ const ManageEvents = () => {
               </Button>
             </Modal.Footer> */}
           </Modal>
+          <Modal
+            show={show2}
+            size="lg"
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+            scrollable={true}
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Modal.Header closeButton>
+              <h2>View Event Details</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <EventDetails close={handleClose2} event={event} />
+            </Modal.Body>
+            {/* <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleClose}>
+                Save Changes
+              </Button>
+            </Modal.Footer> */}
+          </Modal>
           <BreadCrum path={pathToPage} />
           <AdminCard title="Members">
             <Container>
@@ -103,56 +132,15 @@ const ManageEvents = () => {
                       <i className="tim-icons fas fa-plus" /> Add New Event
                     </Button>
                   </div>
+                  {eventList != null
+                    ? eventList.map((ev, index) => {
+                        return (
+                          <Event key={index} event={ev} more={showDetails} />
+                        );
+                      })
+                    : null}
                 </div>
               </div>
-              <Card
-                style={{
-                  marginTop: "2%",
-                  backgroundColor: "#eefbfd",
-                  borderRadius: "15px",
-                }}
-              >
-                <Row>
-                  <Card.Body>
-                    <div
-                      className=" col-3 float-left"
-                      style={{
-                        borderRadius: "20px",
-                        overflow: "auto",
-                      }}
-                    >
-                      <img
-                        className="  "
-                        src={backImg}
-                        alt="Card image cap"
-                      ></img>
-                    </div>
-                    <div
-                      className="col-9 float-right"
-                      style={{ fontWeight: "bolder" }}
-                    >
-                      <div style={{ textAlign: "left", marginLeft: "7%" }}>
-                        <h4 style={{ fontWeight: "bold" }}>Name : Meeting 1</h4>
-                        <h4 style={{ fontWeight: "bold" }}>
-                          Date<span style={{ color: "transparent" }}>d</span> :
-                          2021/01/01 - 1:30 PM
-                        </h4>
-                        <h4 style={{ fontWeight: "bold" }}>Venue : Homagama</h4>
-                      </div>
-                      <Button
-                        variant="info"
-                        className="btnPrimary float-right"
-                        type="submit"
-                        // onClick={onSubmit}
-                      >
-                        More
-                      </Button>
-                    </div>
-
-                    {/* <Card.Text>sss</Card.Text> */}
-                  </Card.Body>
-                </Row>
-              </Card>
             </Container>
           </AdminCard>
         </div>

@@ -13,3 +13,5 @@ export { default as AddEvents } from "./AddEvents/AddEvents";
 export { default as AddMinute} from "./Minute/AddMinute";
 export { default as MemberRatio } from "./MemberRatio/MemberRatio";
 export { default as MapWithAMarker } from "./Map/MapWithAMarker";
+export { default as Event } from "./Event";
+export { default as EventDetails } from "./EventDetails";
