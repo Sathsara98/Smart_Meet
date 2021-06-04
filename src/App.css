@@ -153,6 +153,24 @@
 .separator:not(:empty)::after {
   margin-left: 0.25em;
 }
+.separator_minute {
+  display: flex;
+  align-items: flex-start;
+  text-align: center;
+}
+
+
+.separator_minute::after {
+  content: "";
+  flex: 1;
+  border-bottom: 4px solid #0A2057;
+}
+
+.separator_minute::after {
+  content: "";
+  flex: 1;
+  border-bottom: 4px solid #0A2057;
+}
 
 .logo-sidebar {
   height: 50px;

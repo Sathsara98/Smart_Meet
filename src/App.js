@@ -4,6 +4,7 @@ import { Navbar } from "./components";
 import HomePage from "./components/Home/Index";
 import NotAvailable from "./components/NotAvailable/Index";
 import AddQuestion from "./components/Questions/Index";
+import Minute from "./components/Minute/Index";
 import ManageMembers from "./pages/ManageMembers";
 import ManageEvents from "./pages/ManageEvents";
 import ViewMembers from "./pages/ViewMembers";
@@ -65,6 +66,9 @@ function App() {
         </Route>
         <Route path="/dashboard">
           <Dashboard />
+        </Route>
+        <Route path="/minute">
+          <Minute />
         </Route>
         <Route path="/notAvailable">
           <NotAvailable />

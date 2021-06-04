@@ -37,7 +37,13 @@ function SideBar(props) {
           <li className={props.events == true ? "active" : ""}>
             <a href="/events">
               <i className="fa fa-calendar"></i>
-              <p>All Events</p>
+              <p>Events</p>
+            </a>
+          </li>
+          <li className={props.minute == true ? "active" : ""}>
+            <a href="/minute">
+              <i className="fa fa-calendar"></i>
+              <p>Minute</p>
             </a>
           </li>
           <li className={props.notAvailable == true ? "active" : ""}>
