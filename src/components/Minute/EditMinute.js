@@ -16,15 +16,7 @@ import { getIn } from "formik";
 import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import Auth from "../../authentication/Auth";
-function AddMinute(props) {
-  var curr = new Date();
-  var date = curr
-    .toLocaleString("fr-CA", { timeZone: "Asia/Colombo" })
-    .substr(0, 10);
-
-  var time = curr
-    .toLocaleString("en-GB", { timeZone: "Asia/Colombo" })
-    .substr(12, 5);
+function EditMinute(props) {
   const [private_chips, setPrivatechips] = useState([]);
   const [public_chips, setPublicchips] = useState([]);
   const [academic_chips, setAcademicchips] = useState([]);
@@ -35,22 +27,15 @@ function AddMinute(props) {
   const [row_action, setRowAction] = useState("");
   const [row_responsibility, setRowResponsibility] = useState("");
   const [tableData, setTableData] = useState([]);
-  const [meeting_name, setMeetingName] = useState("");
-  const [meeting_date, setMeetingDate] = useState(date);
-  const [meeting_time, setMeetingTime] = useState(time);
-  const [meeting_venue, setMeetingVenue] = useState("");
-  const [meeting_approval_from, setMeetingApproval] = useState(date);
-  const [meeting_motion, setMeetingMotion] = useState("");
-  const [meeting_motionby, setMeetingMotionby] = useState("");
-  const [meeting_proposedby, setMeetingProposedBy] = useState("");
-  const [meeting_secondedby, setMeetingSecondedBy] = useState("");
-  const [meeting_objective, setMeetingObjective] = useState("");
-  const [meeting_remarks, setMeetingRemarks] = useState("");
-
+  const [userd, setUserId] = useState(Auth.getUserId());
+  const [userRole, setUserRole] = useState(Auth.getUserLevel());
+  console.log(userRole);
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-
-  // curr.setDate(curr.getDate());
+  var curr = new Date();
+  curr.setDate(curr.getDate());
+  var date = curr.toISOString().substr(0, 10);
+  var time = curr.toISOString().substr(11, 5);
 
   const schema = yup.object({
     name: yup.string("Must be a date!").required("Name is required!"),
@@ -170,6 +155,13 @@ function AddMinute(props) {
     setRowResponsibility("");
   };
   const removeRow = (index) => {
+    // const newRow = {
+    //   activity: row_activity,
+    //   action: row_action,
+    //   responsibility: row_responsibility,
+    //   rating: 0,
+    // };
+
     tableData.splice(index, 1);
     setTableData([...tableData]);
     console.log(tableData);
@@ -190,60 +182,27 @@ function AddMinute(props) {
       setRowAction(event.target.value);
     } else if (event.target.name === "rowResponsibility") {
       setRowResponsibility(event.target.value);
-    } else if (event.target.name === "name") {
-      setMeetingName(event.target.value);
-    } else if (event.target.name === "date") {
-      setMeetingDate(event.target.value);
-    } else if (event.target.name === "time") {
-      setMeetingTime(event.target.value);
-    } else if (event.target.name === "venue") {
-      setMeetingVenue(event.target.value);
-    } else if (event.target.name === "approval") {
-      setMeetingApproval(event.target.value);
-    } else if (event.target.name === "motion") {
-      setMeetingMotion(event.target.value);
-    } else if (event.target.name === "motionBy") {
-      setMeetingMotionby(event.target.value);
-    } else if (event.target.name === "proposedBy") {
-      setMeetingProposedBy(event.target.value);
-    } else if (event.target.name === "secondedBy") {
-      setMeetingSecondedBy(event.target.value);
-    } else if (event.target.name === "objective") {
-      setMeetingObjective(event.target.value);
-    } else if (event.target.name === "remarks") {
-      setMeetingRemarks(event.target.value);
     }
   };
   const addMinute = async (event) => {
     event.preventDefault();
-    console.log("event");
+    console.log(event);
     try {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: meeting_name,
-          date: meeting_date,
-          time: meeting_time,
-          venue: meeting_venue,
-          private: private_chips,
-          public: public_chips,
-          academic: academic_chips,
-          association: association_chips,
-          excused: excused_chips,
-          absent: absent_chips,
-          approval: meeting_approval_from,
-          motion: meeting_motion,
-          motionBy: meeting_motionby,
-          proposedBy: meeting_proposedby,
-          secondedBy: meeting_secondedby,
-          objective: meeting_objective,
-          activities: tableData,
-          remarks: meeting_remarks,
+          utype: event.role,
+          name: event.name,
+          email: event.email.toLowerCase(),
+          tel: event.tel,
+          sector: event.sector,
+          workplace: event.workplace,
+          gender: event.gender,
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/admin/new-minute",
+        "http://localhost:5000/users/register",
         requestOptions
       );
 
@@ -264,7 +223,16 @@ function AddMinute(props) {
 
   return (
     <div>
-      <Formik validationSchema={schema} onSubmit={addMinute} initialValues={{}}>
+      <Formik
+        validationSchema={schema}
+        // onSubmit={addMinute}
+        initialValues={{
+          name: "",
+          venue: "",
+          date: date,
+          time: time,
+        }}
+      >
         {({
           handleSubmit,
           handleChange,
@@ -285,15 +253,16 @@ function AddMinute(props) {
                   required
                   name="name"
                   type="text"
-                  value={meeting_name}
                   placeholder="Enter Name..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                   isInvalid={!!errors.name}
                   isValid={touched.name && !errors.name}
                   autoComplete="off"
                 />
-                <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.name && touched.name && errors.name}
+                </Form.Control.Feedback>
               </div>
             </div>
             <div className="form-row">
@@ -306,8 +275,9 @@ function AddMinute(props) {
                   required
                   name="date"
                   type="date"
-                  value={meeting_date}
-                  onChange={handleChangeO}
+                  defaultValue={date}
+                  placeholder="Email"
+                  onChange={handleChange}
                   onBlur={handleBlur}
                   isInvalid={!!errors.date}
                   isValid={touched.date && !errors.date}
@@ -327,8 +297,9 @@ function AddMinute(props) {
                   required
                   name="time"
                   type="time"
-                  value={meeting_time}
-                  onChange={handleChangeO}
+                  defaultValue={time}
+                  placeholder="Email"
+                  onChange={handleChange}
                   onBlur={handleBlur}
                   isInvalid={!!errors.time}
                   isValid={touched.time && !errors.time}
@@ -348,9 +319,8 @@ function AddMinute(props) {
                   required
                   name="venue"
                   type="text"
-                  value={meeting_venue}
                   placeholder="Enter Venue..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleChange}
                   isInvalid={!!errors.venue}
                   isValid={touched.venue && !errors.venue}
@@ -487,8 +457,8 @@ function AddMinute(props) {
                   required
                   name="approvalDate"
                   type="date"
-                  value={meeting_approval_from}
-                  onChange={handleChangeO}
+                  defaultValue={date}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                   isInvalid={!!errors.date}
                   isValid={touched.date && !errors.date}
@@ -507,9 +477,8 @@ function AddMinute(props) {
                 <Form.Control
                   name="motion"
                   type="text"
-                  value={meeting_motion}
                   placeholder="Enter Here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
               </div>
@@ -524,9 +493,8 @@ function AddMinute(props) {
                 <Form.Control
                   name="motionBy"
                   type="text"
-                  value={meeting_motionby}
                   placeholder="Enter Here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
               </div>
@@ -540,9 +508,8 @@ function AddMinute(props) {
                 <Form.Control
                   name="proposedBy"
                   type="text"
-                  value={meeting_proposedby}
                   placeholder="Enter Here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
               </div>
@@ -556,9 +523,8 @@ function AddMinute(props) {
                 <Form.Control
                   name="secondedBy"
                   type="text"
-                  value={meeting_secondedby}
                   placeholder="Enter Here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
               </div>
@@ -583,11 +549,11 @@ function AddMinute(props) {
 
               <div className="form-group col-9">
                 <Form.Control
+                  required
                   name="objective"
                   type="text"
-                  value={meeting_objective}
                   placeholder="Enter here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleChange}
                 />
               </div>
@@ -682,6 +648,7 @@ function AddMinute(props) {
                   <Form.Control
                     className="border border-light rounded"
                     as="textarea"
+                    required
                     name="rowAction"
                     value={row_action}
                     placeholder="Enter New Action..."
@@ -692,6 +659,7 @@ function AddMinute(props) {
               <div className="form-row d-flex justify-content-between">
                 <div className="form-group col-9">
                   <Form.Control
+                    required
                     name="rowResponsibility"
                     value={row_responsibility}
                     placeholder="Enter New Responsibility..."
@@ -715,11 +683,11 @@ function AddMinute(props) {
 
               <div className="col-9">
                 <Form.Control
-                  name="remarks"
+                  required
+                  name="objective"
                   type="text"
-                  value={meeting_remarks}
                   placeholder="Enter here..."
-                  onChange={handleChangeO}
+                  onChange={handleChange}
                   onBlur={handleChange}
                 />
               </div>
@@ -756,12 +724,7 @@ function AddMinute(props) {
               id="footer-modal-addMember"
               className="d-flex justify-content-between"
             >
-              <Button
-                variant="info"
-                type="submit"
-                className="btnPrimary"
-                onClick={addMinute}
-              >
+              <Button variant="info" type="" className="btnPrimary">
                 Submit
               </Button>
               <Button
@@ -779,4 +742,4 @@ function AddMinute(props) {
   );
 }
 
-export default AddMinute;
+export default EditMinute;
