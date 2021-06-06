@@ -256,6 +256,8 @@ function AddMinute(props) {
       } else {
         setError("");
         setShow(true);
+        props.close();
+        props.load();
       }
     } catch (e) {
       console.log(e);
@@ -614,20 +616,12 @@ function AddMinute(props) {
                     to be taken
                   </th>
                   <th>Responsibility</th>
-                  <th
-                    style={{
-                      width: 90,
-                    }}
-                  >
-                    Rating
-                  </th>
+
                   <th
                     style={{
                       width: 20,
                     }}
-                  >
-                    X
-                  </th>
+                  ></th>
                 </tr>
               </thead>
               <tbody>
@@ -637,17 +631,7 @@ function AddMinute(props) {
                       <td>{item.activity}</td>
                       <td>{item.action}</td>
                       <td>{item.responsibility}</td>
-                      <td>
-                        <ReactStars
-                          count={5}
-                          value={item.rating}
-                          onChange={(e) => {
-                            editRowRating(index, ratingChanged(e));
-                          }}
-                          size={17}
-                          activeColor="#ffd700"
-                        />
-                      </td>
+
                       <td>
                         <Button
                           className="btnPrimary  m-1 p-1"

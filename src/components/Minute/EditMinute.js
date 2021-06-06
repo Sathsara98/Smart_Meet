@@ -17,6 +17,14 @@ import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import Auth from "../../authentication/Auth";
 function EditMinute(props) {
+  var curr = new Date();
+  var date = curr
+    .toLocaleString("fr-CA", { timeZone: "Asia/Colombo" })
+    .substr(0, 10);
+
+  var time = curr
+    .toLocaleString("en-GB", { timeZone: "Asia/Colombo" })
+    .substr(12, 5);
   const [private_chips, setPrivatechips] = useState([]);
   const [public_chips, setPublicchips] = useState([]);
   const [academic_chips, setAcademicchips] = useState([]);
@@ -26,17 +34,23 @@ function EditMinute(props) {
   const [row_activity, setRowActivity] = useState("");
   const [row_action, setRowAction] = useState("");
   const [row_responsibility, setRowResponsibility] = useState("");
-  const [tableData, setTableData] = useState([]);
-  const [userd, setUserId] = useState(Auth.getUserId());
-  const [userRole, setUserRole] = useState(Auth.getUserLevel());
-  console.log(userRole);
+  const [tableData, setTableData] = useState(props.minute.meeting_activities);
+  const [tableDataEach, setTableDataEach] = useState(
+    props.minute.meeting_activities_each
+  );
+  const [meeting_name, setMeetingName] = useState("");
+  const [meeting_date, setMeetingDate] = useState(date);
+  const [meeting_time, setMeetingTime] = useState(time);
+  const [meeting_venue, setMeetingVenue] = useState("");
+  const [meeting_approval_from, setMeetingApproval] = useState(date);
+  const [meeting_motion, setMeetingMotion] = useState("");
+  const [meeting_motionby, setMeetingMotionby] = useState("");
+  const [meeting_proposedby, setMeetingProposedBy] = useState("");
+  const [meeting_secondedby, setMeetingSecondedBy] = useState("");
+  const [meeting_objective, setMeetingObjective] = useState("");
+  const [meeting_remarks, setMeetingRemarks] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-  var curr = new Date();
-  curr.setDate(curr.getDate());
-  var date = curr.toISOString().substr(0, 10);
-  var time = curr.toISOString().substr(11, 5);
-
   const schema = yup.object({
     name: yup.string("Must be a date!").required("Name is required!"),
     date: yup.string().required("Date is required!"),
@@ -56,6 +70,29 @@ function EditMinute(props) {
       .required("Gender is required!")
       .notOneOf(["Select Gender"], "Selection Invalid"),
   });
+
+  useEffect(() => {
+    setMeetingName(props.minute.meeting_name);
+    setMeetingDate(props.minute.meeting_date);
+    setMeetingTime(props.minute.meeting_time);
+    setMeetingVenue(props.minute.meeting_venue);
+    setPrivatechips(props.minute.present_private);
+    setPublicchips(props.minute.present_public);
+    setAcademicchips(props.minute.present_academic);
+    setAssociationchips(props.minute.present_association);
+    setExcusedchips(props.minute.excused);
+    setAbsentchips(props.minute.absent);
+    setMeetingApproval(props.minute.meeting_approval_from);
+    setMeetingMotion(props.minute.meeting_motion);
+    setMeetingMotionby(props.minute.meeting_motionBy);
+    setMeetingProposedBy(props.minute.meeting_proposedBy);
+    setMeetingSecondedBy(props.minute.meeting_secondedBy);
+    setMeetingObjective(props.minute.meeting_objective);
+    setTableData(props.minute.meeting_activities);
+    setTableDataEach(props.minute.meeting_activities_each);
+    setMeetingRemarks(props.minute.meeting_remarks);
+    ratingArray();
+  }, []);
 
   const ratingChanged = (newRating) => {
     return newRating;
@@ -155,13 +192,6 @@ function EditMinute(props) {
     setRowResponsibility("");
   };
   const removeRow = (index) => {
-    // const newRow = {
-    //   activity: row_activity,
-    //   action: row_action,
-    //   responsibility: row_responsibility,
-    //   rating: 0,
-    // };
-
     tableData.splice(index, 1);
     setTableData([...tableData]);
     console.log(tableData);
@@ -182,27 +212,61 @@ function EditMinute(props) {
       setRowAction(event.target.value);
     } else if (event.target.name === "rowResponsibility") {
       setRowResponsibility(event.target.value);
+    } else if (event.target.name === "name") {
+      setMeetingName(event.target.value);
+    } else if (event.target.name === "date") {
+      setMeetingDate(event.target.value);
+    } else if (event.target.name === "time") {
+      setMeetingTime(event.target.value);
+    } else if (event.target.name === "venue") {
+      setMeetingVenue(event.target.value);
+    } else if (event.target.name === "approval") {
+      setMeetingApproval(event.target.value);
+    } else if (event.target.name === "motion") {
+      setMeetingMotion(event.target.value);
+    } else if (event.target.name === "motionBy") {
+      setMeetingMotionby(event.target.value);
+    } else if (event.target.name === "proposedBy") {
+      setMeetingProposedBy(event.target.value);
+    } else if (event.target.name === "secondedBy") {
+      setMeetingSecondedBy(event.target.value);
+    } else if (event.target.name === "objective") {
+      setMeetingObjective(event.target.value);
+    } else if (event.target.name === "remarks") {
+      setMeetingRemarks(event.target.value);
     }
   };
-  const addMinute = async (event) => {
+  const editMinute = async (event) => {
     event.preventDefault();
-    console.log(event);
+    console.log("event");
     try {
       const requestOptions = {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          utype: event.role,
-          name: event.name,
-          email: event.email.toLowerCase(),
-          tel: event.tel,
-          sector: event.sector,
-          workplace: event.workplace,
-          gender: event.gender,
+          id: props.minute._id,
+          name: meeting_name,
+          date: meeting_date,
+          time: meeting_time,
+          venue: meeting_venue,
+          private: private_chips,
+          public: public_chips,
+          academic: academic_chips,
+          association: association_chips,
+          excused: excused_chips,
+          absent: absent_chips,
+          approval: meeting_approval_from,
+          motion: meeting_motion,
+          motionBy: meeting_motionby,
+          proposedBy: meeting_proposedby,
+          secondedBy: meeting_secondedby,
+          objective: meeting_objective,
+          activities: tableData,
+          remarks: meeting_remarks,
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/register",
+        "http://localhost:5000/admin/minute",
         requestOptions
       );
 
@@ -215,23 +279,71 @@ function EditMinute(props) {
       } else {
         setError("");
         setShow(true);
+        props.load();
+        props.close();
       }
     } catch (e) {
       console.log(e);
     }
   };
 
+  async function deleteMinute() {
+    try {
+      const requestOptions = {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: props.minute._id }),
+      };
+      await fetch("http://localhost:5000/admin/minute", requestOptions);
+      alert("Deleted");
+      props.load();
+      props.close();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const ratingArray = () => {
+    var arr = new Array(tableData.length).fill(0);
+    var total = 0;
+    console.log(tableDataEach);
+    if (tableDataEach.length > 0) {
+      tableDataEach.forEach((element) => {
+        console.log(element.tableData);
+
+        for (let i = 0; i < element.tableData.length; i++) {
+          arr[i] = arr[i] + element.tableData[i].rating;
+        }
+      });
+      for (let i = 0; i < arr.length; i++) {
+        total = total + arr[i];
+      }
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = (arr[i] / total) * 100;
+      }
+      tableData.forEach(function (item, index) {
+        item.overall = arr[index];
+      });
+      tableData.sort((a, b) => (a.overall < b.overall ? 1 : -1));
+      setTableData(tableData);
+    } else {
+      tableData.forEach(function (item, index) {
+        item.overall = 0;
+      });
+    }
+    // tableData.forEach(element => {
+    //   element.overall=
+    // });
+
+    //sort the table rows according to the percentage
+  };
+
   return (
     <div>
       <Formik
         validationSchema={schema}
-        // onSubmit={addMinute}
-        initialValues={{
-          name: "",
-          venue: "",
-          date: date,
-          time: time,
-        }}
+        onSubmit={editMinute}
+        initialValues={{}}
       >
         {({
           handleSubmit,
@@ -253,16 +365,15 @@ function EditMinute(props) {
                   required
                   name="name"
                   type="text"
+                  value={meeting_name}
                   placeholder="Enter Name..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                   isInvalid={!!errors.name}
                   isValid={touched.name && !errors.name}
                   autoComplete="off"
                 />
-                <Form.Control.Feedback type="invalid">
-                  {errors.name && touched.name && errors.name}
-                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
               </div>
             </div>
             <div className="form-row">
@@ -275,9 +386,8 @@ function EditMinute(props) {
                   required
                   name="date"
                   type="date"
-                  defaultValue={date}
-                  placeholder="Email"
-                  onChange={handleChange}
+                  value={meeting_date}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                   isInvalid={!!errors.date}
                   isValid={touched.date && !errors.date}
@@ -297,9 +407,8 @@ function EditMinute(props) {
                   required
                   name="time"
                   type="time"
-                  defaultValue={time}
-                  placeholder="Email"
-                  onChange={handleChange}
+                  value={meeting_time}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                   isInvalid={!!errors.time}
                   isValid={touched.time && !errors.time}
@@ -319,8 +428,9 @@ function EditMinute(props) {
                   required
                   name="venue"
                   type="text"
+                  value={meeting_venue}
                   placeholder="Enter Venue..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleChange}
                   isInvalid={!!errors.venue}
                   isValid={touched.venue && !errors.venue}
@@ -457,8 +567,8 @@ function EditMinute(props) {
                   required
                   name="approvalDate"
                   type="date"
-                  defaultValue={date}
-                  onChange={handleChange}
+                  value={meeting_approval_from}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                   isInvalid={!!errors.date}
                   isValid={touched.date && !errors.date}
@@ -477,8 +587,9 @@ function EditMinute(props) {
                 <Form.Control
                   name="motion"
                   type="text"
+                  value={meeting_motion}
                   placeholder="Enter Here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                 />
               </div>
@@ -493,8 +604,9 @@ function EditMinute(props) {
                 <Form.Control
                   name="motionBy"
                   type="text"
+                  value={meeting_motionby}
                   placeholder="Enter Here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                 />
               </div>
@@ -508,8 +620,9 @@ function EditMinute(props) {
                 <Form.Control
                   name="proposedBy"
                   type="text"
+                  value={meeting_proposedby}
                   placeholder="Enter Here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                 />
               </div>
@@ -523,8 +636,9 @@ function EditMinute(props) {
                 <Form.Control
                   name="secondedBy"
                   type="text"
+                  value={meeting_secondedby}
                   placeholder="Enter Here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleBlur}
                 />
               </div>
@@ -549,11 +663,11 @@ function EditMinute(props) {
 
               <div className="form-group col-9">
                 <Form.Control
-                  required
                   name="objective"
                   type="text"
+                  value={meeting_objective}
                   placeholder="Enter here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleChange}
                 />
               </div>
@@ -597,34 +711,31 @@ function EditMinute(props) {
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{item.activity}</td>
-                      <td>{item.action}</td>
-                      <td>{item.responsibility}</td>
-                      <td>
-                        <ReactStars
-                          count={5}
-                          value={item.rating}
-                          onChange={(e) => {
-                            editRowRating(index, ratingChanged(e));
-                          }}
-                          size={17}
-                          activeColor="#ffd700"
-                        />
-                      </td>
-                      <td>
-                        <Button
-                          className="btnPrimary  m-1 p-1"
-                          onClick={() => removeRow(index)}
-                        >
-                          x
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {tableData != null
+                  ? tableData.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.activity}</td>
+                          <td>{item.action}</td>
+                          <td>{item.responsibility}</td>
+                          <td className="text-center">
+                            {item.overall != null
+                              ? item.overall.toFixed(2)
+                              : "0.00"}{" "}
+                            %
+                          </td>
+                          <td>
+                            <Button
+                              className="btnPrimary  m-1 p-1"
+                              onClick={() => removeRow(index)}
+                            >
+                              x
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  : null}
               </tbody>
               {/* <tbody>{tableDATA}</tbody> */}
             </Table>
@@ -648,7 +759,6 @@ function EditMinute(props) {
                   <Form.Control
                     className="border border-light rounded"
                     as="textarea"
-                    required
                     name="rowAction"
                     value={row_action}
                     placeholder="Enter New Action..."
@@ -659,7 +769,6 @@ function EditMinute(props) {
               <div className="form-row d-flex justify-content-between">
                 <div className="form-group col-9">
                   <Form.Control
-                    required
                     name="rowResponsibility"
                     value={row_responsibility}
                     placeholder="Enter New Responsibility..."
@@ -683,11 +792,11 @@ function EditMinute(props) {
 
               <div className="col-9">
                 <Form.Control
-                  required
-                  name="objective"
+                  name="remarks"
                   type="text"
+                  value={meeting_remarks}
                   placeholder="Enter here..."
-                  onChange={handleChange}
+                  onChange={handleChangeO}
                   onBlur={handleChange}
                 />
               </div>
@@ -724,15 +833,34 @@ function EditMinute(props) {
               id="footer-modal-addMember"
               className="d-flex justify-content-between"
             >
-              <Button variant="info" type="" className="btnPrimary">
-                Submit
+              <Button
+                variant="info"
+                type="submit"
+                className="btnPrimary"
+                onClick={editMinute}
+              >
+                Save
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => deleteMinute()}
+                className="btnPrimary"
+              >
+                Delete
+              </Button>
+              <Button
+                variant="info"
+                onClick={props.close}
+                className="btnPrimary"
+              >
+                Print
               </Button>
               <Button
                 variant="danger"
                 onClick={props.close}
                 className="btnPrimary"
               >
-                Cancel
+                Close
               </Button>
             </div>
           </div>
