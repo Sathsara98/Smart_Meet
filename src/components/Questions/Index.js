@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
-import animation from "../../../src/assets/loginSVG.SVG";
+import Model from "../../components/Model";
 import {
   BreadCrum,
   SideBar,
@@ -20,10 +20,10 @@ import {
 } from "react-bootstrap";
 
 function Index() {
+  const childRef = useRef();
   const [questions, setquestions] = useState([]);
   const [loading, setLoading] = useState(true);
-  let [policy, setpolicy] = useState(0);
-  let [randd, setrandd] = useState(0);
+
   let [technology, settechnology] = useState(0);
   let [workforce, setworkforce] = useState(0);
   let [productivity, setproductivity] = useState(0);
@@ -140,6 +140,24 @@ function Index() {
       }
     }
     setLoading(false);
+  };
+
+  const [model, setModel] = useState(null);
+  const returnModel = (show, body, confirmation, callback) => {
+    setModel(
+      <Model
+        show={show}
+        confirmation={confirmation}
+        body={body}
+        handleClose={() => {
+          returnModel(false, "", null);
+        }}
+        handleClick={(e) => {
+          callback(e);
+          returnModel(false, "", null);
+        }}
+      />
+    );
   };
   if (loading == true && maxArea == "") {
     return (
@@ -1231,6 +1249,7 @@ function Index() {
   } else {
     return (
       <div className="wrapper">
+        {model}
         <SideBar questions={true} />
         <div className="main-panel">
           <NavbarDashboard title="Questions" />
@@ -1251,6 +1270,8 @@ function Index() {
                 questions={questions}
                 onChange={fetchQuestions}
                 loading={loading}
+                show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
+                ref={childRef}
               ></ViewQuestion>
             </AdminCard>
           </div>

@@ -10,6 +10,7 @@ import ManageEvents from "./pages/ManageEvents";
 import ViewMembers from "./pages/ViewMembers";
 import ForgetPassword from "./pages/ForgetPassword";
 import Dashboard from "./components/Dashboard/Index";
+import Print from "./components/Print";
 import Login from "./pages/Login";
 import {
   BrowserRouter as Router,
@@ -39,6 +40,9 @@ function App() {
         </Route>
         <Route path="/addquestion">
           <AddQuestion />
+        </Route>
+        <Route path="/test">
+          <Print />
         </Route>
 
         {/* <Route

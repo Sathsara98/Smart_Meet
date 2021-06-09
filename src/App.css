@@ -159,17 +159,16 @@
   text-align: center;
 }
 
-
 .separator_minute::after {
   content: "";
   flex: 1;
-  border-bottom: 4px solid #0A2057;
+  border-bottom: 4px solid #0a2057;
 }
 
 .separator_minute::after {
   content: "";
   flex: 1;
-  border-bottom: 4px solid #0A2057;
+  border-bottom: 4px solid #0a2057;
 }
 
 .logo-sidebar {
@@ -290,5 +289,43 @@
   }
   40% {
     box-shadow: 0 2.5em 0 0;
+  }
+}
+.view-in-print {
+  display: none;
+}
+.text-red {
+  color: red;
+}
+@media print {
+  .page-break {
+    margin: 1.5rem;
+
+    page-break-after: before;
+  }
+  .view-in-print {
+    display: block;
+  }
+  .view-in-web {
+    overflow: hidden;
+    height: 0;
+    display: none;
+  }
+  .text-black {
+    color: black !important;
+  }
+  .text-black-table {
+    color: black !important;
+    font-size: 0.8em;
+  }
+  .styles_no-focus__2130q {
+    overflow: hidden;
+    height: 0;
+    display: none;
+  }
+  .styles_cursor-pointer__2Jvz5 path {
+    overflow: hidden;
+    height: 0;
+    display: none;
   }
 }

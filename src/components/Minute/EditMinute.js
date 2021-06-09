@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, forwardRef } from "react";
 import ReactChipInput from "react-chip-input";
-import {
-  Container,
-  Form,
-  Col,
-  Row,
-  Button,
-  Alert,
-  span,
-  Table,
-} from "react-bootstrap";
+import { useReactToPrint } from "react-to-print";
 
-import { Formik } from "formik";
-import { getIn } from "formik";
-import * as yup from "yup";
-import ReactStars from "react-rating-stars-component";
-import Auth from "../../authentication/Auth";
-function EditMinute(props) {
+import { Form, Col, Button, Table } from "react-bootstrap";
+
+import Model from "../../components/Model";
+
+const EditMinute1 = forwardRef((props, ref) => {
   var curr = new Date();
   var date = curr
     .toLocaleString("fr-CA", { timeZone: "Asia/Colombo" })
@@ -38,6 +28,7 @@ function EditMinute(props) {
   const [tableDataEach, setTableDataEach] = useState(
     props.minute.meeting_activities_each
   );
+  const [tableRows, setTableRows] = useState([]);
   const [meeting_name, setMeetingName] = useState("");
   const [meeting_date, setMeetingDate] = useState(date);
   const [meeting_time, setMeetingTime] = useState(time);
@@ -49,26 +40,12 @@ function EditMinute(props) {
   const [meeting_secondedby, setMeetingSecondedBy] = useState("");
   const [meeting_objective, setMeetingObjective] = useState("");
   const [meeting_remarks, setMeetingRemarks] = useState("");
-  const [show, setShow] = useState(false);
-  const [error, setError] = useState("");
-  const schema = yup.object({
-    name: yup.string("Must be a date!").required("Name is required!"),
-    date: yup.string().required("Date is required!"),
-    time: yup.string().required("Time is required!"),
-    venue: yup.string().required("Venue is required!"),
-    sector: yup
-      .string()
-      .required("Sector is required!")
-      .notOneOf(["Select Sector"], "Selection Invalid"),
-    workplace: yup.string().required("Office is required!"),
-    role: yup
-      .string()
-      .required("Role is required!")
-      .notOneOf(["Select Member Role"], "Selection Invalid"),
-    gender: yup
-      .string()
-      .required("Gender is required!")
-      .notOneOf(["Select Gender"], "Selection Invalid"),
+
+  const [errors, setError] = useState({
+    name: "",
+    date: "",
+    time: "",
+    venue: "",
   });
 
   useEffect(() => {
@@ -94,9 +71,6 @@ function EditMinute(props) {
     ratingArray();
   }, []);
 
-  const ratingChanged = (newRating) => {
-    return newRating;
-  };
   //chips management
   const addPrivateChip = (value) => {
     const nchips = private_chips.slice();
@@ -184,24 +158,32 @@ function EditMinute(props) {
       rating: 0,
     };
     tableData.push(newRow);
+    tableRows.push(newRow);
     setTableData([...tableData]);
-    console.log(tableData);
+    setTableRows([...tableRows]);
 
     setRowActivity("");
     setRowAction("");
     setRowResponsibility("");
   };
   const removeRow = (index) => {
-    tableData.splice(index, 1);
-    setTableData([...tableData]);
-    console.log(tableData);
-  };
-  const editRowRating = (index, value) => {
-    console.log(index);
-    console.log(value);
-    tableData[index].rating = value;
-    setTableData([...tableData]);
-    console.log(tableData);
+    returnModel(true, "Are You Sure?", true, function (res) {
+      if (res) {
+        let obj = tableRows.splice(index, 1);
+        // console.log(obj);
+
+        // console.log(tableData.findIndex((e) => e._id === obj[0]._id));
+        let i = tableData.findIndex(
+          (e) =>
+            e.activity === obj[0].activity &&
+            e.action === obj[0].action &&
+            e.responsibility === obj[0].responsibility
+        );
+        tableData.splice(i, 1);
+        setTableRows([...tableRows]);
+        setTableData([...tableData]);
+      }
+    });
   };
 
   //Handle change overidder
@@ -238,73 +220,105 @@ function EditMinute(props) {
   };
   const editMinute = async (event) => {
     event.preventDefault();
-    console.log("event");
-    try {
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: props.minute._id,
-          name: meeting_name,
-          date: meeting_date,
-          time: meeting_time,
-          venue: meeting_venue,
-          private: private_chips,
-          public: public_chips,
-          academic: academic_chips,
-          association: association_chips,
-          excused: excused_chips,
-          absent: absent_chips,
-          approval: meeting_approval_from,
-          motion: meeting_motion,
-          motionBy: meeting_motionby,
-          proposedBy: meeting_proposedby,
-          secondedBy: meeting_secondedby,
-          objective: meeting_objective,
-          activities: tableData,
-          remarks: meeting_remarks,
-        }),
+
+    if (meeting_name == "") {
+      const error = { name: "Name is required", date: "", time: "", venue: "" };
+
+      setError(error);
+    } else if (meeting_date == "") {
+      const error = { name: "", date: "Date is required", time: "", venue: "" };
+      setError(error);
+    } else if (meeting_time == "") {
+      const error = { name: "", date: "", time: "Time is required", venue: "" };
+      setError(error);
+    } else if (meeting_venue == "") {
+      const error = {
+        name: "",
+        date: "",
+        time: "",
+        venue: "Venue is required",
       };
-      const res = await fetch(
-        "http://localhost:5000/admin/minute",
-        requestOptions
-      );
+      setError(error);
+    } else {
+      try {
+        const requestOptions = {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: props.minute._id,
+            name: meeting_name,
+            date: meeting_date,
+            time: meeting_time,
+            venue: meeting_venue,
+            private: private_chips,
+            public: public_chips,
+            academic: academic_chips,
+            association: association_chips,
+            excused: excused_chips,
+            absent: absent_chips,
+            approval: meeting_approval_from,
+            motion: meeting_motion,
+            motionBy: meeting_motionby,
+            proposedBy: meeting_proposedby,
+            secondedBy: meeting_secondedby,
+            objective: meeting_objective,
+            activities: tableData,
+            remarks: meeting_remarks,
+          }),
+        };
+        const res = await fetch(
+          "http://localhost:5000/admin/minute",
+          requestOptions
+        );
 
-      const data = await res.json();
+        const data = await res.json();
 
-      console.log(data);
-      if (data.hasOwnProperty("error")) {
-        setError(data.error);
-        setShow(true);
-      } else {
-        setError("");
-        setShow(true);
-        props.load();
-        props.close();
+        console.log(data);
+        if (data.hasOwnProperty("error")) {
+          setError(data.error);
+        } else {
+          returnModel(true, "Updated!", false, function (res) {
+            if (res) {
+              props.load();
+              props.close();
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   };
 
   async function deleteMinute() {
-    try {
-      const requestOptions = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: props.minute._id }),
-      };
-      await fetch("http://localhost:5000/admin/minute", requestOptions);
-      alert("Deleted");
-      props.load();
-      props.close();
-    } catch (e) {
-      console.log(e);
-    }
+    returnModel(
+      true,
+      "This step can not be undone!",
+      true,
+      async function (res) {
+        if (res) {
+          try {
+            const requestOptions = {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: props.minute._id }),
+            };
+            await fetch("http://localhost:5000/admin/minute", requestOptions);
+            alert("Deleted");
+            props.load();
+            props.close();
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    );
   }
 
+  // Calculating the percentage from ratings people are voted
   const ratingArray = () => {
     var arr = new Array(tableData.length).fill(0);
+    let tbData = [...tableData];
     var total = 0;
     console.log(tableDataEach);
     if (tableDataEach.length > 0) {
@@ -321,553 +335,572 @@ function EditMinute(props) {
       for (let i = 0; i < arr.length; i++) {
         arr[i] = (arr[i] / total) * 100;
       }
-      tableData.forEach(function (item, index) {
+      tbData.forEach(function (item, index) {
         item.overall = arr[index];
       });
-      tableData.sort((a, b) => (a.overall < b.overall ? 1 : -1));
-      setTableData(tableData);
+      tbData.sort((a, b) => (a.overall < b.overall ? 1 : -1));
     } else {
-      tableData.forEach(function (item, index) {
+      tbData.forEach(function (item, index) {
         item.overall = 0;
       });
     }
-    // tableData.forEach(element => {
-    //   element.overall=
-    // });
-
-    //sort the table rows according to the percentage
+    setTableRows(tbData);
   };
-
+  //Model Management
+  const [model, setModel] = useState(null);
+  const returnModel = (show, body, confirmation, callback) => {
+    setModel(
+      <Model
+        show={show}
+        confirmation={confirmation}
+        body={body}
+        handleClose={() => {
+          returnModel(false, "", null);
+        }}
+        handleClick={(e) => {
+          callback(e);
+          returnModel(false, "", null);
+        }}
+      />
+    );
+  };
   return (
     <div>
-      <Formik
-        validationSchema={schema}
-        onSubmit={editMinute}
-        initialValues={{}}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          handleBlur,
-          values,
-          touched,
-          isValid,
-          errors,
-        }) => (
-          <div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Name of Meeting</Form.Label>
-              </div>
+      <div ref={ref} className="page-break ">
+        {model}
+        <h2 className="text-center mx-auto view-in-print text-black">
+          <b>Meeting Minute</b>
+        </h2>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Name of Meeting</Form.Label>
+          </div>
 
-              <div className="form-group col-9">
-                <Form.Control
-                  required
-                  name="name"
-                  type="text"
-                  value={meeting_name}
-                  placeholder="Enter Name..."
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors.name}
-                  isValid={touched.name && !errors.name}
-                  autoComplete="off"
-                />
-                <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Date</Form.Label>
-              </div>
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              required
+              name="name"
+              type="text"
+              value={meeting_name}
+              placeholder="Enter Name..."
+              onChange={handleChangeO}
+            />
+            <div className="text-red">{errors.name}</div>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Date</Form.Label>
+          </div>
 
-              <div className="form-group col-9">
-                <Form.Control
-                  required
-                  name="date"
-                  type="date"
-                  value={meeting_date}
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors.date}
-                  isValid={touched.date && !errors.date}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.date && touched.date && errors.date}
-                </Form.Control.Feedback>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group" className="col-3">
-                <Form.Label>Time</Form.Label>
-              </div>
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              required
+              name="date"
+              type="date"
+              value={meeting_date}
+              onChange={handleChangeO}
+            />
+            <div className="text-red">{errors.date}</div>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group" className="col-3">
+            <Form.Label>Time</Form.Label>
+          </div>
 
-              <div className="form-group col-9">
-                <Form.Control
-                  required
-                  name="time"
-                  type="time"
-                  value={meeting_time}
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors.time}
-                  isValid={touched.time && !errors.time}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.time && touched.time && errors.time}
-                </Form.Control.Feedback>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Venue</Form.Label>
-              </div>
+          <div className="form-group col-9">
+            <Form.Control
+              required
+              className="text-black "
+              name="time"
+              type="time"
+              value={meeting_time}
+              onChange={handleChangeO}
+            />
+            <div className="text-red">{errors.time}</div>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Venue</Form.Label>
+          </div>
 
-              <div className="form-group col-9">
-                <Form.Control
-                  required
-                  name="venue"
-                  type="text"
-                  value={meeting_venue}
-                  placeholder="Enter Venue..."
-                  onChange={handleChangeO}
-                  onBlur={handleChange}
-                  isInvalid={!!errors.venue}
-                  isValid={touched.venue && !errors.venue}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.venue && touched.venue && errors.venue}
-                </Form.Control.Feedback>
-              </div>
-            </div>
-            <div className="w-100 mt-3">
-              <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
-                <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Attendance</strong>
-                </div>
-              </h4>
-            </div>
-            <div className="w-100 ">
-              <h4 className=" text-center " style={{ color: "#070707" }}>
-                <strong>Present</strong>
-              </h4>
-            </div>
-            <div>
-              <div className="form-row">
-                <div className="form-group mb-0" as={Col}>
-                  <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
-                </div>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={private_chips}
-                onSubmit={(e) => addPrivateChip(e)}
-                onRemove={(index) => removePrivateChip(index)}
-              />
-            </div>
-            <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
-                  <Form.Label className="mb-0 mt-1">Public Sector </Form.Label>
-
-                  <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-                </div>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={public_chips}
-                onSubmit={(value) => addPublicChip(value)}
-                onRemove={(index) => removePublicChip(index)}
-              />
-            </div>
-            <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
-                  <Form.Label className="mb-0 mt-1">Academic</Form.Label>
-
-                  <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-                </div>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={academic_chips}
-                onSubmit={(value) => addAcademicChip(value)}
-                onRemove={(index) => removeAcademicChip(index)}
-              />
-            </div>
-            <div>
-              <div className="form-row">
-                <div className="form-group mb-0 mt-1" as={Col}>
-                  <Form.Label className="mb-0 mt-1">Association</Form.Label>
-
-                  <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-                </div>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={association_chips}
-                onSubmit={(value) => addAssociationChip(value)}
-                onRemove={(index) => removeAssociationChip(index)}
-              />
-            </div>
-            <div>
-              <div className="w-100 mt-3 mb-0 ">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Excused</strong>
-                </h4>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={excused_chips}
-                onSubmit={(value) => addExcusedChip(value)}
-                onRemove={(index) => removeExcusedChip(index)}
-              />
-            </div>
-            <div>
-              <div className="w-100 mt-3">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Absent</strong>
-                </h4>
-              </div>
-              <ReactChipInput
-                className="m-0 p-0"
-                chips={absent_chips}
-                onSubmit={(value) => addAbsentChip(value)}
-                onRemove={(index) => removeAbsentChip(index)}
-              />
-            </div>
-
-            <div className="w-100 mt-4">
-              <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
-                <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Approval</strong>
-                </div>
-              </h4>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group" className="col-3">
-                <Form.Label>Approval from</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  required
-                  name="approvalDate"
-                  type="date"
-                  value={meeting_approval_from}
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                  isInvalid={!!errors.date}
-                  isValid={touched.date && !errors.date}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.date && touched.date && errors.date}
-                </Form.Control.Feedback>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Motion</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  name="motion"
-                  type="text"
-                  value={meeting_motion}
-                  placeholder="Enter Here..."
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Motion by</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  name="motionBy"
-                  type="text"
-                  value={meeting_motionby}
-                  placeholder="Enter Here..."
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Proposed By</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  name="proposedBy"
-                  type="text"
-                  value={meeting_proposedby}
-                  placeholder="Enter Here..."
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Seconded By</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  name="secondedBy"
-                  type="text"
-                  value={meeting_secondedby}
-                  placeholder="Enter Here..."
-                  onChange={handleChangeO}
-                  onBlur={handleBlur}
-                />
-              </div>
-            </div>
-            <div className="w-100 mt-4">
-              <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
-                <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Objective</strong>
-                </div>
-              </h4>
-            </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Objective</Form.Label>
-              </div>
-
-              <div className="form-group col-9">
-                <Form.Control
-                  name="objective"
-                  type="text"
-                  value={meeting_objective}
-                  placeholder="Enter here..."
-                  onChange={handleChangeO}
-                  onBlur={handleChange}
-                />
-              </div>
-            </div>
-            {/* Table */}
-            <Table
-              striped
-              bordered
-              hover
-              size="sm"
+          <div className="form-group col-9">
+            <Form.Control
+              required
+              className="text-black "
+              name="venue"
+              type="text"
+              value={meeting_venue}
+              placeholder="Enter Venue..."
+              onChange={handleChangeO}
+            />
+            <div className="text-red">{errors.venue}</div>
+          </div>
+        </div>
+        <div className="w-100 mt-3">
+          <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
+            <div
+              className="pr-5 pb-2 pl-2 pt-1 "
               style={{
-                width: "100%",
-                maxWidth: "100%",
-                wordBreak: "break-all",
+                backgroundColor: "#0A2057",
+                borderEndEndRadius: "90px",
               }}
-              className="mt-4"
             >
-              <thead>
-                <tr>
-                  <th>Activity</th>
-                  <th>
-                    Action taken/
-                    <br />
-                    to be taken
-                  </th>
-                  <th>Responsibility</th>
-                  <th
-                    style={{
-                      width: 90,
-                    }}
-                  >
-                    Rating
-                  </th>
-                  <th
-                    style={{
-                      width: 20,
-                    }}
-                  >
-                    X
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData != null
-                  ? tableData.map((item, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>{item.activity}</td>
-                          <td>{item.action}</td>
-                          <td>{item.responsibility}</td>
-                          <td className="text-center">
-                            {item.overall != null
-                              ? item.overall.toFixed(2)
-                              : "0.00"}{" "}
-                            %
-                          </td>
-                          <td>
-                            <Button
-                              className="btnPrimary  m-1 p-1"
-                              onClick={() => removeRow(index)}
-                            >
-                              x
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  : null}
-              </tbody>
-              {/* <tbody>{tableDATA}</tbody> */}
-            </Table>
-            <div className="border border-light p-2 mt-4 mb-5">
-              <Form.Label>
-                Add New Row - (This will not be appeared in final minute)
-              </Form.Label>
-              <div className="form-row">
-                <div className="col-6 form-group ">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowActivity"
-                    value={row_activity}
-                    placeholder="Enter New Activity..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-
-                <div className="form-group col-6">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowAction"
-                    value={row_action}
-                    placeholder="Enter New Action..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-              </div>
-              <div className="form-row d-flex justify-content-between">
-                <div className="form-group col-9">
-                  <Form.Control
-                    name="rowResponsibility"
-                    value={row_responsibility}
-                    placeholder="Enter New Responsibility..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-                <Button
-                  variant="success"
-                  type="submit"
-                  onClick={() => addRow()}
-                  className="btnPrimary col-2 "
-                >
-                  + Add Row
-                </Button>
-              </div>
+              <strong>Attendance</strong>
             </div>
-            <div className="form-row">
-              <div className="form-group col-3">
-                <Form.Label>Closing Remarks</Form.Label>
-              </div>
-
-              <div className="col-9">
-                <Form.Control
-                  name="remarks"
-                  type="text"
-                  value={meeting_remarks}
-                  placeholder="Enter here..."
-                  onChange={handleChangeO}
-                  onBlur={handleChange}
-                />
-              </div>
-            </div>
-            <div
-              className="form-row d-flex justify-content-between"
-              id="footer-modal-addMember"
-            >
-              <div className="mt-5">
-                <span className="mt-5">
-                  <span>
-                    <b>
-                      ....................................................................
-                    </b>
-                  </span>
-                  <h4 className="text-center mt-0 mb-0">Chairman</h4>
-                  <h4 className="text-center mt-0 mb-5">Advisory Committee</h4>
-                </span>
-              </div>
-              <div className="mt-5">
-                <span className="mt-5">
-                  <span>
-                    <b>
-                      ....................................................................
-                    </b>
-                  </span>
-                  <h4 className="text-center mt-0 mb-0">Secratory</h4>
-                  <h4 className="text-center mt-0 mb-5">Advisory Committee</h4>
-                </span>
-              </div>
-            </div>
-            <div
-              className="form-row"
-              id="footer-modal-addMember"
-              className="d-flex justify-content-between"
-            >
-              <Button
-                variant="info"
-                type="submit"
-                className="btnPrimary"
-                onClick={editMinute}
-              >
-                Save
-              </Button>
-              <Button
-                variant="danger"
-                onClick={() => deleteMinute()}
-                className="btnPrimary"
-              >
-                Delete
-              </Button>
-              <Button
-                variant="info"
-                onClick={props.close}
-                className="btnPrimary"
-              >
-                Print
-              </Button>
-              <Button
-                variant="danger"
-                onClick={props.close}
-                className="btnPrimary"
-              >
-                Close
-              </Button>
+          </h4>
+        </div>
+        <div className="w-100 ">
+          <h4 className=" text-center " style={{ color: "#070707" }}>
+            <strong>Present</strong>
+          </h4>
+        </div>
+        <div>
+          <div className="form-row">
+            <div className="form-group mb-0" as={Col}>
+              <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
             </div>
           </div>
-        )}
-      </Formik>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={private_chips}
+            onSubmit={(e) => addPrivateChip(e)}
+            onRemove={(index) => removePrivateChip(index)}
+          />
+        </div>
+        <div>
+          <div className="form-row">
+            <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <Form.Label className="mb-0 mt-1">Public Sector </Form.Label>
+
+              <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+            </div>
+          </div>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={public_chips}
+            onSubmit={(value) => addPublicChip(value)}
+            onRemove={(index) => removePublicChip(index)}
+          />
+        </div>
+        <div>
+          <div className="form-row">
+            <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <Form.Label className="mb-0 mt-1">Academic</Form.Label>
+
+              <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+            </div>
+          </div>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={academic_chips}
+            onSubmit={(value) => addAcademicChip(value)}
+            onRemove={(index) => removeAcademicChip(index)}
+          />
+        </div>
+        <div>
+          <div className="form-row">
+            <div className="form-group mb-0 mt-1" as={Col}>
+              <Form.Label className="mb-0 mt-1">Association</Form.Label>
+
+              <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+            </div>
+          </div>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={association_chips}
+            onSubmit={(value) => addAssociationChip(value)}
+            onRemove={(index) => removeAssociationChip(index)}
+          />
+        </div>
+        <div>
+          <div className="w-100 mt-3 mb-0 ">
+            <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
+              <strong>Excused</strong>
+            </h4>
+          </div>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={excused_chips}
+            onSubmit={(value) => addExcusedChip(value)}
+            onRemove={(index) => removeExcusedChip(index)}
+          />
+        </div>
+        <div>
+          <div className="w-100 mt-3">
+            <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
+              <strong>Absent</strong>
+            </h4>
+          </div>
+          <ReactChipInput
+            className="m-0 p-0"
+            chips={absent_chips}
+            onSubmit={(value) => addAbsentChip(value)}
+            onRemove={(index) => removeAbsentChip(index)}
+          />
+        </div>
+
+        <div className="w-100 mt-4">
+          <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
+            <div
+              className="pr-5 pb-2 pl-2 pt-1 "
+              style={{
+                backgroundColor: "#0A2057",
+                borderEndEndRadius: "90px",
+              }}
+            >
+              <strong>Approval</strong>
+            </div>
+          </h4>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group" className="col-3">
+            <Form.Label>Approval from</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              required
+              className="text-black "
+              name="approvalDate"
+              type="date"
+              value={meeting_approval_from}
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Motion</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              name="motion"
+              type="text"
+              value={meeting_motion}
+              placeholder="Enter Here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Motion by</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              name="motionBy"
+              type="text"
+              value={meeting_motionby}
+              placeholder="Enter Here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Proposed By</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              name="proposedBy"
+              type="text"
+              value={meeting_proposedby}
+              placeholder="Enter Here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Seconded By</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              name="secondedBy"
+              type="text"
+              value={meeting_secondedby}
+              placeholder="Enter Here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        <div className="w-100 mt-4">
+          <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
+            <div
+              className="pr-5 pb-2 pl-2 pt-1 "
+              style={{
+                backgroundColor: "#0A2057",
+                borderEndEndRadius: "90px",
+              }}
+            >
+              <strong>Objective</strong>
+            </div>
+          </h4>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Objective</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="text-black "
+              className="text-black "
+              name="objective"
+              type="text"
+              value={meeting_objective}
+              placeholder="Enter here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        {/* Table */}
+        <Table
+          striped
+          bordered
+          hover
+          size="sm"
+          style={{
+            width: "100%",
+            maxWidth: "100%",
+            wordBreak: "break-all",
+          }}
+          className="mt-4"
+        >
+          <thead>
+            <tr>
+              <th className="text-black ">Activity</th>
+              <th className="text-black ">
+                Action taken/
+                <br />
+                to be taken
+              </th>
+              <th className="text-black ">Responsibility</th>
+              <th
+                className="text-black "
+                style={{
+                  width: 90,
+                }}
+              >
+                Rating
+              </th>
+              <th
+                className="view-in-web"
+                style={{
+                  width: 20,
+                }}
+              ></th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableRows != null
+              ? tableRows.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                        <span className="text-black-table ">
+                          {item.activity}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-black-table  ">
+                          {item.action}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-black-table ">
+                          {item.responsibility}
+                        </span>
+                      </td>
+                      <td className=" text-center">
+                        <span className="text-black-table  ">
+                          {item.overall != null
+                            ? item.overall.toFixed(2)
+                            : "0.00"}{" "}
+                          %
+                        </span>
+                      </td>
+                      <td className="view-in-web">
+                        <Button
+                          variant="danger"
+                          className="btnPrimary  m-1 p-1"
+                          onClick={() => removeRow(index)}
+                        >
+                          x
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              : null}
+          </tbody>
+          {/* <tbody>{tableDATA}</tbody> */}
+        </Table>
+        <div className="border border-light p-2 mt-4 mb-5 view-in-web">
+          <Form.Label>
+            Add New Row - (This will not be appeared in final minute)
+          </Form.Label>
+          <div className="form-row">
+            <div className="col-6 form-group ">
+              <Form.Control
+                className="border border-light rounded"
+                as="textarea"
+                name="rowActivity"
+                value={row_activity}
+                placeholder="Enter New Activity..."
+                onChange={(e) => handleChangeO(e)}
+              />
+            </div>
+
+            <div className="form-group col-6">
+              <Form.Control
+                className="border border-light rounded"
+                as="textarea"
+                name="rowAction"
+                value={row_action}
+                placeholder="Enter New Action..."
+                onChange={(e) => handleChangeO(e)}
+              />
+            </div>
+          </div>
+          <div className="form-row d-flex justify-content-between">
+            <div className="form-group col-9">
+              <Form.Control
+                name="rowResponsibility"
+                value={row_responsibility}
+                placeholder="Enter New Responsibility..."
+                onChange={(e) => handleChangeO(e)}
+              />
+            </div>
+            <Button
+              variant="success"
+              type="submit"
+              onClick={() => addRow()}
+              className="btnPrimary col-2 "
+            >
+              + Add Row
+            </Button>
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Closing Remarks</Form.Label>
+          </div>
+
+          <div className="col-9">
+            <Form.Control
+              className="text-black "
+              name="remarks"
+              type="text"
+              value={meeting_remarks}
+              placeholder="Enter here..."
+              onChange={handleChangeO}
+            />
+          </div>
+        </div>
+        <div
+          className="form-row d-flex justify-content-between"
+          id="footer-modal-addMember"
+        >
+          <div className="mt-5 view-in-print ">
+            <span className="mt-5  ">
+              <span>
+                <b>
+                  ....................................................................
+                </b>
+              </span>
+              <h4 className="text-center mt-0 mb-0 text-black ">Chairman</h4>
+              <h4 className="text-center mt-0 mb-5 text-black">
+                Advisory Committee
+              </h4>
+            </span>
+          </div>
+          <div className="mt-5 view-in-print">
+            <span className="mt-5">
+              <span>
+                <b>
+                  ....................................................................
+                </b>
+              </span>
+              <h4 className="text-center mt-0 mb-0 text-black">Secratory</h4>
+              <h4 className="text-center mt-0 mb-5 text-black">
+                Advisory Committee
+              </h4>
+            </span>
+          </div>
+        </div>
+        <div
+          className="form-row "
+          id="footer-modal-addMember"
+          className="d-flex justify-content-between"
+        >
+          <Button
+            variant="info"
+            type="submit"
+            className="btnPrimary view-in-web"
+            onClick={(e) => editMinute(e)}
+          >
+            Save
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => deleteMinute()}
+            className="btnPrimary view-in-web"
+          >
+            Delete
+          </Button>
+          <Button
+            variant="info"
+            onClick={() => props.bclick()}
+            className="btnPrimary view-in-web"
+          >
+            Print
+          </Button>
+          <Button
+            variant="danger"
+            onClick={props.close}
+            className="btnPrimary view-in-web"
+          >
+            Close
+          </Button>
+        </div>
+      </div>
     </div>
   );
-}
+});
+const EditMinute = forwardRef((props, ref) => {
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  return (
+    <div>
+      <div>
+        <EditMinute1
+          close={props.close}
+          minute={props.minute}
+          load={props.load}
+          ref={componentRef}
+          bclick={handlePrint}
+        />
+      </div>
+    </div>
+  );
+});
 
 export default EditMinute;

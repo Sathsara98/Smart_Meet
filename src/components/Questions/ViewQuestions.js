@@ -1,12 +1,19 @@
-import React, { useState, useEffect, H1 } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Card, Form, Col, Row, Button, Container } from "react-bootstrap";
 
-function ViewQuestions(props) {
+const ViewQuestions = forwardRef((props, ref) => {
   const [questions, setquestions] = useState(props.questions);
+  const [delId, setDelId] = useState(null);
   useEffect(() => {
     setquestions(props.questions);
   }, []);
   useEffect(() => {
+    console.log(props.reaction);
     setquestions(props.questions);
   }, [props.questions]);
 
@@ -35,19 +42,36 @@ function ViewQuestions(props) {
       setquestions(items);
     });
   }
+  // useImperativeHandle(ref, (prop) => ({
+  //   delete(prop) {
+  //     deleteComment(null, prop);
+  //   },
+  // }));
   async function deleteComment(id) {
-    try {
-      const requestOptions = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id }),
-      };
-      await fetch("http://localhost:5000/admin/questions", requestOptions);
-      alert("Deleted");
-      props.onChange();
-    } catch (e) {
-      console.log(e);
-    }
+    props.show(
+      true,
+      "This step can not be undone!",
+      true,
+      async function (res) {
+        if (res == true) {
+          try {
+            const requestOptions = {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: id }),
+            };
+            await fetch(
+              "http://localhost:5000/admin/questions",
+              requestOptions
+            );
+
+            props.onChange();
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    );
   }
 
   async function updateComment(id) {
@@ -69,7 +93,7 @@ function ViewQuestions(props) {
         }),
       };
       await fetch("http://localhost:5000/admin/questions", requestOptions);
-      alert("Updated");
+      props.show(true, "Question has updated!", false, function (res) {});
       editComment(ques[0]._id);
     } catch (e) {
       console.log(e);
@@ -104,12 +128,7 @@ function ViewQuestions(props) {
                 &emsp;
                 <i
                   onClick={(e) => {
-                    if (
-                      window.confirm(
-                        "Are you sure you wish to delete this item?"
-                      )
-                    )
-                      deleteComment(que._id);
+                    deleteComment(que._id);
                   }}
                   className="far fa-trash-alt "
                 ></i>
@@ -139,6 +158,6 @@ function ViewQuestions(props) {
       ))}
     </div>
   );
-}
+});
 
 export default ViewQuestions;
