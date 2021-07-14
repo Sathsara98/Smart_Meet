@@ -5,6 +5,7 @@ import HomePage from "./components/Home/Index";
 import NotAvailable from "./components/NotAvailable/Index";
 import AddQuestion from "./components/Questions/Index";
 import Minute from "./components/Minute/Index";
+import Profile from "./components/Profile/Index";
 import ManageMembers from "./pages/ManageMembers";
 import ManageEvents from "./pages/ManageEvents";
 import ViewMembers from "./pages/ViewMembers";
@@ -76,6 +77,9 @@ function App() {
         </Route>
         <Route path="/notAvailable">
           <NotAvailable />
+        </Route>
+        <Route path="/profile">
+          <Profile />
         </Route>
         <Route path="*">
           <HomePage />

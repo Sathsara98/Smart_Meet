@@ -59,12 +59,7 @@ function SideBar(props) {
             </a>
           </li>
 
-          <li className={props.settings == true ? "active" : ""}>
-            <a href="/settings">
-              <i className="tim-icons fas fa-cog"></i>
-              <p>Settings</p>
-            </a>
-          </li>
+          
         </ul>
       </div>
     </div>
