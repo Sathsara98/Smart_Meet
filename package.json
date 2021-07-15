@@ -19,6 +19,7 @@
     "react-geocode": "^0.2.3",
     "react-google-charts": "^3.0.15",
     "react-google-maps": "^9.4.5",
+    "react-hook-form": "^7.11.0",
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",

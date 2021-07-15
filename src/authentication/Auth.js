@@ -33,11 +33,13 @@ const parseJwt = (token)=> {
     return JSON.parse(window.atob(base64));
 }
 
-const logout = () => {
+const logout = (callback) => {
     if (isAuthenticated()) {
         localStorage.removeItem('token');
         console.log("User Logged Out")
-    }
+        callback(true) ;
+    }else {
+        callback(false) ;}
 }
 module.exports = {
     getToken,

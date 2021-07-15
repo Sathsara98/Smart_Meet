@@ -35,7 +35,7 @@ export default function Model(props) {
           <div className="float-right">
             <Button
               className="btnPrimary "
-              variant="dark"
+              variant="info"
               onClick={() => props.handleClick(true)}
             >
               Ok

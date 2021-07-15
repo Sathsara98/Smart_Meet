@@ -20,7 +20,7 @@ const Section1 = () => {
           <Carouselll.Item interval={7000} className="caro h-100">
             <img
               className="d-block w-100 h-100 caro"
-              src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4832.jpg"
+              src={`${process.env.PUBLIC_URL}/assets/img/first_slide.jpg`}
               alt="First slide"
               style={{ objectFit: "cover" }}
             />
@@ -28,7 +28,7 @@ const Section1 = () => {
           <Carouselll.Item interval={7000} className="caro">
             <img
               className="d-block w-100 h-100 caro"
-              src="https://image.freepik.com/free-photo/cutting-metal-with-plasma-equipment_176420-4787.jpg"
+              src={`${process.env.PUBLIC_URL}/assets/img/second_slide.jpg`}
               alt="Third slide"
               style={{ objectFit: "cover" }}
             />
