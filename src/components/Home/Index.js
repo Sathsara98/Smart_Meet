@@ -10,8 +10,8 @@ function Index() {
       <Navbar varient="transparent" />
       <div className="main-panel ">
         <Section1 />
-        <Section2 />
-        <Section3 />
+        {/* <Section2 />
+        <Section3 /> */}
       </div>
     </div>
   );

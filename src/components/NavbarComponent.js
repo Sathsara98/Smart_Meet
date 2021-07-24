@@ -19,9 +19,9 @@ function NavbarComponent(props) {
     );
   }
   return (
-    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0">
+    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0" style={{height:"120px"}}>
       <div className="container-fluid ml-0 pl-0 mr-0 pr-0">
-        <div className="navbar-wrapper ml-0 pl-0">
+        <div className="navbar-wrapper ml-0 pl-4">
           {BurgerMenu}
 
           <img src={govLogo} className="mr-3 ml-0 pl-0 logo-nav" />
@@ -36,7 +36,7 @@ function NavbarComponent(props) {
             </span>
           </b>
         </div>
-        <button
+        {/* <button
           className="navbar-toggler m-0 p-0 float-right  text-white"
           type="button"
           data-toggle="collapse"
@@ -52,8 +52,8 @@ function NavbarComponent(props) {
           <span className="navbar-toggler-bar navbar-kebab"></span>
           <span className="navbar-toggler-bar navbar-kebab"></span>
           <span className="navbar-toggler-bar navbar-kebab"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navigation">
+        </button> */}
+        {/* <div className="collapse navbar-collapse" id="navigation">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item mt-2">
               <a href="home">
@@ -159,9 +159,9 @@ function NavbarComponent(props) {
                 </li>
               </ul>
             </li>
-            <li className="separator d-lg-none"></li> */}
+            <li className="separator d-lg-none"></li> *
           </ul>
-        </div>
+        </div> */}
       </div>
     </nav>
   );

@@ -329,3 +329,90 @@
     display: none;
   }
 }
+
+/* login button */
+.login-button {
+  
+
+  background: #22D1FC !important;
+}
+.login-button:hover  {
+
+  background: #00c6f8 !important;
+}
+/* text shadow */
+.text-shadow{
+  color: white !important;
+  text-shadow: 1px 1px 4px #000000;
+}
+
+/* index right buttons */
+.index-right-buttons {
+  border-radius: 25px 0px 0px 25px;
+  max-width: 4rem;
+  background-color: #ffffff!important;
+  background: #ffffff !important;
+  color: #011A46 !important;
+  transition: max-width 0.5s;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.index-right-buttons:hover {
+  max-width: 10rem;
+  background-color: whitesmoke!important;
+  background: whitesmoke !important;
+}
+.index-right-buttons1 {
+  border-radius: 25px 0px 0px 25px;
+  background-color: #ffffff!important;
+  background: #ffffff !important;
+  color: #011A46 !important;
+ 
+}
+.index-right-buttons1:hover {
+
+  background-color: whitesmoke!important;
+  background: whitesmoke !important;
+}
+.fadeOut{
+  animation: fadingOut 1s forwards ease;
+  transform-box: fill-box;
+}
+.fadeIn{
+  animation: fadingIn 1s forwards ease;
+  transform-box: fill-box;
+}
+.fadeIn1{
+  animation: fadingIn 1s forwards ease;
+  transform-box: fill-box;
+}
+@keyframes fadingIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadingOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.index-right-services {
+  border-radius: 15px 0px 0px 15px;
+ 
+  background-color: #ffffff!important;
+  background: #ffffff !important;
+  color: #011A46 !important;
+}
+
+.box-shadow1 {-webkit-box-shadow: -2px -4px 3px -1px rgba(122,122,122,0.65);
+  -moz-box-shadow: -2px -4px 3px -1px rgba(122,122,122,0.65);
+  box-shadow: -2px -4px 3px -1px rgba(122,122,122,0.65);}
