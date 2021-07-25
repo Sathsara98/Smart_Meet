@@ -13,24 +13,24 @@ const Section1 = () => {
   const [isAboutUsOpen, setIsAboutUsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isAboutUsNext, setIsAboutUsNext] = useState(false);
-  const [isLoading, setIsLoading] = useState(true );
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  if(isLoading){
-    return(
+  if (isLoading) {
+    return (
       <div className="d-flex vh-100 justify-content-center align-items-center">
-        <div><img
-              className=""
-              src={`${process.env.PUBLIC_URL}/assets/img/pre_loader.svg`}
-            
-            /></div>
-        
+        <div>
+          <img
+            className=""
+            src={`${process.env.PUBLIC_URL}/assets/img/pre_loader.svg`}
+          />
+        </div>
       </div>
-    )
-  }else{
+    );
+  } else {
     return (
       <>
         <div className="row mx-auto align-items-center">
@@ -96,7 +96,7 @@ const Section1 = () => {
               </Button>
             </div>
           </div>
-  
+
           <div
             className=" position-absolute d-block d-sm-none  z-index-0"
             style={{ right: "0" }}
@@ -140,16 +140,16 @@ const Section1 = () => {
                         <p>
                           Ministry is in the process of setting up the sector
                           Advisory committees for the identified potential
-                          Sectors. Chairman and the Secretary of these committees
-                          will be selected from the Private Sector. The Directors
-                          of the Development Divisions will act as Coordinators to
-                          these Committees. The objective of these Committees are
-                          to get the industry leaders' inputs for the preparation
-                          of development plans and recommendations based on the
-                          new budget proposals to upgrade the technology and
-                          develop these value chains to compete in the global
-                          market with the available foreign and local assistance
-                          programs.
+                          Sectors. Chairman and the Secretary of these
+                          committees will be selected from the Private Sector.
+                          The Directors of the Development Divisions will act as
+                          Coordinators to these Committees. The objective of
+                          these Committees are to get the industry leaders'
+                          inputs for the preparation of development plans and
+                          recommendations based on the new budget proposals to
+                          upgrade the technology and develop these value chains
+                          to compete in the global market with the available
+                          foreign and local assistance programs.
                         </p>
                         <i
                           type="button"
@@ -165,8 +165,8 @@ const Section1 = () => {
                         <p>
                           The ministry has initiated value chain development
                           programmes to increase the value addition in
-                          manufacturing industry. These programmes are focused on
-                          the improvement of different levels of production
+                          manufacturing industry. These programmes are focused
+                          on the improvement of different levels of production
                           process up to the marketing of products. Technological
                           institutes, Universities and training institutes are
                           linked with these programmes to provide services to
@@ -202,7 +202,7 @@ const Section1 = () => {
                 </div>
               </div>
             ) : null}
-  
+
             {isServicesOpen ? (
               <div
                 className={`d-flex justify-content-between align-items-center mr-0 pr-0 col-xs-12 col-md-6 `}
@@ -232,7 +232,7 @@ const Section1 = () => {
                     style={{
                       backgroundColor: "transparent",
                       maxWidth: "400px",
-  
+
                       paddingRight: "0px",
                       paddingTop: "0px",
                       borderRadius: "25px 0px 0px 25px",
@@ -254,7 +254,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -263,7 +263,10 @@ const Section1 = () => {
                               Time Saving
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Saving valuable time on writing, printing,
                             distributing
                           </p>
@@ -287,7 +290,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -296,7 +299,10 @@ const Section1 = () => {
                               Cost Saving
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Saving money on too much of papers <h5></h5>
                           </p>
                         </div>
@@ -319,7 +325,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -328,7 +334,10 @@ const Section1 = () => {
                               Schedule Once
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Easy to schedule a meeting in less time at once
                           </p>
                         </div>
@@ -351,7 +360,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -360,7 +369,10 @@ const Section1 = () => {
                               Satisfaction
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Acceleration in time to engagement <h5></h5>
                           </p>
                         </div>
@@ -390,7 +402,7 @@ const Section1 = () => {
                 </div>
               </div>
             ) : null}
-  
+
             {!isServicesOpen && !isAboutUsOpen ? (
               <div className="d-flex flex-column justify-content-center align-items-end">
                 <div className="my-5"></div>
@@ -436,15 +448,18 @@ const Section1 = () => {
               </div>
             ) : null}
           </div>
-  
+
           {/*display only on large screens */}
           <div className="col-12 w-100 vh-100 position-absolute d-md-flex  justify-content-md-between mr-0 pr-0 d-none d-md-block ">
             <div className="col-xs-12  mr-md-5 d-flex flex-column justify-content-center">
               <div className="row fadeIn">
                 <img className="w-50 mx-auto" src={logo} />
               </div>
-  
-              <h4 className="text-center text-white" style={{ fontSize: "1em" }}>
+
+              <h4
+                className="text-center text-white"
+                style={{ fontSize: "1em" }}
+              >
                 <strong>
                   The official meeting scheduler of advisory <br /> committee of
                   Ministry of industry
@@ -509,16 +524,16 @@ const Section1 = () => {
                         <p>
                           Ministry is in the process of setting up the sector
                           Advisory committees for the identified potential
-                          Sectors. Chairman and the Secretary of these committees
-                          will be selected from the Private Sector. The Directors
-                          of the Development Divisions will act as Coordinators to
-                          these Committees. The objective of these Committees are
-                          to get the industry leaders' inputs for the preparation
-                          of development plans and recommendations based on the
-                          new budget proposals to upgrade the technology and
-                          develop these value chains to compete in the global
-                          market with the available foreign and local assistance
-                          programs.
+                          Sectors. Chairman and the Secretary of these
+                          committees will be selected from the Private Sector.
+                          The Directors of the Development Divisions will act as
+                          Coordinators to these Committees. The objective of
+                          these Committees are to get the industry leaders'
+                          inputs for the preparation of development plans and
+                          recommendations based on the new budget proposals to
+                          upgrade the technology and develop these value chains
+                          to compete in the global market with the available
+                          foreign and local assistance programs.
                         </p>
                         <i
                           type="button"
@@ -534,8 +549,8 @@ const Section1 = () => {
                         <p>
                           The ministry has initiated value chain development
                           programmes to increase the value addition in
-                          manufacturing industry. These programmes are focused on
-                          the improvement of different levels of production
+                          manufacturing industry. These programmes are focused
+                          on the improvement of different levels of production
                           process up to the marketing of products. Technological
                           institutes, Universities and training institutes are
                           linked with these programmes to provide services to
@@ -571,7 +586,7 @@ const Section1 = () => {
                 </div>
               </div>
             ) : null}
-  
+
             {isServicesOpen ? (
               <div
                 className={`d-flex justify-content-between align-items-center mr-0 pr-0 col-xs-12 col-md-6 `}
@@ -601,7 +616,7 @@ const Section1 = () => {
                     style={{
                       backgroundColor: "transparent",
                       maxWidth: "400px",
-  
+
                       paddingRight: "0px",
                       paddingTop: "0px",
                       borderRadius: "25px 0px 0px 25px",
@@ -623,7 +638,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -632,7 +647,10 @@ const Section1 = () => {
                               Time Saving
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Saving valuable time on writing, printing,
                             distributing
                           </p>
@@ -656,7 +674,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -665,7 +683,10 @@ const Section1 = () => {
                               Cost Saving
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Saving money on too much of papers <h5></h5>
                           </p>
                         </div>
@@ -688,7 +709,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -697,7 +718,10 @@ const Section1 = () => {
                               Schedule Once
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Easy to schedule a meeting in less time at once
                           </p>
                         </div>
@@ -720,7 +744,7 @@ const Section1 = () => {
                             alt="Card image cap"
                           />
                         </div>
-  
+
                         <div className="pl-3 mt-3 mb-3 col-10 pt-2 pb-2 index-right-services box-shadow1">
                           <h5 className="m-0 p-0">
                             <strong
@@ -729,7 +753,10 @@ const Section1 = () => {
                               Satisfaction
                             </strong>
                           </h5>
-                          <p className="card-text" style={{ fontSize: "1.1em" }}>
+                          <p
+                            className="card-text"
+                            style={{ fontSize: "1.1em" }}
+                          >
                             Acceleration in time to engagement <h5></h5>
                           </p>
                         </div>
@@ -759,7 +786,7 @@ const Section1 = () => {
                 </div>
               </div>
             ) : null}
-  
+
             {!isServicesOpen && !isAboutUsOpen ? (
               <div className=" d-flex justify-content-between mr-0 pr-0 col-xs-12 col-md-6 ">
                 <div className="col"> </div>
@@ -809,10 +836,8 @@ const Section1 = () => {
           </div>
         </div>
       </>
-    )
+    );
   }
-
-  ;
 };
 
 export default Section1;

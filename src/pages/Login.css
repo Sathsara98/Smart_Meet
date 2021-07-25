@@ -1,16 +1,22 @@
 .login-cover {
-  background: url(../assets/login_bg.png);
+  background: url(../assets/login_bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+
+}
+.login-cover1 {
+  background: url(../assets/login_bg.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+
 }
 .login-box {
   border-radius: 12px;
-  padding-top: 60px;
-  padding-bottom: 60px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   padding-right: 25px;
   padding-left: 25px;
   max-width: 480px;

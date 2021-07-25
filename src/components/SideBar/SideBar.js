@@ -42,7 +42,7 @@ function SideBar(props) {
           </li>
           <li className={props.minute == true ? "active" : ""}>
             <a href="/minute">
-              <i className="fa fa-calendar"></i>
+              <i class="fas fa-file-alt"></i>
               <p>Minute</p>
             </a>
           </li>
@@ -58,8 +58,6 @@ function SideBar(props) {
               <p>Profile</p>
             </a>
           </li>
-
-          
         </ul>
       </div>
     </div>
