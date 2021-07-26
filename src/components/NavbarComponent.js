@@ -19,7 +19,7 @@ function NavbarComponent(props) {
     );
   }
   return (
-    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0" style={{height:"120px"}}>
+    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0" style={{height:"100px"}}>
       <div className="container-fluid ml-0 pl-0 mr-0 pr-0">
         <div className="navbar-wrapper ml-0 pl-4">
           {BurgerMenu}

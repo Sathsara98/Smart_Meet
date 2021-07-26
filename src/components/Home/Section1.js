@@ -98,7 +98,7 @@ const Section1 = () => {
           </div>
 
           <div
-            className=" position-absolute d-block d-sm-none  z-index-0"
+            className=" position-fixed d-block d-sm-none  z-index-0"
             style={{ right: "0" }}
           >
             {isAboutUsOpen ? (

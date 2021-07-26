@@ -490,8 +490,8 @@ function Login() {
           </div>
         </div>
       </div>
-      <div className="position-absolute " style={{ right: "0" }}>
-        <div className="d-flex flex-column justify-content-start align-items-end z-index-10">
+      <div className="position-fixed" style={{ right: "0" ,zIndex: "1071"  }} >
+        <div className="d-flex flex-column justify-content-start align-items-end z-index-10" >
           <div>
             <Button
               className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons"

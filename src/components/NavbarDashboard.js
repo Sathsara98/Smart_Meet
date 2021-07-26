@@ -20,8 +20,11 @@ function NavbarDashboard(props) {
       .then((res) => res.json())
       .then((response) => {
         
-        setCurrentFile("http://localhost:5000/" + response.userImage);
-     
+        if(response.userImage!=null){
+          setCurrentFile("http://localhost:5000/" + response.userImage);
+        }
+        
+        
         
       })
       .catch((error) => console.log(error));

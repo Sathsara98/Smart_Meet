@@ -16824,13 +16824,14 @@ img {
 }
 
 .navbar.bg-custom {
-  background-color: rgba(9, 19, 79, 0.6) !important;
-  background: linear-gradient(to bottom, rgba(0, 30, 68, 0.95) , rgba(0,0,0,0) 100%)!important;
-  height: 90px;
+  
+  background-color: rgba(9, 19, 79, 0.8) !important;
+  background: linear-gradient(to bottom, rgba(0, 30, 68, 1) , rgba(0,0,0,0) 100%)!important;
+  height: 100px !important;
 }
 
 .navbar.bg-darkcustom {
-  background-color: rgb(, 35, 235) !important;
+  background-color: rgba(9, 19, 79, 0.6) !important;
 }
 
 .navbar.bg-warning {
