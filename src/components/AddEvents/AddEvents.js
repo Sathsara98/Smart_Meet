@@ -46,8 +46,10 @@ class AddEvents extends Component {
       meetingMembers: null,
       error: "",
       showError: false,
+      questions:[],
     };
     // this.handleClick = this.handleClick.bind(this);
+    this.fetchQuestions = this.fetchQuestions.bind(this);
   }
 
   fetchUsers = async () => {
@@ -221,6 +223,7 @@ class AddEvents extends Component {
     this.setState({ loading: true }, this.fetchUsers);
   };
   fetchQuestions = async () => {
+    let self = this;
     this.setState({ loadingDevArea: true });
     try {
       const res = await fetch("http://localhost:5000/admin/questions")
@@ -228,7 +231,7 @@ class AddEvents extends Component {
           return response.json();
         })
         .then((res) => {
-          console.log(res);
+          self.setState({ questions: res });
           let promise = res.map(async (que) => {
             const requestOptions = {
               method: "POST",
@@ -237,7 +240,6 @@ class AddEvents extends Component {
                 text: que.body,
               }),
             };
-
             const res1 = await fetch(
               "http://localhost:5000/admin/developing-area",
               requestOptions
@@ -250,13 +252,9 @@ class AddEvents extends Component {
               disabled: false,
             };
           });
-          console.log(res);
           return Promise.all(promise);
         })
         .then((res) => {
-          console.log(res);
-          // setquestions(res);
-
           this.findMax(res);
         });
     } catch (e) {
@@ -406,12 +404,27 @@ class AddEvents extends Component {
             location: directionUrl,
             time: this.state.timeSlot,
             members: this.state.meetingMembers,
+            questions: this.state.questions,
           }),
         };
         const res = await fetch(
           "http://localhost:5000/events/new",
           requestOptions
-        );
+        ).then(async()=>{
+          try {
+            const requestOptions = {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(this.state.questions),
+            };
+           return await fetch(
+              "http://localhost:5000/admin/questions-all",
+              requestOptions
+            );
+          } catch (e) {
+            console.log(e);
+          }
+        });
 
         const data = await res.json();
 
@@ -616,6 +629,24 @@ class AddEvents extends Component {
                           Analyisng Development Area ...
                         </div>
                       )}
+                    </div>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Questions</Form.Label>
+                    <div className=" col-12 m-auto">
+                     {this.state.questions.length>0 ? (
+                        this.state.questions.map((e) => {
+                          return (
+                             <p><i class="far fa-question-circle"></i> {e.body}</p>
+                          );
+                        })
+                      ) : (
+                        <div className="loader ml-4 mb-4">
+                          Fetching Questions...
+                        </div>
+                      )} 
                     </div>
                   </Form.Group>
                 </Form.Row>

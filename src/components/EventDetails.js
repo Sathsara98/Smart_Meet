@@ -113,7 +113,24 @@ function EventDetails(props) {
                   </div>
                 </Form.Group>
               </Form.Row>
-
+              <Form.Row>
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Questions</Form.Label>
+                    <div className=" col-12 m-auto">
+                     {props.event.questions.length>0 ? (
+                        props.event.questions.map((e) => {
+                          return (
+                             <p><i class="far fa-question-circle"></i> {e.body}</p>
+                          );
+                        })
+                      ) : (
+                        <div className="loader ml-4 mb-4">
+                          Fetching Questions...
+                        </div>
+                      )} 
+                    </div>
+                  </Form.Group>
+                </Form.Row>
               <Form.Row
                 id="footer-modal-addMember"
                 className="d-flex justify-content-between"

@@ -107,7 +107,7 @@ const ManageEvents = () => {
             scrollable={true}
             aria-labelledby="contained-modal-title-vcenter"
           >
-            <Modal.Header closeButton>
+            <Modal.Header closeButton onClick={handleClose2}>
               <h2>View Event Details</h2>
             </Modal.Header>
             <Modal.Body>

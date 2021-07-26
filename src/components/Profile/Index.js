@@ -138,7 +138,10 @@ export default function Index() {
       .then((res) => res.json())
       .then((response) => {
         setUser(response);
-        setCurrentFileShow("http://localhost:5000/" + response.userImage);
+        if(response.userImage!=null){
+          setCurrentFileShow("http://localhost:5000/" + response.userImage);
+        }
+        
         setPreFileShow(response.userImage);
         setValue("name", response.name);
         setValue("email", response.email);
@@ -258,7 +261,7 @@ export default function Index() {
                         src={
                           currentFileShow
                             ? currentFileShow
-                            : "https://bootdey.com/img/Content/avatar/avatar6.png"
+                            : `${process.env.PUBLIC_URL}/assets/img/default-avatar.png`
                         }
                         alt="Admin"
                         className="rounded-circle p-1 bg-light"
