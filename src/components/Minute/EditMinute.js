@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import ReactChipInput from "react-chip-input";
 import { useReactToPrint } from "react-to-print";
-
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 import { Form, Col, Button, Table } from "react-bootstrap";
 
 import Model from "../../components/Model";
+
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 const EditMinute1 = forwardRef((props, ref) => {
   var curr = new Date();
@@ -47,7 +49,7 @@ const EditMinute1 = forwardRef((props, ref) => {
     time: "",
     venue: "",
   });
-
+  const [options, setOptions] = useState(["saman","kamal"]);
   useEffect(() => {
     setMeetingName(props.minute.meeting_name);
     setMeetingDate(props.minute.meeting_date);
@@ -69,84 +71,25 @@ const EditMinute1 = forwardRef((props, ref) => {
     setTableDataEach(props.minute.meeting_activities_each);
     setMeetingRemarks(props.minute.meeting_remarks);
     ratingArray();
+    loadMembers();
   }, []);
 
-  //chips management
-  const addPrivateChip = (value) => {
-    const nchips = private_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setPrivatechips(nchips);
-    }
-  };
-  const addPublicChip = (value) => {
-    const nchips = public_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setPublicchips(nchips);
-    }
-  };
-
-  const addAcademicChip = (value) => {
-    const nchips = academic_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setAcademicchips(nchips);
-    }
-  };
-
-  const addAssociationChip = (value) => {
-    const nchips = association_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setAssociationchips(nchips);
-    }
-  };
-
-  const addExcusedChip = (value) => {
-    const nchips = excused_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setExcusedchips(nchips);
-    }
-  };
-  const addAbsentChip = (value, y) => {
-    const nchips = absent_chips.slice();
-    nchips.push(value);
-    if (value != "") {
-      setAbsentchips(nchips);
-    }
-  };
-
-  const removePrivateChip = (index) => {
-    const nchips = private_chips.slice();
-    nchips.splice(index, 1);
-    setPrivatechips(nchips);
-  };
-  const removePublicChip = (index) => {
-    const nchips = public_chips.slice();
-    nchips.splice(index, 1);
-    setPublicchips(nchips);
-  };
-  const removeAcademicChip = (index) => {
-    const nchips = academic_chips.slice();
-    nchips.splice(index, 1);
-    setAcademicchips(nchips);
-  };
-  const removeAssociationChip = (index) => {
-    const nchips = association_chips.slice();
-    nchips.splice(index, 1);
-    setAssociationchips(nchips);
-  };
-  const removeExcusedChip = (index) => {
-    const nchips = excused_chips.slice();
-    nchips.splice(index, 1);
-    setExcusedchips(nchips);
-  };
-  const removeAbsentChip = (index) => {
-    const nchips = absent_chips.slice();
-    nchips.splice(index, 1);
-    setAbsentchips(nchips);
+  const loadMembers = () => {
+    fetch("http://localhost:5000/users/register/", {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        var memarray = [];
+        response.forEach((element) => {
+          memarray.push(element.name);
+        });
+        setOptions(memarray);
+      })
+      .catch((error) => console.log(error));
   };
 
   //Table row management
@@ -465,12 +408,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
             </div>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={private_chips}
-            onSubmit={(e) => addPrivateChip(e)}
-            onRemove={(index) => removePrivateChip(index)}
-          />
+          
+           <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="name"
+          multiple
+          onChange={setPrivatechips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={private_chips}
+        />
         </div>
         <div>
           <div className="form-row">
@@ -480,12 +427,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={public_chips}
-            onSubmit={(value) => addPublicChip(value)}
-            onRemove={(index) => removePublicChip(index)}
-          />
+        
+          <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="name"
+          multiple
+          onChange={setPublicchips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={public_chips}
+        />
         </div>
         <div>
           <div className="form-row">
@@ -495,12 +446,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={academic_chips}
-            onSubmit={(value) => addAcademicChip(value)}
-            onRemove={(index) => removeAcademicChip(index)}
-          />
+          
+          <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="academic_chips"
+          multiple
+          onChange={setAcademicchips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={academic_chips}
+        />
         </div>
         <div>
           <div className="form-row">
@@ -510,12 +465,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={association_chips}
-            onSubmit={(value) => addAssociationChip(value)}
-            onRemove={(index) => removeAssociationChip(index)}
-          />
+          
+          <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="association_chips"
+          multiple
+          onChange={setAssociationchips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={association_chips}
+        />
         </div>
         <div>
           <div className="w-100 mt-3 mb-0 ">
@@ -523,12 +482,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <strong>Excused</strong>
             </h4>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={excused_chips}
-            onSubmit={(value) => addExcusedChip(value)}
-            onRemove={(index) => removeExcusedChip(index)}
-          />
+          
+          <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="excused_chips"
+          multiple
+          onChange={setExcusedchips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={excused_chips}
+        />
         </div>
         <div>
           <div className="w-100 mt-3">
@@ -536,12 +499,16 @@ const EditMinute1 = forwardRef((props, ref) => {
               <strong>Absent</strong>
             </h4>
           </div>
-          <ReactChipInput
-            className="m-0 p-0"
-            chips={absent_chips}
-            onSubmit={(value) => addAbsentChip(value)}
-            onRemove={(index) => removeAbsentChip(index)}
-          />
+          
+          <Typeahead
+          id="basic-typeahead-multiple"
+          labelKey="absent_chips"
+          multiple
+          onChange={setAbsentchips}
+          options={options}
+          placeholder="Choose attendies..."
+          selected={absent_chips}
+        />
         </div>
 
         <div className="w-100 mt-4">

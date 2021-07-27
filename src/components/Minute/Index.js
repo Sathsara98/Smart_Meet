@@ -86,9 +86,13 @@ function Index() {
           <div className="row mb-2">
             <div className="col-md">
               <div className="d-flex justify-content-end">
+                
+                {Auth?.getUserLevel()!=="Committee Member"?(
                 <Button variant="custom" onClick={handleShow}>
                   <i className="tim-icons fas fa-plus" /> Add New Minute
                 </Button>
+                  ):null}
+                  
               </div>
             </div>
           </div>

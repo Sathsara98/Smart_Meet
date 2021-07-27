@@ -18,6 +18,7 @@ import {
   Alert,
   Modal,
 } from "react-bootstrap";
+import Auth from "../authentication/Auth";
 import * as yup from "yup";
 import { Formik } from "formik";
 
@@ -99,9 +100,10 @@ const ManageMembers = () => {
               <div className="row mb-2">
                 <div className="col-md">
                   <div className="d-flex justify-content-end">
-                    <Button variant="custom" onClick={handleShow}>
+                    {Auth?.getUserLevel()!=="Committee Member" && Auth?.getUserLevel()!=="Committee Secretary" ?(<Button variant="custom" onClick={handleShow}>
                       <i className="tim-icons fas fa-plus" /> Add New User
-                    </Button>
+                    </Button>):null}
+                    
                   </div>
                 </div>
               </div>

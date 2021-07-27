@@ -22,6 +22,7 @@ import {
 import * as yup from "yup";
 import { Formik } from "formik";
 import backImg from "../assets/home_page/metal.jpg";
+import Auth from "../authentication/Auth";
 
 const ManageEvents = () => {
   const [show, setShow] = useState(false);
@@ -128,9 +129,12 @@ const ManageEvents = () => {
               <div className="row mb-2">
                 <div className="col-md">
                   <div className="d-flex justify-content-end">
-                    <Button variant="custom" onClick={handleShow}>
-                      <i className="tim-icons fas fa-plus" /> Add New Event
-                    </Button>
+                    {Auth?.getUserLevel() !== "Committee Member" &&
+                    Auth?.getUserLevel() !== "Committee Secretary" ? (
+                      <Button variant="custom" onClick={handleShow}>
+                        <i className="tim-icons fas fa-plus" /> Add New Event
+                      </Button>
+                    ) : null}
                   </div>
                   {eventList != null
                     ? eventList.map((ev, index) => {

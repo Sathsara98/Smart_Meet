@@ -28,9 +28,10 @@ function ViewMembers(props) {
         <td>{p.tel}</td>
         <td>{p.gender}</td>
         <td>{p.workplace}</td>
-        <td>
+        {Auth?.getUserLevel()!=="Committee Member"&& Auth?.getUserLevel()!=="Committee Secretary" ?(<td>
           <button className="btn btn-danger" onClick={()=>deleteMember(p._id)}>Delete</button>
-        </td>
+        </td>):null}
+        
       </tr>
     );
   });
@@ -105,7 +106,8 @@ function ViewMembers(props) {
                   <th>Mobile No</th>
                   <th>Gender</th>
                   <th>Ofiice</th>
-                  <th>Action</th>
+                  {Auth?.getUserLevel()!=="Committee Member"&& Auth?.getUserLevel()!=="Committee Secretary" ?(<th>Action</th>):null}
+                  
                 </tr>
               </thead>
               <tbody>{tableDATA}</tbody>

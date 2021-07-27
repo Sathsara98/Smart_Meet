@@ -5,7 +5,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import { Card, Form, Col, Row, Button, Container } from "react-bootstrap";
-
+import Auth from "../../authentication/Auth";
 const ViewQuestions = forwardRef((props, ref) => {
   const [questions, setquestions] = useState(props.questions);
   const [delId, setDelId] = useState(null);
@@ -113,27 +113,30 @@ const ViewQuestions = forwardRef((props, ref) => {
           <Card.Body>
             <Card.Title style={{ fontWeight: "bolder" }}>
               QUESTION {key + 1} - {que.dArea}
-              <span style={{ float: "right" }}>
-                {!que.disabled ? (
+              {Auth?.getUserLevel() !== "Committee Member" &&
+              Auth?.getUserLevel() !== "Committee Secretary" ? (
+                <span style={{ float: "right" }}>
+                  {!que.disabled ? (
+                    <i
+                      onClick={() => editComment(que._id)}
+                      className="far fa-edit "
+                    />
+                  ) : (
+                    <i
+                      onClick={() => updateComment(que._id)}
+                      className="fas fa-check "
+                    />
+                  )}
+                  &emsp;
                   <i
-                    onClick={() => editComment(que._id)}
-                    className="far fa-edit "
-                  />
-                ) : (
-                  <i
-                    onClick={() => updateComment(que._id)}
-                    className="fas fa-check "
-                  />
-                )}
-                &emsp;
-                <i
-                  onClick={(e) => {
-                    deleteComment(que._id);
-                  }}
-                  className="far fa-trash-alt "
-                ></i>
-                &emsp;
-              </span>
+                    onClick={(e) => {
+                      deleteComment(que._id);
+                    }}
+                    className="far fa-trash-alt "
+                  ></i>
+                  &emsp;
+                </span>
+              ) : null}
             </Card.Title>
 
             <Card.Text>
