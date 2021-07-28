@@ -408,6 +408,7 @@ class AddEvents extends Component {
   render() {
     const schema = yup.object({
       name: yup.string().required("Name is required!"),
+      date: yup.string().required("Week is required!"),
       venue: yup.string().required("Venue is required!"),
       location: yup.string().required("Location is required!"),
     });
@@ -589,19 +590,22 @@ class AddEvents extends Component {
                     <Form.Label>Select First Day of the Week</Form.Label>
                     <Form.Control
                       required
-                      name="name"
+                      name="date"
                       type="date"
                       placeholder=""
-                      onChange={(date) => this.checkDate(date)}
+                      onChange={(e) => {
+                        this.checkDate(e);
+                        handleChange(e);
+                      }}
                       onBlur={handleBlur}
-                      value={values.name}
-                      isValid={touched.name && !errors.name}
-                      isInvalid={!!errors.name}
+                      value={values.date}
+                      isValid={touched.date && !errors.date}
+                      isInvalid={!!errors.date}
                     />
 
-                    {/* <Form.Control.Feedback type="invalid">
-                      {errors.name};
-                    </Form.Control.Feedback> */}
+                    <Form.Control.Feedback type="invalid">
+                      {errors.date};
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Row>
 
