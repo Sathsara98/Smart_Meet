@@ -41,12 +41,14 @@ class AddEvents extends Component {
       usersNat: null,
       loading: false,
       timeSlot: null,
+      date: null,
+      day: null,
       loadingDevArea: false,
       devArea: null,
       meetingMembers: null,
       error: "",
       showError: false,
-      questions:[],
+      questions: [],
     };
     // this.handleClick = this.handleClick.bind(this);
     this.fetchQuestions = this.fetchQuestions.bind(this);
@@ -130,6 +132,7 @@ class AddEvents extends Component {
     this.getMembers(x, this.state.devArea);
   };
   getDayFromIndex(x) {
+    this.setState({ day: x });
     console.log("get day called" + x);
     var day = "npda";
     if (x == 1) {
@@ -326,7 +329,17 @@ class AddEvents extends Component {
     this.calculateBestTime();
   };
 
-  getMeetingDate() {}
+  formatDate = (date) => {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
 
   componentDidMount() {
     this.fetchQuestions();
@@ -376,6 +389,22 @@ class AddEvents extends Component {
     }
   };
 
+  checkDate = (date) => {
+    console.log(date.target.value);
+    var dateObj = new Date(date.target.value);
+    console.log(dateObj.getDay());
+    if (dateObj.getDay() != 1) {
+      alert("Please Select The Monday of the Week");
+    } else {
+      if (this.state.day != null) {
+        var meetingDate = new Date();
+        meetingDate.setDate(dateObj.getDate() + (this.state.day - 1));
+        console.log(this.formatDate(meetingDate));
+        // this.setState({ date: dateObj.getDate() + this.state.day });
+      }
+    }
+  };
+
   render() {
     const schema = yup.object({
       name: yup.string().required("Name is required!"),
@@ -410,14 +439,14 @@ class AddEvents extends Component {
         const res = await fetch(
           "http://localhost:5000/events/new",
           requestOptions
-        ).then(async()=>{
+        ).then(async () => {
           try {
             const requestOptions = {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(this.state.questions),
             };
-           return await fetch(
+            return await fetch(
               "http://localhost:5000/admin/questions-all",
               requestOptions
             );
@@ -499,43 +528,6 @@ class AddEvents extends Component {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Row>
-                {/* <Form.Row>
-                  <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Date</Form.Label>
-                    <Form.Control
-                      required
-                      name="name"
-                      type="date"
-                      placeholder=""
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.name}
-                      isValid={touched.name && !errors.name}
-                      isInvalid={!!errors.name}
-                    />
-
-                    <Form.Control.Feedback type="invalid">
-                      {errors.name};
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="formGridPassword">
-                    <Form.Label>Time</Form.Label>
-                    <Form.Control
-                      required
-                      name="email"
-                      type="time"
-                      placeholder=""
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isInvalid={!!errors.email}
-                      isValid={touched.email && !errors.email}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.email}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row> */}
 
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
@@ -593,13 +585,32 @@ class AddEvents extends Component {
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Select First Day of the Week</Form.Label>
+                    <Form.Control
+                      required
+                      name="name"
+                      type="date"
+                      placeholder=""
+                      onChange={(date) => this.checkDate(date)}
+                      onBlur={handleBlur}
+                      value={values.name}
+                      isValid={touched.name && !errors.name}
+                      isInvalid={!!errors.name}
+                    />
+
+                    {/* <Form.Control.Feedback type="invalid">
+                      {errors.name};
+                    </Form.Control.Feedback> */}
+                  </Form.Group>
+                </Form.Row>
+
+                <Form.Row>
                   {this.state.loading ? (
                     <div className="loader ml-4 mb-4">Loading...</div>
                   ) : (
                     <Form.Group as={Col}>
-                      <Form.Label>
-                        Time Slot
-                      </Form.Label>
+                      <Form.Label>Time Slot</Form.Label>
 
                       <Form.Control
                         className="inputBackground "
@@ -626,7 +637,7 @@ class AddEvents extends Component {
                         })
                       ) : (
                         <div className="loader ml-4 mb-4">
-                          Analyisng Development Area ...
+                          Analysing Development Area ...
                         </div>
                       )}
                     </div>
@@ -636,17 +647,19 @@ class AddEvents extends Component {
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Questions</Form.Label>
                     <div className=" col-12 m-auto">
-                     {this.state.questions.length>0 ? (
+                      {this.state.questions.length > 0 ? (
                         this.state.questions.map((e) => {
                           return (
-                             <p><i class="far fa-question-circle"></i> {e.body}</p>
+                            <p>
+                              <i class="far fa-question-circle"></i> {e.body}
+                            </p>
                           );
                         })
                       ) : (
                         <div className="loader ml-4 mb-4">
                           Fetching Questions...
                         </div>
-                      )} 
+                      )}
                     </div>
                   </Form.Group>
                 </Form.Row>
