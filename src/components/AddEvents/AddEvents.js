@@ -390,9 +390,9 @@ class AddEvents extends Component {
   };
 
   checkDate = (date) => {
-    console.log(date.target.value);
+    // console.log(date.target.value);
     var dateObj = new Date(date.target.value);
-    console.log(dateObj.getDay());
+    // console.log(dateObj.getDay());
     if (dateObj.getDay() != 1) {
       alert("Please Select The Monday of the Week");
     } else {
@@ -400,7 +400,7 @@ class AddEvents extends Component {
         var meetingDate = new Date();
         meetingDate.setDate(dateObj.getDate() + (this.state.day - 1));
         console.log(this.formatDate(meetingDate));
-        // this.setState({ date: dateObj.getDate() + this.state.day });
+        this.setState({ date: this.formatDate(meetingDate) });
       }
     }
   };
@@ -434,6 +434,7 @@ class AddEvents extends Component {
             location: directionUrl,
             time: this.state.timeSlot,
             members: this.state.meetingMembers,
+            date: this.state.date,
             questions: this.state.questions,
           }),
         };
