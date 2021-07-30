@@ -124,8 +124,8 @@ function EventDetails(props) {
                           );
                         })
                       ) : (
-                        <div className="loader ml-4 mb-4">
-                          Fetching Questions...
+                        <div className=" ml-4 mb-4">
+                          No questions...
                         </div>
                       )} 
                     </div>

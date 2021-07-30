@@ -104,10 +104,10 @@ class AddEvents extends Component {
     console.log("slot : " + x);
     var slot;
     if (x < 5) {
-      slot = "8:30 - 9:15  ";
+      slot = "08:30 - 09:15  ";
       slot = slot + this.getDayFromIndex(x + 1);
     } else if (x < 10) {
-      slot = "9:15 - 10:00  ";
+      slot = "09:15 - 10:00  ";
       slot = slot + this.getDayFromIndex(x + 1 - 5);
     } else if (x < 15) {
       slot = "10:00 - 10:45  ";
