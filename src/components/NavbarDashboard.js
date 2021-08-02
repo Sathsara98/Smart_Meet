@@ -5,9 +5,12 @@ import { useHistory } from "react-router-dom";
 import Model from "../components/Model";
 function NavbarDashboard(props) {
   const [currentFile, setCurrentFile] = useState(undefined);
+  const [meetings, setMeetings] = useState();
+
   const history = useHistory();
   useEffect(() => {
     loadUser();
+    loadMeetings();
   }, []);
   const loadUser = async () => {
     fetch(`http://localhost:5000/users/register/` + Auth.getUserId(), {
@@ -19,34 +22,61 @@ function NavbarDashboard(props) {
     })
       .then((res) => res.json())
       .then((response) => {
-        
-        if(response.userImage!=null){
+        if (response.userImage != null) {
           setCurrentFile("http://localhost:5000/" + response.userImage);
         }
-        
-        
-        
       })
       .catch((error) => console.log(error));
   };
-    //model
-    const [model, setModel] = useState(null);
-    const returnModel = (show, body, confirmation, callback) => {
-      setModel(
-        <Model
-          show={show}
-          confirmation={confirmation}
-          body={body}
-          handleClose={() => {
-            returnModel(false, "", null);
-          }}
-          handleClick={(e) => {
-            callback(e);
-            returnModel(false, "", null);
-          }}
-        />
-      );
-    };
+
+  const loadMeetings = async () => {
+    fetch(`http://localhost:5000/users/getMeetings/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: Auth.getUserId(),
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response != null) {
+          getUpcomingMeetings(response);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const getUpcomingMeetings = (meetings) => {
+    var current_date = new Date();
+    var meetingsUpcoming = meetings.filter((m) => {
+      if (m.date != null && m.date != undefined && m.date.length > 3) {
+        var date = new Date(m.date);
+        if (date >= current_date) {
+          return m;
+        }
+      }
+    });
+    console.log(meetingsUpcoming);
+    setMeetings(meetingsUpcoming);
+  };
+  //model
+  const [model, setModel] = useState(null);
+  const returnModel = (show, body, confirmation, callback) => {
+    setModel(
+      <Model
+        show={show}
+        confirmation={confirmation}
+        body={body}
+        handleClose={() => {
+          returnModel(false, "", null);
+        }}
+        handleClick={(e) => {
+          callback(e);
+          returnModel(false, "", null);
+        }}
+      />
+    );
+  };
   var BurgerMenu = (
     <div className="navbar-toggle d-inline">
       <button type="button" className="navbar-toggler">
@@ -90,72 +120,56 @@ function NavbarDashboard(props) {
 
         <div className="collapse navbar-collapse" id="navigation">
           <ul className="navbar-nav ml-auto">
-            <li className="nav-item mt-2">
-              <a href="home">
-                <h4 className="text-white">
-                  <i className={"fas fa-bell "}></i>
-                </h4>
-              </a>
-            </li>
-            {/* <li className="nav-item mt-2">
-              <a href="#loginButton">
-                <h4 className="text-white">
-                  <i className={"fas fa-user "}></i>
-                </h4>
-              </a>
-            </li> */}
-
-    
-            {/* <li className="dropdown nav-item ">
+            <li className="dropdown nav-item">
               <a
-                href=""
                 className="dropdown-toggle nav-link dropdownarrow"
                 data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
               >
-                <div className="notification d-none d-lg-block d-xl-block"></div>
-                <i className="fa fa-bell text-white"></i>
-                <p className="d-lg-none text-white ">
-                  <strong>Notifications</strong>
-                </p>
+                <i className={"fas fa-bell "} style={{ color: "white" }}></i>
               </a>
-              <ul className="dropdown-menu dropdown-menu-right dropdown-navbar ">
-                <li className="nav-link ">
-                  <a href="#" className="nav-item dropdown-item subdropdowns">
-                    Mike John responded to your email
-                  </a>
-                </li>
-                <li className="nav-link">
-                  <a href="" className="nav-item dropdown-item subdropdowns">
-                    You have 5 more tasks
-                  </a>
-                </li>
-                <li className="nav-link">
-                  <a href="" className="nav-item dropdown-item subdropdowns">
-                    Your friend Michael is in town
-                  </a>
-                </li>
-                <li className="nav-link">
-                  <a href="" className="nav-item dropdown-item subdropdowns ">
-                    Another notification
-                  </a>
-                </li>
-                <li className="nav-link">
-                  <a href="" className="nav-item dropdown-item subdropdowns">
-                    Another one
-                  </a>
-                </li>
+              <ul className="dropdown-menu dropdown-navbar">
+                {meetings == undefined || meetings.length == 0 ? (
+                  <li className="nav-link">
+                    <a href="/" className="nav-item dropdown-item subdropdowns">
+                      No notifications
+                    </a>
+                  </li>
+                ) : (
+                  meetings.map((m) => {
+                    return (
+                      <li className="nav-link">
+                        <a
+                          href="/"
+                          className="nav-item dropdown-item subdropdowns"
+                        >
+                          You Have A Scheduled <br /> Meeting On {m.date}
+                        </a>
+                      </li>
+                    );
+                  })
+                )}
               </ul>
-            </li> */}
-
+            </li>
             <li className="dropdown nav-item">
               <a
                 href="#"
                 className="dropdown-toggle nav-link dropdownarrow"
                 data-toggle="dropdown"
               >
-                <div className="photo" >
-                  <img src={currentFile? currentFile:`${process.env.PUBLIC_URL}/assets/img/default-avatar.png`} alt="Profile Photo" width="30"
-                        height="30" style={{ objectFit: "cover" }}/>
+                <div className="photo">
+                  <img
+                    src={
+                      currentFile
+                        ? currentFile
+                        : `${process.env.PUBLIC_URL}/assets/img/default-avatar.png`
+                    }
+                    alt="Profile Photo"
+                    width="30"
+                    height="30"
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
                 <b className="caret d-none d-lg-block d-xl-block text-white"></b>
                 <p className="d-lg-none text-white">
@@ -172,29 +186,42 @@ function NavbarDashboard(props) {
                   </a>
                 </li>
                 <li className="nav-link">
-                  <a href="/profile" className="nav-item dropdown-item subdropdowns">
+                  <a
+                    href="/profile"
+                    className="nav-item dropdown-item subdropdowns"
+                  >
                     Profile
                   </a>
                 </li>
-                
+
                 <li className="dropdown-divider"></li>
                 <li className="nav-link">
-                  <a type="button" onClick={()=>{returnModel(true,"Do you really want to Logout!",true,function(ans){
-                    if(ans){
-                      Auth.logout(res=>{
-                        if(res){
-                          history.push("/");
-    
+                  <a
+                    type="button"
+                    onClick={() => {
+                      returnModel(
+                        true,
+                        "Do you really want to Logout!",
+                        true,
+                        function (ans) {
+                          if (ans) {
+                            Auth.logout((res) => {
+                              if (res) {
+                                history.push("/");
+                              }
+                            });
+                          }
                         }
-                      })
-                    }
-                  })}} className="nav-item dropdown-item subdropdowns">
+                      );
+                    }}
+                    className="nav-item dropdown-item subdropdowns"
+                  >
                     Log out
                   </a>
                 </li>
               </ul>
             </li>
-            <li className="separator d-lg-none"></li> 
+            <li className="separator d-lg-none"></li>
           </ul>
         </div>
       </div>

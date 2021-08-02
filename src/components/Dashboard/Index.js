@@ -16,6 +16,7 @@ import {
   Button,
   Alert,
   Spinner,
+  Toast,
 } from "react-bootstrap";
 
 function Index() {
@@ -49,7 +50,24 @@ function Index() {
       {!isLoading ? (
         <div className="main-panel">
           <NavbarDashboard title="Dashboard" />
+
           <div className="content">
+          
+            {/* <div
+              class="alert alert-info alert-dismissible fade show"
+              role="alert"
+            >
+              <strong>Holy guacamole!</strong> You should check in on some of
+              those fields below.
+              <button
+                type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close"
+              >
+                <i class="fa fa-times-circle mt-2"></i>
+              </button>
+            </div> */}
             <BreadCrum path={pathToPage} />
 
             <AdminCard>
