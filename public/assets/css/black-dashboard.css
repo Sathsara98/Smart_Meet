@@ -3891,7 +3891,7 @@ input[type="button"].btn-block {
   display: block;
   width: 100%;
   padding: 0.25rem 1.5rem;
-  clear: both;
+  clear: right;
   font-weight: 400;
   color: #212529;
   text-align: inherit;

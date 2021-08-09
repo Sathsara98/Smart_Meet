@@ -18,12 +18,38 @@ import {
   Spinner,
   Toast,
 } from "react-bootstrap";
-
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 function Index() {
   const [eventList, setEventList] = useState([]);
   const [event, setEvent] = useState(null);
   const [isLoading, setLoading] = useState(true);
-
+  const createNotification = (type) => {
+    return () => {
+      switch (type) {
+        case "info":
+          NotificationManager.info("Info message");
+          break;
+        case "success":
+          NotificationManager.success("Success message", "Title here");
+          break;
+        case "warning":
+          NotificationManager.warning(
+            "Warning message",
+            "Close after 3000ms",
+            3000
+          );
+          break;
+        case "error":
+          NotificationManager.error("Error message", "Click me!", 5000, () => {
+            alert("callback");
+          });
+          break;
+      }
+    };
+  };
   const pathToPage = ["Home", "Admin", "Dashboard"];
   useEffect(() => {
     loadEvents();
@@ -46,13 +72,13 @@ function Index() {
   };
   return (
     <div className="wrapper">
+      {NotificationManager.info("Info message")}
       <SideBar dashboard={true} />
       {!isLoading ? (
         <div className="main-panel">
           <NavbarDashboard title="Dashboard" />
 
           <div className="content">
-          
             {/* <div
               class="alert alert-info alert-dismissible fade show"
               role="alert"

@@ -129,7 +129,10 @@ function NavbarDashboard(props) {
               >
                 <i className={"fas fa-bell "} style={{ color: "white" }}></i>
               </a>
-              <ul className="dropdown-menu dropdown-navbar">
+              <ul
+                className="dropdown-menu dropdown-navbar"
+                style={{ marginRight: 80 }}
+              >
                 {meetings == undefined || meetings.length == 0 ? (
                   <li className="nav-link">
                     <a href="/" className="nav-item dropdown-item subdropdowns">
@@ -145,6 +148,9 @@ function NavbarDashboard(props) {
                           className="nav-item dropdown-item subdropdowns"
                         >
                           You Have A Scheduled <br /> Meeting On {m.date}
+                          {m.time.match(/.{1,13}/g)[1]}
+                          {" at "}
+                          {m.time.match(/.{1,13}/g)[0]}
                         </a>
                       </li>
                     );
