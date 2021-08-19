@@ -16,7 +16,12 @@ function Login() {
       .required("Email is required!"),
     password: yup.string().required("Password is required!"),
   });
-
+  const schema2 = yup.object({
+    email: yup
+      .string()
+      .email("Invalid Email : Ex example@example.com")
+      .required("Email is required!"),
+  });
   const login = async (event) => {
     console.log(event);
 
@@ -46,11 +51,39 @@ function Login() {
       console.log(e);
     }
   };
+
+  const reset = async (event) => {
+    console.log(event.email);
+
+    try {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: event.email,
+        }),
+      };
+      const res = await fetch(
+        "http://localhost:5000/users/forget",
+        requestOptions
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+
+      if (data) {
+        setRedirect(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   if (redirect) {
-    return <Redirect to="/addquestion" />;
+    return <Redirect to="/login" />;
   }
   return (
-    <div >
+    <div>
       <Navbar varient="transparent" />
       {/* Mobiles only */}
       <div className="login-cover1 center d-block d-sm-none position-absolute vh-100">
@@ -117,7 +150,7 @@ function Login() {
                 </h3>
                 <Formik
                   validationSchema={schema}
-                  onSubmit={login}
+                  onSubmit={reset}
                   initialValues={{
                     password: "",
                     email: "",
@@ -132,10 +165,10 @@ function Login() {
                     isValid,
                     errors,
                   }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridPassword">
-                  <div
+                    <Form noValidate onSubmit={reset}>
+                      <Form.Row>
+                        <Form.Group as={Col} controlId="formGridPassword">
+                          <div
                             className="d-flex align-items-center justify-content-between p-1 mt-4"
                             style={{
                               boxShadow:
@@ -158,40 +191,41 @@ function Login() {
                                 alt="Card image cap"
                               />
                             </div>
-                    
-                    <Form.Control
-                    style={{
-                      border: 0,
-                      padding: "20px",
-                      borderRadius: "50px 50px 50px 50px",
-                    }}
-                      className="form-control-lg  col-8"
-                      required
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isInvalid={!!errors.email}
-                      isValid={touched.email && !errors.email}
-                    />
-                    </div>
-                    <div className="text-center p-1 text-danger">
-                      {errors.email}
-                      </div>
-                  </Form.Group>
-                </Form.Row>
 
-                {error != "" ? (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                ) : null}
+                            <Form.Control
+                              style={{
+                                border: 0,
+                                padding: "20px",
+                                borderRadius: "50px 50px 50px 50px",
+                              }}
+                              className="form-control-lg  col-8"
+                              required
+                              name="email"
+                              type="email"
+                              placeholder="Enter your email"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              isInvalid={!!errors.email}
+                              isValid={touched.email && !errors.email}
+                            />
+                          </div>
+                          <div className="text-center p-1 text-danger">
+                            {errors.email}
+                          </div>
+                        </Form.Group>
+                      </Form.Row>
 
-                <center>
-                <Button
+                      {error != "" ? (
+                        <div className="alert alert-danger" role="alert">
+                          {error}
+                        </div>
+                      ) : null}
+
+                      <center>
+                        <Button
                           className="mt-2 mx-auto btnPrimary login-button"
                           type="submit"
+                          // onClick={reset}
                         >
                           <span
                             id="loginButton"
@@ -205,9 +239,9 @@ function Login() {
                             </h4>
                           </span>
                         </Button>
-                </center>
-              </Form>
-                    )}
+                      </center>
+                    </Form>
+                  )}
                 </Formik>
               </div>
             </div>
@@ -215,9 +249,9 @@ function Login() {
         </div>
       </div>
       {/* For all large screens */}
-      <div className="login-cover center d-none d-md-block position-fixed" >  
-      <div className="d-flex vh-100 justify-content-center align-items-center ">
-      <div
+      <div className="login-cover center d-none d-md-block position-fixed">
+        <div className="d-flex vh-100 justify-content-center align-items-center ">
+          <div
             className="col-12 col-md-6 w-100 p-0 "
             style={{ borderRadius: "0px 0px 50px 0px" }}
           >
@@ -226,7 +260,6 @@ function Login() {
                 <div>
                   <Button
                     className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons1"
-                   
                     href="/forget"
                   >
                     <span
@@ -263,37 +296,40 @@ function Login() {
               </div>
             </div>
           </div>
-      <div className="col-12 col-md-6  col-sm-12 p-0 ">
-      <div className="d-flex justify-content-center col align-items-center">
-        <div className="container login-box"  style={{
+          <div className="col-12 col-md-6  col-sm-12 p-0 ">
+            <div className="d-flex justify-content-center col align-items-center">
+              <div
+                className="container login-box"
+                style={{
                   backgroundColor: "rgba(255,255,255,0.7)",
                   marginTop: "5px",
                   marginBottom: "5px",
                   borderRadius: "15px 15px 15px 15px",
-                }}>
-        <h3 className="text-center" style={{ color: "#003A5C" }}>
-                  Enter your login details
+                }}
+              >
+                <h3 className="text-center" style={{ color: "#003A5C" }}>
+                  Enter your Email
                 </h3>
-          <Formik
-            validationSchema={schema}
-            onSubmit={login}
-            initialValues={{
-              email: "",
-            }}
-          >
-            {({
-              handleSubmit,
-              handleChange,
-              handleBlur,
-              values,
-              touched,
-              isValid,
-              errors,
-            }) => (
-              <Form noValidate onSubmit={handleSubmit}>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridPassword">
-                  <div
+                <Formik
+                  validationSchema={schema2}
+                  onSubmit={reset}
+                  initialValues={{
+                    email: "",
+                  }}
+                >
+                  {({
+                    handleSubmit,
+                    handleChange,
+                    handleBlur,
+                    values,
+                    touched,
+                    isValid,
+                    errors,
+                  }) => (
+                    <Form noValidate onSubmit={handleSubmit}>
+                      <Form.Row>
+                        <Form.Group as={Col} controlId="formGridPassword">
+                          <div
                             className="d-flex align-items-center justify-content-between p-1 mt-4"
                             style={{
                               boxShadow:
@@ -316,38 +352,39 @@ function Login() {
                                 alt="Card image cap"
                               />
                             </div>
-                    
-                    <Form.Control
-                    style={{
-                      border: 0,
-                      padding: "20px",
-                      borderRadius: "50px 50px 50px 50px",
-                    }}
-                      className="form-control-lg  col-8"
-                      required
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      isInvalid={!!errors.email}
-                      isValid={touched.email && !errors.email}
-                    />
-                    </div>
-                    <div className="text-center p-1 text-danger">
-                      {errors.email}
-                      </div>
-                  </Form.Group>
-                </Form.Row>
 
-                {error != "" ? (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                ) : null}
+                            <Form.Control
+                              style={{
+                                border: 0,
+                                padding: "20px",
+                                borderRadius: "50px 50px 50px 50px",
+                              }}
+                              className="form-control-lg  col-8"
+                              required
+                              value={values.email}
+                              name="email"
+                              type="email"
+                              placeholder="Enter your email"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              isInvalid={!!errors.email}
+                              isValid={touched.email && !errors.email}
+                            />
+                          </div>
+                          <div className="text-center p-1 text-danger">
+                            {errors.email}
+                          </div>
+                        </Form.Group>
+                      </Form.Row>
 
-                <center>
-                <Button
+                      {error != "" ? (
+                        <div className="alert alert-success" role="alert">
+                          {error}
+                        </div>
+                      ) : null}
+
+                      <center>
+                        <Button
                           className="mt-2 mx-auto btnPrimary login-button"
                           type="submit"
                         >
@@ -363,25 +400,20 @@ function Login() {
                             </h4>
                           </span>
                         </Button>
-                </center>
-              </Form>
-            )}
-          </Formik>
+                      </center>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    
-      </div>
-     
-        
-        </div>
-        
-        </div>
-        <div className="position-fixed " style={{ right: "0",zIndex: "1071"  }}>
+      <div className="position-fixed " style={{ right: "0", zIndex: "1071" }}>
         <div className="d-flex flex-column  justify-content-start align-items-end z-index-10">
           <div>
             <Button
               className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons"
-             
               href="/"
             >
               <span
@@ -401,5 +433,4 @@ function Login() {
   );
 }
 
-export default Login; 
-                      
+export default Login;
