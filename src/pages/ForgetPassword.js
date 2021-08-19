@@ -4,11 +4,12 @@ import { Navbar } from "../components";
 import "./Login.css";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { Container, Form, Col, Row, Button } from "react-bootstrap";
+import { Container, Form, Col, Row, Button, Modal } from "react-bootstrap";
 import logo from "../assets/logo.png";
 function Login() {
   const [error, setError] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [show, setShow] = useState(false);
   const schema = yup.object({
     email: yup
       .string()
@@ -51,7 +52,10 @@ function Login() {
       console.log(e);
     }
   };
-
+  const handleClose = () => {
+    setShow(false);
+    setRedirect(true);
+  };
   const reset = async (event) => {
     console.log(event.email);
 
@@ -73,7 +77,7 @@ function Login() {
       console.log(data);
 
       if (data) {
-        setRedirect(true);
+        setShow(true);
       }
     } catch (e) {
       console.log(e);
@@ -429,6 +433,38 @@ function Login() {
           </div>
         </div>
       </div>
+      <Modal
+        show={show}
+        size="lg"
+        onHide={() => handleClose()}
+        backdrop="static"
+        keyboard={false}
+        scrollable={true}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Modal.Header closeButton onClick={() => handleClose()}></Modal.Header>
+        <Modal.Body>
+          {" "}
+          <h2>Your Password Has Been Reset</h2>
+          <h3>An Email Containing Your New Password has been sent to you.</h3>
+          <Button
+            className="mt-2 mx-auto btnPrimary login-button"
+            onClick={() => handleClose()}
+          >
+            <span
+              id="loginButton"
+              className="pr-5 pl-5 pb-0 pt-0 mb-0 mt-0 text-strong font-weight-bold "
+            >
+              <h4
+                className="text-shadow pb-0 pt-0 mb-0 mt-0"
+                style={{ fontSize: "1.4em" }}
+              >
+                <strong> Done</strong>
+              </h4>
+            </span>
+          </Button>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
