@@ -3,6 +3,7 @@ import profile from "../assets/profile.png";
 import { Card } from "react-bootstrap";
 function MeetingMember(props) {
   var name = props.name.split(" ");
+  var userImage = "http://localhost:5000/"+props.obj.userImage;
   return (
     <div className="p-1 memberCards">
       <Card
@@ -13,8 +14,14 @@ function MeetingMember(props) {
           margin: "5px",
         }}
       >
-        <Card.Img variant="top" src={props.obj.userImage?props.obj.userImage:profile} />
-
+        <Card.Img
+          variant="top"
+          className="rounded-circle"
+          width="80"
+          height="80"
+          style={{ objectFit: "cover" }}
+          src={props.obj.userImage ? userImage : profile}
+        />
         <Card.Title className="text-center pb-0 mb-0">{name[0]}</Card.Title>
         <Card.Title className="text-center mb-2 pt-0">
           <b>{props.sector}</b>
