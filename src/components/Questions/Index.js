@@ -1260,7 +1260,9 @@ function Index() {
                 <Row>
                   <Container as={Col}>
                     <h4 className="text-center p-0 m-0">
-                      <strong>Developing area - {maxArea}</strong>
+                      {questions.length>0?(
+                        <strong>Developing area - {maxArea}</strong>):null
+                      }
                     </h4>
                   </Container>
                 </Row>

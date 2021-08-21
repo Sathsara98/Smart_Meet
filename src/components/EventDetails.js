@@ -58,7 +58,7 @@ function EventDetails(props) {
                   <Form.Label>Venue Location</Form.Label>
                   <br />
                   <a
-                    className="btn btnPrimary"
+                    className="btn btnPrimary btn-secondary"
                     href={props.event.location}
                     target="new"
                   >
@@ -102,7 +102,7 @@ function EventDetails(props) {
                     {props.event.members != null ? (
                       props.event.members.map((e) => {
                         return (
-                          <MeetingMember name={e.name} sector={e.sector} />
+                          <MeetingMember name={e.name} sector={e.sector} obj={e} />
                         );
                       })
                     ) : (

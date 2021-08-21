@@ -637,7 +637,7 @@ class AddEvents extends Component {
                       {this.state.meetingMembers != null ? (
                         this.state.meetingMembers.map((e) => {
                           return (
-                            <MeetingMember name={e.name} sector={e.sector} />
+                            <MeetingMember name={e.name} sector={e.sector} obj={e}/>
                           );
                         })
                       ) : (

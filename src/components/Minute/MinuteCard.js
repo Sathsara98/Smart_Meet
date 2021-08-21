@@ -8,7 +8,6 @@ import {
   Alert,
   Modal,
 } from "react-bootstrap";
-import backImg from "../../assets/home_page/metal.jpg";
 function MinuteCard(props) {
   return (
     <Card
@@ -21,18 +20,18 @@ function MinuteCard(props) {
       <Row>
         <Card.Body>
           <div
-            className=" col-3 float-left"
+            className=" col-2 float-left"
             style={{
               borderRadius: "20px",
               overflow: "auto",
             }}
           >
-            <img className="  " src={backImg} alt="Card image cap"></img>
+            <img className="  " width="150px" src={`${process.env.PUBLIC_URL}/assets/img/minute.jpg`} alt="Card image cap"></img>
           </div>
-          <div className="col-9 float-right" style={{ fontWeight: "bolder" }}>
-            <div style={{ textAlign: "left", marginLeft: "7%" }}>
+          <div className="col-10 float-right d-flex justify-content-between align-items-center p-3" style={{ fontWeight: "bolder" }}>
+            <div style={{ textAlign: "left", marginLeft: "0" }}>
               <h4 style={{ fontWeight: "bold" }}>
-                Meeting Name : {props.minute.meeting_name}
+                Meeting Name : <span style={{ textTransform: 'uppercase'}}>{ props.minute.meeting_name}</span>
               </h4>
               <h4 style={{ fontWeight: "bold" }}>
                 Meeting Date<span style={{ color: "transparent" }}>d</span> :{" "}
@@ -42,14 +41,16 @@ function MinuteCard(props) {
                 Meeting Venue : {props.minute.meeting_venue}
               </h4>
             </div>
+            <div className="align-self-end">
             <Button
-              variant="info"
+              variant="light"
               className="btnPrimary float-right"
               type="submit"
               onClick={() => props.more(props.minute)}
             >
               More
             </Button>
+              </div>
           </div>
 
           {/* <Card.Text>sss</Card.Text> */}

@@ -100,10 +100,16 @@ const ManageMembers = () => {
               <div className="row mb-2">
                 <div className="col-md">
                   <div className="d-flex justify-content-end">
-                    {Auth?.getUserLevel()!=="Committee Member" && Auth?.getUserLevel()!=="Committee Secretary" ?(<Button variant="custom" onClick={handleShow}>
-                      <i className="tim-icons fas fa-plus" /> Add New User
-                    </Button>):null}
-                    
+                    {Auth?.getUserLevel() !== "Committee Member" &&
+                    Auth?.getUserLevel() !== "Committee Secretary" ? (
+                      <Button
+                        variant="info"
+                        className="btnPrimary "
+                        onClick={handleShow}
+                      >
+                        <i className="tim-icons fas fa-plus" /> Add New User
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </div>

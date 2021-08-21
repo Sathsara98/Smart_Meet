@@ -11,7 +11,7 @@ function Index() {
   const pathToPage = ["Home", "Admin", "Not Available"];
   return (
     <div className="wrapper">
-      <SideBar dashboard={true} />
+      <SideBar notAvailable={true} />
       <div className="main-panel">
         <NavbarDashboard title="Dashboard" />
         <div className="content">

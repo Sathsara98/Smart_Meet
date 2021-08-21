@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../../assets/logo.png";
 // import "./SideBar.css";
+import Auth from "../../authentication/Auth";
 
 function SideBar(props) {
   return (
@@ -28,12 +29,13 @@ function SideBar(props) {
             </a>
           </li>
 
-          <li className={props.questions == true ? "active" : ""}>
-            <a href="/addquestion">
-              <i className="fa fa-question"></i>
-              <p>Questions</p>
-            </a>
-          </li>
+          {Auth?.getUserLevel()==="Administrator" ?(
+            <li className={props.questions == true ? "active" : ""}>
+              <a href="/addquestion">
+                <i className="fa fa-question"></i>
+                <p>Questions</p>
+              </a>
+          </li>):null}
           <li className={props.events == true ? "active" : ""}>
             <a href="/events">
               <i className="fa fa-calendar"></i>

@@ -131,7 +131,8 @@ const ManageEvents = () => {
                   <div className="d-flex justify-content-end">
                     {Auth?.getUserLevel() !== "Committee Member" &&
                     Auth?.getUserLevel() !== "Committee Secretary" ? (
-                      <Button variant="custom" onClick={handleShow}>
+                      <Button variant="info"
+                      className="btnPrimary " onClick={handleShow}>
                         <i className="tim-icons fas fa-plus" /> Add New Event
                       </Button>
                     ) : null}

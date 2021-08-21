@@ -13,7 +13,7 @@ function MeetingMember(props) {
           margin: "5px",
         }}
       >
-        <Card.Img variant="top" src={profile} />
+        <Card.Img variant="top" src={props.obj.userImage?props.obj.userImage:profile} />
 
         <Card.Title className="text-center pb-0 mb-0">{name[0]}</Card.Title>
         <Card.Title className="text-center mb-2 pt-0">
