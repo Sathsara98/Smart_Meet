@@ -13,6 +13,8 @@ import ForgetPassword from "./pages/ForgetPassword";
 import Dashboard from "./components/Dashboard/Index";
 import Print from "./components/Print";
 import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -24,63 +26,26 @@ function App() {
   return (
     <Router>
       <Switch>
-        {/* <Route path="/sp/:id">
-              <NavBar />
-              <SingleProduct />
-            </Route> */}
-        {/* <Route path="/sp/:id" component={SingleProduct} /> */}
-        <Route path="/addmembers">
-          <ManageMembers />
-        </Route>
-        <Route path="/events">
-          <ManageEvents />
-        </Route>
-        <Route path="/managemembers/:type">
-          {/* <Navbar /> */}
-          <ViewMembers />
-        </Route>
-        <Route path="/addquestion">
-          <AddQuestion />
-        </Route>
         <Route path="/test">
           <Print />
         </Route>
-
-        {/* <Route
-          path="/logout"
-          render={() => {
-            Auth.logout();
-            return (
-              <Wrapper>
-                <NavBar /> <Home />
-              </Wrapper>
-            );
-          }}
-        /> */}
-
-        {/* <PrivateRoute
-              path="/StoreManagerPage"
-              component={StoreManagerPage}
-              role="sm"
-            /> */}
+        <PrivateRoute path="/events" component={ManageEvents} />
+        <PrivateRoute path="/addmembers" component={ManageMembers} />
+        <PrivateRoute path="/managemembers/:type" component={ViewMembers} />
+        <PrivateRoute path="/addquestion" component={AddQuestion} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/minute" component={Minute} />
+        <PrivateRoute path="/notAvailable" component={NotAvailable} />
+        <PrivateRoute path="/profile" component={Profile} />
         <Route path="/login">
           <Login />
         </Route>
         <Route path="/forget">
           <ForgetPassword />
         </Route>
-        <Route path="/dashboard">
+        {/* <Route path="/dashboard">
           <Dashboard />
-        </Route>
-        <Route path="/minute">
-          <Minute />
-        </Route>
-        <Route path="/notAvailable">
-          <NotAvailable />
-        </Route>
-        <Route path="/profile">
-          <Profile />
-        </Route>
+        </Route> */}
         <Route path="*">
           <HomePage />
         </Route>
