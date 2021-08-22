@@ -51,6 +51,7 @@ function EditMinuteMembers() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
+  const [isAttended, setIsAttended] = useState(false);
   const schema = yup.object({
     name: yup.string("Must be a date!").required("Name is required!"),
     date: yup.string().required("Date is required!"),
@@ -106,10 +107,46 @@ function EditMinuteMembers() {
       })
       .then(function (minute) {
         ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
+        fetchSingleUser(minute);
       })
       .catch((error) => console.log(error));
     setLoading(false);
   };
+  
+  const fetchSingleUser = async (meeting) => {
+    console.log(meeting);
+    fetch(`http://localhost:5000/users/register/user`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: Auth?.getUserId(),
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response[0].sector === "Public") {
+          if (meeting.present_public.includes(response[0].name)) {
+            setIsAttended(true);
+          }
+        } else if (response[0].sector === "Private") {
+          if (meeting.present_private.includes(response[0].name)) {
+            setIsAttended(true);
+          }
+        } else if (response[0].sector === "Association") {
+          if (meeting.present_association.includes(response[0].name)) {
+            setIsAttended(true);
+          }
+        } else if (response[0].sector === "Academic") {
+          if (meeting.present_academic.includes(response[0].name)) {
+            setIsAttended(true);
+          }
+        }
+        console.log(meeting.present_association);
+      })
+
+      .catch((error) => console.log(error));
+  };
+
   const ratingChanged = (newRating) => {
     return newRating;
   };
@@ -220,6 +257,13 @@ function EditMinuteMembers() {
   //     setStars(stars);
   //   }
   // };
+  if(!isAttended){
+    return(
+      <div>
+        <h4 className="text-center">You have Zero Attended Meetings</h4>
+      </div>
+    )
+  }
   return (
     <div>
       {!isLoading ? (

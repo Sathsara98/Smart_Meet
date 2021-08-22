@@ -131,17 +131,33 @@ const ManageEvents = () => {
                   <div className="d-flex justify-content-end">
                     {Auth?.getUserLevel() !== "Committee Member" &&
                     Auth?.getUserLevel() !== "Committee Secretary" ? (
-                      <Button variant="info"
-                      className="btnPrimary " onClick={handleShow}>
+                      <Button
+                        variant="info"
+                        className="btnPrimary "
+                        onClick={handleShow}
+                      >
                         <i className="tim-icons fas fa-plus" /> Add New Event
                       </Button>
                     ) : null}
                   </div>
                   {eventList != null
                     ? eventList.map((ev, index) => {
-                        return (
-                          <Event key={index} event={ev} more={showDetails} />
-                        );
+                        var isIn = false;
+                        ev.members.forEach((element) => {
+                          if (Auth?.getUserLevel() != "Committee Member") {
+                            isIn = true;
+                          } else if (
+                            Auth?.getUserLevel() === "Committee Member" &&
+                            element._id === Auth?.getUserId()
+                          ) {
+                            isIn = true;
+                          }
+                        });
+                        if (isIn) {
+                          return (
+                            <Event key={index} event={ev} more={showDetails} />
+                          );
+                        }
                       })
                     : null}
                 </div>
