@@ -45,7 +45,7 @@ class AddEvents extends Component {
       day: null,
       loadingDevArea: false,
       devArea: null,
-      meetingMembers: null,
+      meetingMembers: [],
       error: "",
       showError: false,
       questions: [],
@@ -53,6 +53,8 @@ class AddEvents extends Component {
     // this.handleClick = this.handleClick.bind(this);
     this.fetchQuestions = this.fetchQuestions.bind(this);
   }
+
+  membersToAdd = [];
 
   fetchUsers = async () => {
     fetch(`http://localhost:5000/users/usersnat/`, {
@@ -148,9 +150,9 @@ class AddEvents extends Component {
     }
     return day;
   }
-
+  //fetchUsers ->  getSlotFromIndex -> getMembers
   getMembers = (slot, da) => {
-    var members = [];
+    // var members = [];
     var publicS = 0;
     var privateS = 0;
     var associate = 0;
@@ -206,7 +208,8 @@ class AddEvents extends Component {
         if (x == 0 && i == privateS) {
           break;
         }
-        if (x == 1 && i == publicS) {
+        if (x == 1) {
+          this.loadPublicMembers(publicS, slot);
           break;
         }
         if (x == 2 && i == academic) {
@@ -215,12 +218,38 @@ class AddEvents extends Component {
         if (x == 3 && i == associate) {
           break;
         }
-        members.push(availableMembers[x][i]);
+        this.membersToAdd.push(availableMembers[x][i]);
       }
     }
 
-    console.log(members);
-    this.setState({ meetingMembers: members });
+    console.log(this.membersToAdd);
+    this.setState({ meetingMembers: this.membersToAdd });
+  };
+
+  loadPublicMembers = (count, slot) => {
+    var secMembers = this.state.usersNat.filter(function (el) {
+      return (
+        el.sector == "Public" &&
+        el.nat[slot] == 0 &&
+        el.utype == "Committee Secretary"
+      );
+    });
+
+    var otherMembers = this.state.usersNat.filter(function (el) {
+      return el.sector == "Public" && el.nat[slot] == 0;
+    });
+
+    if (secMembers.length == 0) {
+      console.log("Secretaries Are Busy Find Next Slot");
+    } else {
+      this.membersToAdd.push(secMembers[0]);
+      count = count - 1;
+      for (var i = 0; i < otherMembers.length; i++) {
+        if (count > i) {
+          this.membersToAdd.push(otherMembers[i]);
+        }
+      }
+    }
   };
   calculateBestTime = () => {
     this.setState({ loading: true }, this.fetchUsers);
@@ -634,10 +663,15 @@ class AddEvents extends Component {
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Members</Form.Label>
                     <div className="row col-12 m-auto">
-                      {this.state.meetingMembers != null ? (
+                      {this.state.meetingMembers != null &&
+                      this.state.meetingMembers.length != 0 ? (
                         this.state.meetingMembers.map((e) => {
                           return (
-                            <MeetingMember name={e.name} sector={e.sector} obj={e}/>
+                            <MeetingMember
+                              name={e.name}
+                              sector={e.sector}
+                              obj={e}
+                            />
                           );
                         })
                       ) : (
