@@ -22,6 +22,8 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
+import Auth from "../../authentication/Auth";
+
 function Index() {
   const [eventList, setEventList] = useState([]);
   const [event, setEvent] = useState(null);
@@ -64,8 +66,26 @@ function Index() {
     })
       .then((res) => res.json())
       .then((response) => {
-        setEventList(response);
-        console.log(response);
+        
+        //Filter event tht involves the logged user
+        if (Auth.getUserLevel() === "Committee Member") {
+          var eventArr = [];
+          response.map(function (el) {
+            var isUser = false;
+            el.members.forEach((element) => {
+              console.log(Auth?.getUserId() == element._id);
+              if (Auth?.getUserId() == element._id) {
+                isUser = true;
+              }
+            });
+            if (isUser) {
+              eventArr.push(el);
+            }
+          });
+          setEventList(eventArr);
+        } else {
+          setEventList(response);
+        }
       })
       .catch((error) => console.log(error));
     setLoading(false);
