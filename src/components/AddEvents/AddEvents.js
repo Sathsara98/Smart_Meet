@@ -55,6 +55,11 @@ class AddEvents extends Component {
   }
 
   membersToAdd = [];
+  arr2d = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ];
+  minIndex = 0;
 
   fetchUsers = async () => {
     fetch(`http://localhost:5000/users/usersnat/`, {
@@ -81,25 +86,26 @@ class AddEvents extends Component {
   };
 
   calculateNatArray = () => {
-    var arr2d = [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
-
     this.state.usersNat.map((arr, i) => {
       var nats = arr.nat;
       for (var i = 0; i < 40; i++) {
-        arr2d[i] = nats[i] + arr2d[i];
+        this.arr2d[i] = nats[i] + this.arr2d[i];
       }
     });
 
-    var minIndex = arr2d.reduce(function (highestIndex, element, index, array) {
+    this.minIndex = this.arr2d.reduce(function (
+      highestIndex,
+      element,
+      index,
+      array
+    ) {
       return element < array[highestIndex] ? index : highestIndex;
-    }, 0);
+    },
+    0);
 
-    console.log(arr2d);
-    console.log(minIndex);
-    this.getSlotFromIndex(minIndex);
+    console.log(this.arr2d);
+    console.log(this.minIndex);
+    this.getSlotFromIndex(this.minIndex);
   };
 
   getSlotFromIndex = (x) => {
@@ -241,6 +247,8 @@ class AddEvents extends Component {
 
     if (secMembers.length == 0) {
       console.log("Secretaries Are Busy Find Next Slot");
+      this.arr2d[this.minIndex] = 99999;
+      this.calculateNatArray();
     } else {
       this.membersToAdd.push(secMembers[0]);
       count = count - 1;
