@@ -1275,6 +1275,14 @@ function Index() {
                 show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
                 ref={childRef}
               ></ViewQuestion>
+              <Button
+                href="/events/true"
+                variant="info"
+                className="btnPrimary float-right"
+                type="link"
+              >
+              Submit All
+            </Button>
             </AdminCard>
           </div>
         </div>

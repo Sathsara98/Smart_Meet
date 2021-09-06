@@ -23,9 +23,12 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import backImg from "../assets/home_page/metal.jpg";
 import Auth from "../authentication/Auth";
+import { useParams } from "react-router";
 
 const ManageEvents = () => {
-  const [show, setShow] = useState(false);
+  const { isOpen } = useParams();
+  const [show, setShow] = useState(isOpen==="true"?true:false);
+  
   const handleClose = () => {
     setShow(false);
     loadMembers();

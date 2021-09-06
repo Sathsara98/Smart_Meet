@@ -29,7 +29,7 @@ function App() {
         <Route path="/test">
           <Print />
         </Route>
-        <PrivateRoute path="/events" component={ManageEvents} />
+        <PrivateRoute path="/events/:isOpen?" component={ManageEvents} />
         <PrivateRoute path="/addmembers" component={ManageMembers} />
         <PrivateRoute path="/managemembers/:type" component={ViewMembers} />
         <PrivateRoute path="/addquestion" component={AddQuestion} />
