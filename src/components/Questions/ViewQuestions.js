@@ -61,7 +61,7 @@ const ViewQuestions = forwardRef((props, ref) => {
               body: JSON.stringify({ id: id }),
             };
             await fetch(
-              "http://localhost:5000/admin/questions",
+              `${process.env.REACT_APP_BACKEND_URL}/admin/questions`,
               requestOptions
             );
 
@@ -92,7 +92,7 @@ const ViewQuestions = forwardRef((props, ref) => {
           message: ques[0].body,
         }),
       };
-      await fetch("http://localhost:5000/admin/questions", requestOptions);
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`, requestOptions);
       props.show(true, "Question has updated!", false, function (res) {});
       editComment(ques[0]._id);
     } catch (e) {

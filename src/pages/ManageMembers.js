@@ -47,7 +47,7 @@ const ManageMembers = () => {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/register",
+        `${process.env.REACT_APP_BACKEND_URL}/users/register`,
         requestOptions
       );
 

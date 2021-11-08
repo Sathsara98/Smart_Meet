@@ -49,7 +49,7 @@ const ManageEvents = () => {
   const [event, setEvent] = useState(null);
 
   const loadMembers = () => {
-    fetch(`http://localhost:5000/events/all/`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",

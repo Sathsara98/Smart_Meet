@@ -7,7 +7,7 @@ function MemberRatio() {
   const [stats, setStats] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/users/stats/`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/stats/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",

@@ -27,7 +27,7 @@ function AddQuestions(props) {
             question: question,
           }),
         };
-        await fetch("http://localhost:5000/admin/new-question", requestOptions);
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/new-question`, requestOptions);
 
         setQuestion("");
         props.onChange();

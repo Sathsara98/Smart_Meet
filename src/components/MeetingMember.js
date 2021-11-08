@@ -3,7 +3,7 @@ import profile from "../assets/profile.png";
 import { Card } from "react-bootstrap";
 function MeetingMember(props) {
   var name = props.name.split(" ");
-  var userImage = "http://localhost:5000/"+props.obj.userImage;
+  var userImage = `${process.env.REACT_APP_BACKEND_URL}/`+props.obj.userImage;
   return (
     <div className="p-1 memberCards">
       <Card

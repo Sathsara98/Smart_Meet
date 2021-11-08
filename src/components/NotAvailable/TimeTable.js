@@ -11,7 +11,7 @@ function TimeTable() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/users/register/` + Auth.getUserId(), {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + Auth.getUserId(), {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -56,7 +56,7 @@ function TimeTable() {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/nat",
+        `${process.env.REACT_APP_BACKEND_URL}/users/nat`,
         requestOptions
       );
 

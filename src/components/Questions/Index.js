@@ -37,7 +37,7 @@ function Index() {
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/admin/questions")
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`)
         .then(function (response) {
           return response.json();
         })
@@ -53,7 +53,7 @@ function Index() {
             };
 
             const res1 = await fetch(
-              "http://localhost:5000/admin/developing-area",
+              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
               requestOptions
             );
             const data1 = await res1.json();

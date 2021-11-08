@@ -58,7 +58,7 @@ function Index() {
   }, []);
   const loadEvents = async () => {
     setLoading(true);
-    await fetch(`http://localhost:5000/events/all/`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",

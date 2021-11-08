@@ -144,7 +144,7 @@ function AddMinute(props) {
   };
 
   const loadMembers = () => {
-    fetch("http://localhost:5000/users/register/", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -190,7 +190,7 @@ function AddMinute(props) {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/admin/new-minute",
+        `${process.env.REACT_APP_BACKEND_URL}/admin/new-minute`,
         requestOptions
       );
 

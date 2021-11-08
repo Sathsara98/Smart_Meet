@@ -49,7 +49,7 @@ function Index() {
   }, []);
 
   const loadMinutes = async () => {
-    const res = await fetch("http://localhost:5000/admin/minutes/")
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minutes/`)
       .then(function (response) {
         return response.json();
       })

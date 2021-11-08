@@ -75,7 +75,7 @@ const EditMinute1 = forwardRef((props, ref) => {
   }, []);
 
   const loadMembers = () => {
-    fetch("http://localhost:5000/users/register/", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -210,7 +210,7 @@ const EditMinute1 = forwardRef((props, ref) => {
           }),
         };
         const res = await fetch(
-          "http://localhost:5000/admin/minute",
+          `${process.env.REACT_APP_BACKEND_URL}/admin/minute`,
           requestOptions
         );
 
@@ -246,7 +246,7 @@ const EditMinute1 = forwardRef((props, ref) => {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ id: props.minute._id }),
             };
-            await fetch("http://localhost:5000/admin/minute", requestOptions);
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minute`, requestOptions);
             alert("Deleted");
             props.load();
             props.close();

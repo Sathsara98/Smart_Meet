@@ -78,7 +78,7 @@ function EditMinuteMembers() {
   }, []);
   const loadLatestMinute = async () => {
     setLoading(true);
-    const res = await fetch("http://localhost:5000/admin/newest-minute/")
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
       .then(function (response) {
         return response.json();
       })
@@ -115,7 +115,7 @@ function EditMinuteMembers() {
   
   const fetchSingleUser = async (meeting) => {
     console.log(meeting);
-    fetch(`http://localhost:5000/users/register/user`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -228,7 +228,7 @@ function EditMinuteMembers() {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/admin/minute-each",
+        `${process.env.REACT_APP_BACKEND_URL}/admin/minute-each`,
         requestOptions
       );
 

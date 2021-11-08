@@ -36,7 +36,7 @@ function Login() {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/login",
+        `${process.env.REACT_APP_BACKEND_URL}/users/login`,
         requestOptions
       );
 
@@ -68,7 +68,7 @@ function Login() {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/forget",
+        `${process.env.REACT_APP_BACKEND_URL}/users/forget`,
         requestOptions
       );
 

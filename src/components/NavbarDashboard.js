@@ -13,7 +13,7 @@ function NavbarDashboard(props) {
     loadMeetings();
   }, []);
   const loadUser = async () => {
-    fetch(`http://localhost:5000/users/register/` + Auth.getUserId(), {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + Auth.getUserId(), {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -23,14 +23,14 @@ function NavbarDashboard(props) {
       .then((res) => res.json())
       .then((response) => {
         if (response.userImage != null) {
-          setCurrentFile("http://localhost:5000/" + response.userImage);
+          setCurrentFile(`${process.env.REACT_APP_BACKEND_URL}/` + response.userImage);
         }
       })
       .catch((error) => console.log(error));
   };
 
   const loadMeetings = async () => {
-    fetch(`http://localhost:5000/users/getMeetings/`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/getMeetings/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -128,7 +128,7 @@ export default function Index() {
     setWorkplace(e.target.value);
   };
   const loadUser = async () => {
-    fetch(`http://localhost:5000/users/register/` + Auth.getUserId(), {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + Auth.getUserId(), {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -139,7 +139,7 @@ export default function Index() {
       .then((response) => {
         setUser(response);
         if(response.userImage!=null){
-          setCurrentFileShow("http://localhost:5000/" + response.userImage);
+          setCurrentFileShow(`${process.env.REACT_APP_BACKEND_URL}/` + response.userImage);
         }
         
         setPreFileShow(response.userImage);
@@ -164,7 +164,7 @@ export default function Index() {
 
       console.log(preFileShow);
       axios
-        .put("http://localhost:5000/users/user-image", sinfile)
+        .put(`${process.env.REACT_APP_BACKEND_URL}/users/user-image`, sinfile)
         .then((res) => {
           setEditImg(false);
           setIsImgUploading(false);
@@ -207,7 +207,7 @@ export default function Index() {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/register",
+        `${process.env.REACT_APP_BACKEND_URL}/users/register`,
         requestOptions
       )
         .then((res) => res.json())

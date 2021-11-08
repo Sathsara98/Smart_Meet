@@ -51,7 +51,7 @@ function ViewMembers(props) {
         }),
       };
       const res = await fetch(
-        "http://localhost:5000/users/delete",
+        `${process.env.REACT_APP_BACKEND_URL}/users/delete`,
         requestOptions
       );
 
@@ -70,7 +70,7 @@ function ViewMembers(props) {
    }
   
   const loadMembers = ()=>{
-     fetch(`http://localhost:5000/users/register/` + type, {
+     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + type, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",

@@ -62,7 +62,7 @@ class AddEvents extends Component {
   minIndex = 0;
 
   fetchUsers = async () => {
-    fetch(`http://localhost:5000/users/usersnat/`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/usersnat/`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -266,7 +266,7 @@ class AddEvents extends Component {
     let self = this;
     this.setState({ loadingDevArea: true });
     try {
-      const res = await fetch("http://localhost:5000/admin/questions")
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`)
         .then(function (response) {
           return response.json();
         })
@@ -281,7 +281,7 @@ class AddEvents extends Component {
               }),
             };
             const res1 = await fetch(
-              "http://localhost:5000/admin/developing-area",
+              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
               requestOptions
             );
             const data1 = await res1.json();
@@ -476,7 +476,7 @@ class AddEvents extends Component {
           }),
         };
         const res = await fetch(
-          "http://localhost:5000/events/new",
+          `${process.env.REACT_APP_BACKEND_URL}/events/new`,
           requestOptions
         ).then(async () => {
           try {
@@ -486,7 +486,7 @@ class AddEvents extends Component {
               body: JSON.stringify(this.state.questions),
             };
             return await fetch(
-              "http://localhost:5000/admin/questions-all",
+              `${process.env.REACT_APP_BACKEND_URL}/admin/questions-all`,
               requestOptions
             );
           } catch (e) {
