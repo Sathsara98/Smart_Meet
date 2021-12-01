@@ -48,6 +48,17 @@ const ManageEvents = () => {
   const [eventList, setEventList] = useState([]);
   const [event, setEvent] = useState(null);
 
+  useEffect(() => {
+    if (isOpen==="true") {
+      setShow(true);
+    }else{
+      setShow(false);
+    }
+  }, []);
+  useEffect(() => {
+    loadMembers();
+  }, [page]);
+
   const loadMembers = () => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
@@ -63,9 +74,6 @@ const ManageEvents = () => {
       .catch((error) => console.log(error));
   };
 
-  useEffect(() => {
-    loadMembers();
-  }, [page]);
   const showDetails = (event) => {
     console.log(event);
     setEvent(event);

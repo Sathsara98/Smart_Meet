@@ -15,8 +15,12 @@ function AddQuestions(props) {
     e.preventDefault();
     
     let err;
+
     if (question == "") {
       err = <strong style={{ color: "red" }}>Please enter something!</strong>;
+      setErrormessage(err);
+    }else if (question.split(" ").length < 2  ) {
+      err = <strong style={{ color: "red" }}>Please enter more than one word!</strong>;
       setErrormessage(err);
     } else {
       try {
