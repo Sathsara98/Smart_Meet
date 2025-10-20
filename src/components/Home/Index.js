@@ -8,6 +8,7 @@ function Index() {
   return (
     <div className="wrapper">
       <Navbar varient="transparent" />
+
       <div className="main-panel ">
         <Section1 />
         {/* <Section2 />
