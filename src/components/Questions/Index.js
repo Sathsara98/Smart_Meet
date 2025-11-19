@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
 import Model from "../../components/Model";
+import "./Question.css";
 import {
   BreadCrum,
   SideBar,
@@ -52,15 +53,15 @@ function Index() {
               }),
             };
 
-            const res1 = await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
-              requestOptions
-            );
-            const data1 = await res1.json();
+            // const res1 = await fetch(
+            //   `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
+            //   requestOptions
+            // );
+            // const data1 = await res1.json();
             return {
               _id: que._id,
               body: que.body,
-              dArea: data1.SVM,
+              dArea: que.dArea,
               disabled: false,
             };
           });
@@ -78,6 +79,66 @@ function Index() {
       console.log(e);
     }
   };
+
+  // const handleAddQuestion = (newItem) => {
+  //   const newQuestion = {
+  //     _id: Date.now(),
+  //     body: newItem.challenge,
+  //     dArea: newItem.area,
+  //     disabled: false,
+  //   };
+  //   setquestions((prev) => [...prev, newQuestion]);
+  //   findMax([...questions, newQuestion]); 
+  // };
+  const handleAddQuestion = (newItem) => {
+    const newQuestion = {
+      _id: Date.now(),
+      body: newItem.challenge,
+      dArea: newItem.area,
+      disabled: false,
+    };
+
+    const updatedList = [...questions, newQuestion];
+
+    setquestions(updatedList);
+    findMax(updatedList);
+
+
+  };
+
+
+  const handleSubmitAll = async () => {
+    if (questions.length === 0) {
+      alert("Please add at least one question!");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/new-question`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questions: questions.map((q) => ({
+            dArea: q.dArea,
+            body: q.body,
+          })),
+          createdBy: "Sathsara", // or from user state
+        }),
+      });
+
+      if (!res.ok) throw new Error("Server Error");
+
+      const data = await res.json();
+      console.log("✅ Submitted successfully:", data);
+      alert("Challenges submitted successfully!");
+    } catch (err) {
+      console.error("❌ Error submitting challenges:", err);
+      alert("Error submitting challenges");
+    }
+  };
+
+
+
   const pathToPage = ["Home", "Admin", "Add Questions"];
   const findMax = (data_new) => {
     setLoading(true);
@@ -1252,38 +1313,110 @@ function Index() {
         {model}
         <SideBar questions={true} />
         <div className="main-panel">
-          <NavbarDashboard title="Questions" />
+          <NavbarDashboard title="Add Challenges" subtitle="Submit Challenges to Shape Smarter Decisions" />
           <div className="content">
-            <BreadCrum path={pathToPage} />
-            <AdminCard title="Insert Questions">
-              <Alert variant={"secondary"}>
+            {/* <BreadCrum path={pathToPage} /> */}
+            <Row className="mb-4 dev-cards-wrapper">
+              {["Policy", "R&D", "Technology", "Workforce", "Productivity", "Marketing"].map((area) => {
+                const count = questions.filter((q) => q.dArea === area).length;
+                return (
+                  <Col key={area} md={2}>
+                    <div className="p-3 text-center border rounded dev-card">
+                      <h3 className="m-0">{count}</h3>
+                      <h6 className="m-0">{area}</h6>
+
+                    </div>
+                  </Col>
+                );
+              })}
+            </Row>
+            <AdminCard title="Insert Questions" >
+              <div style={{ minHeight: "350px" }}>
+
+
+                {/* <Alert variant={"secondary"}>
                 <Row>
                   <Container as={Col}>
                     <h4 className="text-center p-0 m-0">
-                      {questions.length>0?(
-                        <strong>Developing area - {maxArea}</strong>):null
+                      {questions.length > 0 ? (
+                        <strong>Developing area - {maxArea}</strong>) : null
                       }
                     </h4>
                   </Container>
                 </Row>
-              </Alert>
-              <AddQuestion onChange={fetchQuestions}></AddQuestion>
-              <ViewQuestion
-                questions={questions}
-                onChange={fetchQuestions}
-                loading={loading}
-                show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
-                ref={childRef}
-              ></ViewQuestion>
-              <Button
-                href="/events/true"
-                variant="info"
-                className="btnPrimary float-right"
-                type="link"
-              >
-              Submit All
-            </Button>
+              </Alert> */}
+
+
+
+                <AddQuestion onAdd={handleAddQuestion} />
+
+                {/* Table Section */}
+                <table className="table mt-4">
+                  <thead>
+                    <tr>
+                      <th>Development Area</th>
+                      <th>Challenge</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {questions.map((q, i) => (
+                      <tr key={i}>
+                        <td>{q.dArea}</td>
+                        <td>{q.body}</td>
+
+                        {/* ACTION ICONS */}
+                        <td className="text-center">
+
+                          {/* Edit icon */}
+                          <i
+                            className="far fa-edit mr-3"
+                            style={{ cursor: "pointer", fontSize: "18px" }}
+                            onClick={() => childRef.current?.editComment?.(q._id)}
+                          ></i>
+
+                          {/* Delete icon */}
+                          <i
+                            className="far fa-trash-alt"
+                            style={{ cursor: "pointer", fontSize: "18px", color: "red" }}
+                            onClick={() => childRef.current?.deleteComment?.(q._id)}
+                          ></i>
+
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+
+                <ViewQuestion
+                  questions={questions}
+                  onChange={fetchQuestions}
+                  loading={loading}
+                  show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
+                  ref={childRef}
+                ></ViewQuestion>
+                <Button
+                  // href="/events/true"
+                  variant=""
+                  className="btn-primary  float-right"
+                  type="link"
+                  onClick={handleSubmitAll}
+                >
+                  Submit All
+                </Button>
+
+                <Button
+
+                  variant=""
+                  className="btn-secondary float-right mr-3"
+                  type="link"
+                >
+                  Save Draft
+                </Button>
+              </div>
             </AdminCard>
+
           </div>
         </div>
       </div>

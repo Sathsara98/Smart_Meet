@@ -18,6 +18,7 @@ import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Auth from "../../authentication/Auth";
+import "./Minute.css";
 function AddMinute(props) {
   var curr = new Date();
   var date = curr
@@ -80,7 +81,7 @@ function AddMinute(props) {
   const ratingChanged = (newRating) => {
     return newRating;
   };
-  
+
   //Table row management
   const addRow = () => {
     const newRow = {
@@ -267,7 +268,7 @@ function AddMinute(props) {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group" className="col-3">
+              <div className="form-group col-3">
                 <Form.Label>Time</Form.Label>
               </div>
 
@@ -312,23 +313,18 @@ function AddMinute(props) {
             <div className="w-100 mt-3">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Attendance</strong>
+                  className="">
+                  <strong className="section-header">Attendance</strong>
                 </div>
               </h4>
             </div>
             <div className="w-100 ">
-              <h4 className=" text-center " style={{ color: "#070707" }}>
-                <strong>Present</strong>
+              <h4 className="" style={{ color: "#070707" }}>
+                <strong className="attendence-sub-header">Present</strong>
               </h4>
             </div>
             <div>
-              <div className="form-row">
+              <div className="form-row approval-form-row">
                 <div className="form-group mb-0" as={Col}>
                   <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
                 </div>
@@ -345,8 +341,8 @@ function AddMinute(props) {
               />
             </div>
             <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <div className="form-row approval-form-row">
+                <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Public Sector </Form.Label>
 
                   <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
@@ -364,8 +360,8 @@ function AddMinute(props) {
               />
             </div>
             <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <div className="form-row approval-form-row">
+                <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Academic</Form.Label>
 
                   <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
@@ -383,7 +379,7 @@ function AddMinute(props) {
               />
             </div>
             <div>
-              <div className="form-row">
+              <div className="form-row approval-form-row">
                 <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Association</Form.Label>
 
@@ -403,8 +399,8 @@ function AddMinute(props) {
             </div>
             <div>
               <div className="w-100 mt-3 mb-0 ">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Excused</strong>
+                <h4 className="" style={{ color: "#070707" }}>
+                  <strong className="attendence-sub-header">Excused</strong>
                 </h4>
               </div>
 
@@ -420,8 +416,8 @@ function AddMinute(props) {
             </div>
             <div>
               <div className="w-100 mt-3">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Absent</strong>
+                <h4 className=" " style={{ color: "#070707" }}>
+                  <strong className="attendence-sub-header">Absent</strong>
                 </h4>
               </div>
 
@@ -439,19 +435,14 @@ function AddMinute(props) {
             <div className="w-100 mt-4">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Approval</strong>
+                  className=" ">
+                  <strong className="section-header">Approval</strong>
                 </div>
               </h4>
             </div>
 
-            <div className="form-row">
-              <div className="form-group" className="col-3">
+            <div className="form-row ">
+              <div className="form-group col-3">
                 <Form.Label>Approval from</Form.Label>
               </div>
 
@@ -539,13 +530,8 @@ function AddMinute(props) {
             <div className="w-100 mt-4">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Objective</strong>
+                  className="">
+                  <strong className="section-header">Objective</strong>
                 </div>
               </h4>
             </div>
@@ -565,6 +551,121 @@ function AddMinute(props) {
                 />
               </div>
             </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Activity</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  className="border border-light rounded"
+                  as="textarea"
+                  name="rowActivity"
+                  value={row_activity}
+                  placeholder="Enter New Activity..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Action taken/ Action to be taken</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  className="border border-light rounded"
+                  as="textarea"
+                  name="rowAction"
+                  value={row_action}
+                  placeholder="Enter New Action..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Responsibility</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  name="rowResponsibility"
+                  value={row_responsibility}
+                  placeholder="Enter New Responsibility..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row d-flex justify-content-end">
+
+              <Button
+                variant=""
+                type="submit"
+                onClick={() => addRow()}
+                className="btn  btn-primary"
+              >
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </Button>
+            </div>
+
+
+            {/* <div className=" mt-4 mb-5">
+             
+              <div className="form-row">
+                <div className="col-12 form-group ">
+                  <Form.Label>Activity</Form.Label>
+                  <Form.Control
+                    className="border border-light rounded"
+                    as="textarea"
+                    name="rowActivity"
+                    value={row_activity}
+                    placeholder="Enter New Activity..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+
+                <div className="form-group col-12">
+                  <Form.Label>Action taken/ Action to be taken</Form.Label>
+                  <Form.Control
+                    className="border border-light rounded"
+                    as="textarea"
+                    name="rowAction"
+                    value={row_action}
+                    placeholder="Enter New Action..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+                <div className="form-group col-12">
+                  <Form.Label>Responsibility</Form.Label>
+                  <Form.Control
+                    name="rowResponsibility"
+                    value={row_responsibility}
+                    placeholder="Enter New Responsibility..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+              </div>
+              <div className="form-row d-flex justify-content-end">
+
+                <Button
+                  variant="success"
+                  type="submit"
+                  onClick={() => addRow()}
+                  className="btnPrimary col-2 "
+                >
+                  + Add Row
+                </Button>
+              </div>
+            </div> */}
+
+
+
+
             {/* Table */}
             <Table
               striped
@@ -617,52 +718,7 @@ function AddMinute(props) {
               </tbody>
               {/* <tbody>{tableDATA}</tbody> */}
             </Table>
-            <div className="border border-light p-2 mt-4 mb-5">
-              <Form.Label>
-                Add New Row - (This will not be appeared in final minute)
-              </Form.Label>
-              <div className="form-row">
-                <div className="col-6 form-group ">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowActivity"
-                    value={row_activity}
-                    placeholder="Enter New Activity..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
 
-                <div className="form-group col-6">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowAction"
-                    value={row_action}
-                    placeholder="Enter New Action..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-              </div>
-              <div className="form-row d-flex justify-content-between">
-                <div className="form-group col-9">
-                  <Form.Control
-                    name="rowResponsibility"
-                    value={row_responsibility}
-                    placeholder="Enter New Responsibility..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-                <Button
-                  variant="success"
-                  type="submit"
-                  onClick={() => addRow()}
-                  className="btnPrimary col-2 "
-                >
-                  + Add Row
-                </Button>
-              </div>
-            </div>
             <div className="form-row">
               <div className="form-group col-3">
                 <Form.Label>Closing Remarks</Form.Label>
@@ -707,24 +763,24 @@ function AddMinute(props) {
               </div>
             </div>
             <div
-              className="form-row"
+              className="form-row d-flex justify-content-end"
               id="footer-modal-addMember"
-              className="d-flex justify-content-between"
             >
+
               <Button
-                variant="info"
+                variant=""
+                onClick={props.close}
+                className="btn-secondary mr-3 btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant=""
                 type="submit"
-                className="btnPrimary"
+                className="btn  btn-primary btn"
                 onClick={addMinute}
               >
                 Submit
-              </Button>
-              <Button
-                variant="danger"
-                onClick={props.close}
-                className="btnPrimary"
-              >
-                Cancel
               </Button>
             </div>
           </div>

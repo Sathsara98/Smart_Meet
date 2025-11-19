@@ -14,6 +14,8 @@ import Dashboard from "./components/Dashboard/Index";
 import Print from "./components/Print";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import MySubmission from "./components/MySubmission/MySubmission";
+import Footer from "./components/Footer/Footer";
 
 import {
   BrowserRouter as Router,
@@ -37,6 +39,7 @@ function App() {
         <PrivateRoute path="/minute" component={Minute} />
         <PrivateRoute path="/notAvailable" component={NotAvailable} />
         <PrivateRoute path="/profile" component={Profile} />
+        <PrivateRoute path="/mysubmission" component={MySubmission} />
         <Route path="/login">
           <Login />
         </Route>

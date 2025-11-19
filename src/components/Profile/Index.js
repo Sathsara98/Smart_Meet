@@ -3,13 +3,15 @@ import Model from "../../components/Model";
 import axios from "axios";
 import Auth from "../../authentication/Auth";
 import { useForm } from "react-hook-form";
+import TimeTable from "../NotAvailable/TimeTable";
 import {
   BreadCrum,
   SideBar,
   Navbar,
   AdminCard,
-  NavbarDashboard,
+  NavbarDashboard
 } from "../../components";
+import Footer from "../Footer/Footer";
 
 export default function Index() {
   // Create a reference to the hidden file input element
@@ -138,10 +140,10 @@ export default function Index() {
       .then((res) => res.json())
       .then((response) => {
         setUser(response);
-        if(response.userImage!=null){
+        if (response.userImage != null) {
           setCurrentFileShow(`${process.env.REACT_APP_BACKEND_URL}/` + response.userImage);
         }
-        
+
         setPreFileShow(response.userImage);
         setValue("name", response.name);
         setValue("email", response.email);
@@ -240,9 +242,9 @@ export default function Index() {
       {model}
       <SideBar profile={true} />
       <div className="main-panel">
-        <NavbarDashboard title="Profile" />
+        <NavbarDashboard title="Profile" subtitle="Manage Your Profile" />
         <div className="content">
-          <BreadCrum path={pathToPage} />
+          {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="">
             <div className="row">
               <div className="col-lg-4">
@@ -289,8 +291,9 @@ export default function Index() {
                                 <div>
                                   <button
                                     className="btn btn-link rounded-pill border border-light"
-                                    onClick={() => {setEditImg(false);
-                                     }}
+                                    onClick={() => {
+                                      setEditImg(false);
+                                    }}
                                   >
                                     <i className="fa fa-times"></i>
                                   </button>
@@ -338,17 +341,17 @@ export default function Index() {
                         <h4 className="text-muted">{user.workplace}</h4>
                       </div>
                     </div>
-                    <hr className="my-4" />
+                    {/* <hr className="my-4" /> */}
                   </div>
                 </div>
               </div>
               <div className="col-lg-8">
                 <div className="card">
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                  <form onSubmit={handleSubmit(onSubmit)} className="profile-form">
                     <div className="card-body">
                       <div className="row mb-3">
                         <div className="col-sm-3">
-                          <h6 className="mb-0">Full Name</h6>
+                          <h6 className="mb-0">Name</h6>
                         </div>
                         <div className="col-sm-9 text-secondary">
                           <input
@@ -536,12 +539,12 @@ export default function Index() {
                           </div>
                         </div>
                       </div>
-                      <div className="row">
-                        <div className="col-sm-3">
+                      <div className="row btn-row">
+                        <div className="col-sm-12">
                           {isEdit ? (
                             <button
                               type="submit"
-                              className="btn btn-info px-4 btnPrimary"
+                              className="btn  px-4 btn-primary"
                             >
                               Save Changes
                             </button>
@@ -549,21 +552,46 @@ export default function Index() {
                             <input
                               onClick={() => setIsEdit(true)}
                               type="button"
-                              className="btn btn-info btnPrimary"
+                              className="btn  btn-primary"
                               value="Edit"
                             ></input>
                           )}
                         </div>
-                        <div className="col-sm-9 text-secondary"></div>
+                        {/* <div className="col-sm-9 text-secondary"></div> */}
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
+            <div className="row">
+
+              <div className="card timeline-card-wrap">
+                <div className="card-body">
+                  <h4 className="availability-title">My Weekly Availability</h4>
+                  <TimeTable />
+                </div>
+              </div>
+
+            </div>
+
           </AdminCard>
+          <Footer />
+          {/* <AdminCard>
+            <div className="row">
+
+              <div className="card timeline-card-wrap">
+                <div className="card-body">
+                  <TimeTable />
+                </div>
+              </div>
+
+            </div>
+          </AdminCard> */}
         </div>
       </div>
+
     </div>
+
   );
 }

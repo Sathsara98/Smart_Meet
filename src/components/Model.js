@@ -28,13 +28,13 @@ export default function Model(props) {
           </h4>
         </Modal.Body>
         <div
-          className="form-row "
+          className="form-row mr-2 mb-1 "
           id="footer-modal-addMember "
-          className="mr-2 mb-1"
+
         >
-          <div className="float-right">
+          <div className="modal-footer d-flex justify-content-center">
             <Button
-              className="btnPrimary "
+              className="btn-Primary "
               variant="info"
               onClick={() => props.handleClick(true)}
             >

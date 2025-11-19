@@ -6,6 +6,8 @@ import React, {
 } from "react";
 import { Card, Form, Col, Row, Button, Container } from "react-bootstrap";
 import Auth from "../../authentication/Auth";
+import "./Question.css";
+
 const ViewQuestions = forwardRef((props, ref) => {
   const [questions, setquestions] = useState(props.questions);
   const [delId, setDelId] = useState(null);
@@ -47,6 +49,7 @@ const ViewQuestions = forwardRef((props, ref) => {
   //     deleteComment(null, prop);
   //   },
   // }));
+
   async function deleteComment(id) {
     props.show(
       true,
@@ -93,7 +96,7 @@ const ViewQuestions = forwardRef((props, ref) => {
         }),
       };
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`, requestOptions);
-      props.show(true, "Question has updated!", false, function (res) {});
+      props.show(true, "Question has updated!", false, function (res) { });
       editComment(ques[0]._id);
     } catch (e) {
       console.log(e);
@@ -114,7 +117,7 @@ const ViewQuestions = forwardRef((props, ref) => {
             <Card.Title style={{ fontWeight: "bolder" }}>
               QUESTION {key + 1} - {que.dArea}
               {Auth?.getUserLevel() !== "Committee Member" &&
-              Auth?.getUserLevel() !== "Committee Secretary" ? (
+                Auth?.getUserLevel() !== "Committee Secretary" ? (
                 <span style={{ float: "right" }}>
                   {!que.disabled ? (
                     <i

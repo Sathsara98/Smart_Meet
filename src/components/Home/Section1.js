@@ -5,6 +5,7 @@ import Parser from "rss-parser";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 import { BreadCrum, SideBar, Navbar, AdminCard } from "../";
 import backImg from "../../assets/main_pg_img.png";
+import govLogo from "../../assets/main logo.png";
 
 import logo from "../../assets/logo.png";
 const Section1 = () => {
@@ -35,7 +36,11 @@ const Section1 = () => {
       <>
         <div class="container" >
 
+
           <div class="text-section">
+            <div className="d-flex  logo-wrapper">
+              <img src={govLogo} className="pb-3 ml-0 pl-0 logo-login" />
+            </div>
             <h1>Smart Scheduling,<br />Seamless Collaboration</h1>
             <p>
               Effortlessly manage meetings with automated scheduling, real-time notifications,

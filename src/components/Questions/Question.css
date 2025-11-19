@@ -1,0 +1,50 @@
+.dev-cards-wrapper .dev-card {
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: -1px 2px 8px 0px rgb(176 176 176 / 20%), 0px -4px 8px 0 rgb(227 227 227 / 19%);
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(1) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(1) .dev-card h3 {
+    color: #f3c612;
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(2) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(2) .dev-card h3 {
+    color: #0D97B9;
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(3) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(3) .dev-card h3 {
+    color: #9c9b9b;
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(4) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(4) .dev-card h3 {
+    color: #7FD858;
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(5) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(5) .dev-card h3 {
+    color: #CB6CE6;
+}
+
+.dev-cards-wrapper .col-md-2:nth-child(6) .dev-card h6,
+.dev-cards-wrapper .col-md-2:nth-child(6) .dev-card h3 {
+    color: #54DDFE;
+}
+
+.dev-area-dropdown {
+    width: 70%;
+}
+
+.add-col-btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+textarea.form-control {
+    border: 1px solid #1d253b4d !important;
+    border-radius: 0.4285rem;
+}

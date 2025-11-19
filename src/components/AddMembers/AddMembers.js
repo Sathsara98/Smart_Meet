@@ -4,6 +4,7 @@ import { Container, Form, Col, Row, Button, Alert } from "react-bootstrap";
 import * as yup from "yup";
 import { Formik } from "formik";
 import "./AddMember.css";
+import Footer from "../Footer/Footer";
 
 const AddMembers = (props) => {
   const [show, setShow] = useState(false);
@@ -304,7 +305,7 @@ const AddMembers = (props) => {
                 ) : (
                   <>
                     Member Registered Successfully !
-                    <p className="text-secondary">
+                    <p className="">
                       Email containing loging details has been Successfully sent
                       to the Member.
                     </p>
@@ -312,13 +313,13 @@ const AddMembers = (props) => {
                 )}
               </Alert.Heading>
 
-              <hr />
+              {/* <hr /> */}
               <div className="d-flex justify-content-end">
                 {error == "" ? (
                   <Button
                     onClick={() => setShow(false)}
-                    variant="info"
-                    className="btnPrimary"
+
+                    className="btn-Primary"
                     onClick={props.close}
                   >
                     Done
@@ -327,7 +328,7 @@ const AddMembers = (props) => {
                   <Button
                     onClick={() => setShow(false)}
                     variant="primary"
-                    className="btnPrimary"
+                    className="btn-Primary"
                   >
                     OK
                   </Button>
@@ -337,22 +338,24 @@ const AddMembers = (props) => {
 
             <Form.Row
               id="footer-modal-addMember"
-              className="d-flex justify-content-between"
+              className="d-flex justify-content-end"
             >
-              <Button variant="info" type="submit" className="btnPrimary">
-                Submit
-              </Button>
+
               <Button
-                variant="danger"
+
                 onClick={props.close}
-                className="btnPrimary"
+                className="btn-secondary"
               >
                 Cancel
+              </Button>
+              <Button type="submit" className="btn-primary ml-2">
+                Submit
               </Button>
             </Form.Row>
           </Form>
         )}
       </Formik>
+
     </div>
   );
 };

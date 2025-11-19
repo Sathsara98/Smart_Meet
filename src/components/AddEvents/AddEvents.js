@@ -77,7 +77,7 @@ class AddEvents extends Component {
               usersNat: response,
               loading: false,
             },
-            this.calculateNatArray
+            // this.calculateNatArray
           );
         console.log(response);
       })
@@ -101,7 +101,7 @@ class AddEvents extends Component {
     ) {
       return element < array[highestIndex] ? index : highestIndex;
     },
-    0);
+      0);
 
     console.log(this.arr2d);
     console.log(this.minIndex);
@@ -248,7 +248,7 @@ class AddEvents extends Component {
     if (secMembers.length == 0) {
       console.log("Secretaries Are Busy Find Next Slot");
       this.arr2d[this.minIndex] = 99999;
-      this.calculateNatArray();
+      // this.calculateNatArray();
     } else {
       this.membersToAdd.push(secMembers[0]);
       count = count - 1;
@@ -280,15 +280,15 @@ class AddEvents extends Component {
                 text: que.body,
               }),
             };
-            const res1 = await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
-              requestOptions
-            );
-            const data1 = await res1.json();
+            // const res1 = await fetch(
+            //   `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
+            //   requestOptions
+            // );
+            // const data1 = await res1.json();
             return {
               _id: que._id,
               body: que.body,
-              dArea: data1.SVM,
+              dArea: que.dArea,
               disabled: false,
             };
           });
@@ -672,7 +672,7 @@ class AddEvents extends Component {
                     <Form.Label>Members</Form.Label>
                     <div className="row col-12 m-auto">
                       {this.state.meetingMembers != null &&
-                      this.state.meetingMembers.length != 0 ? (
+                        this.state.meetingMembers.length != 0 ? (
                         this.state.meetingMembers.map((e) => {
                           return (
                             <MeetingMember

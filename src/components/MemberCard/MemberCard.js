@@ -16,7 +16,10 @@ function MemberCard(props) {
     <a href={"/managemembers/" + props.type}>
       <div className="member-card" data={props.type} onClick={"/managemembers"}>
         <center>
-          <i className={"fas " + icon + " card-icon"}></i>
+          <div className="icon-wrap">
+            <i className={"fas " + icon + " card-icon"}></i>
+          </div>
+
           <h3>{props.text}</h3>
         </center>
       </div>

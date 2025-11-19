@@ -105,7 +105,7 @@ function Login() {
 
         <div className="login-form-section">
 
-          <div className="inner-wrapper h-100 d-flex flex-column justify-content-center">
+          <div className="inner-wrapper d-flex flex-column justify-content-center">
 
 
             <div className="d-flex justify-content-center logo-wrapper">

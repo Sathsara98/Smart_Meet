@@ -27,8 +27,8 @@ import { useParams } from "react-router";
 
 const ManageEvents = () => {
   const { isOpen } = useParams();
-  const [show, setShow] = useState(isOpen==="true"?true:false);
-  
+  const [show, setShow] = useState(isOpen === "true" ? true : false);
+
   const handleClose = () => {
     setShow(false);
     loadMembers();
@@ -49,9 +49,9 @@ const ManageEvents = () => {
   const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    if (isOpen==="true") {
+    if (isOpen === "true") {
       setShow(true);
-    }else{
+    } else {
       setShow(false);
     }
   }, []);
@@ -85,7 +85,7 @@ const ManageEvents = () => {
       <SideBar events={true} />
       <div className="main-panel">
         <div className="content">
-          <NavbarDashboard title="Members" />
+          <NavbarDashboard title="Meetings" subtitle="View All Scheduled Meetings" />
           <Modal
             show={show}
             size="lg"
@@ -134,14 +134,14 @@ const ManageEvents = () => {
               </Button>
             </Modal.Footer> */}
           </Modal>
-          <BreadCrum path={pathToPage} />
+          {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="Members">
             <Container>
               <div className="row mb-2">
                 <div className="col-md">
                   <div className="d-flex justify-content-end">
                     {Auth?.getUserLevel() !== "Committee Member" &&
-                    Auth?.getUserLevel() !== "Committee Secretary" ? (
+                      Auth?.getUserLevel() !== "Committee Secretary" ? (
                       <Button
                         variant="info"
                         className="btnPrimary "
@@ -153,23 +153,23 @@ const ManageEvents = () => {
                   </div>
                   {eventList != null
                     ? eventList.map((ev, index) => {
-                        var isIn = false;
-                        ev.members.forEach((element) => {
-                          if (Auth?.getUserLevel() != "Committee Member") {
-                            isIn = true;
-                          } else if (
-                            Auth?.getUserLevel() === "Committee Member" &&
-                            element._id === Auth?.getUserId()
-                          ) {
-                            isIn = true;
-                          }
-                        });
-                        if (isIn) {
-                          return (
-                            <Event key={index} event={ev} more={showDetails} />
-                          );
+                      var isIn = false;
+                      ev.members.forEach((element) => {
+                        if (Auth?.getUserLevel() != "Committee Member") {
+                          isIn = true;
+                        } else if (
+                          Auth?.getUserLevel() === "Committee Member" &&
+                          element._id === Auth?.getUserId()
+                        ) {
+                          isIn = true;
                         }
-                      })
+                      });
+                      if (isIn) {
+                        return (
+                          <Event key={index} event={ev} more={showDetails} />
+                        );
+                      }
+                    })
                     : null}
                 </div>
               </div>
