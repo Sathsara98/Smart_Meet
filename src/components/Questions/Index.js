@@ -20,8 +20,10 @@ import {
   Spinner,
 } from "react-bootstrap";
 
+import { useLocation } from "react-router-dom";
+
 function Index() {
-  const childRef = useRef();
+  // const childRef = useRef();
   const [questions, setquestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,54 +33,97 @@ function Index() {
   let [marketing, setmarketing] = useState(0);
   const [maxArea, setmaxArea] = useState("");
 
+  const location = useLocation();
+  const submissionId = location.state?.submissionId || null;
+  const mode = location.state?.mode || "create"; // "create" | "edit" | "view"
+
+  const isReadOnly = mode === "view";
+
   useEffect(() => {
-    fetchQuestions();
+    // when this page mounts, always start with a fresh, empty list
+    setquestions([]);
+    setmaxArea("");
+    setLoading(false);   // no initial loading spinner
   }, []);
+
 
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`)
-        .then(function (response) {
-          return response.json();
-        })
-        .then((res) => {
-          console.log(res);
-          let promise = res.map(async (que) => {
-            const requestOptions = {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                text: que.body,
-              }),
-            };
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/questions`
+      );
+      const data = await res.json();
+      console.log("Raw questions from backend:", data);
 
-            // const res1 = await fetch(
-            //   `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
-            //   requestOptions
-            // );
-            // const data1 = await res1.json();
-            return {
-              _id: que._id,
-              body: que.body,
-              dArea: que.dArea,
-              disabled: false,
-            };
+      const flattened = [];
+
+      data.forEach((doc) => {
+        if (Array.isArray(doc.questions)) {
+          doc.questions.forEach((q, index) => {
+            if (q && q.dArea && q.body) { // ✅ only valid rows
+              flattened.push({
+                _id: q._id || `${doc._id}-${index}`,
+                body: q.body,
+                dArea: q.dArea,
+                disabled: false,
+              });
+            }
           });
-          console.log(res);
-          return Promise.all(promise);
-        })
-        .then((res) => {
-          console.log(res);
-          setquestions(res);
+        }
+      });
 
-          findMax(res);
-        });
+      console.log("Flattened questions:", flattened);
+      setquestions(flattened);
+      findMax(flattened);
     } catch (e) {
-      //if failed to communicate with api this code block will run
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // create mode → start fresh
+    if (!submissionId || mode === "create") {
+      setquestions([]);
+      setmaxArea("");
+      setLoading(false);
+      return;
+    }
+
+    // edit or view → load existing submission
+    const fetchOne = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`
+        );
+        const doc = await res.json();
+        if (!res.ok) throw new Error(doc.message || "Error loading submission");
+
+        const flattened =
+          Array.isArray(doc.questions) ?
+            doc.questions.map((q, index) => ({
+              _id: q._id || `${doc._id}-${index}`,
+              body: q.body,
+              dArea: q.dArea,
+              disabled: isReadOnly,
+            })) : [];
+
+        setquestions(flattened);
+        findMax(flattened);
+      } catch (e) {
+        console.error(e);
+        alert("Error loading submission: " + e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOne();
+  }, [submissionId, mode]);
+
 
   // const handleAddQuestion = (newItem) => {
   //   const newQuestion = {
@@ -98,12 +143,32 @@ function Index() {
       disabled: false,
     };
 
-    const updatedList = [...questions, newQuestion];
+    // use functional setState to avoid stale state
+    setquestions((prev) => {
+      const updatedList = [...prev, newQuestion];
+      findMax(updatedList);
+      return updatedList;
+    });
 
-    setquestions(updatedList);
-    findMax(updatedList);
+  };
+  // DELETE one question
+  const handleDeleteQuestion = (id) => {
+    setquestions((prev) => {
+      const updated = prev.filter((q) => q._id !== id);
+      findMax(updated);
+      return updated;
+    });
+  };
 
-
+  // UPDATE one question
+  const handleUpdateQuestion = (id, updatedData) => {
+    setquestions((prev) => {
+      const updated = prev.map((q) =>
+        q._id === id ? { ...q, ...updatedData } : q
+      );
+      findMax(updated);
+      return updated;
+    });
   };
 
 
@@ -114,28 +179,84 @@ function Index() {
     }
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/new-question`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questions: questions.map((q) => ({
-            dArea: q.dArea,
-            body: q.body,
-          })),
-          createdBy: "Sathsara", // or from user state
-        }),
-      });
-
-      if (!res.ok) throw new Error("Server Error");
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questions: questions.map((q) => ({
+              dArea: q.dArea,
+              body: q.body,
+            })),
+            createdBy: "Sathsara",
+            status: "submitted",
+            maxArea: maxArea,
+          }),
+        }
+      );
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Server Error");
+
       console.log("✅ Submitted successfully:", data);
       alert("Challenges submitted successfully!");
+
+      // 🔹 CLEAR TABLE + COUNTERS
+      setquestions([]);
+      findMax([]);      // this will also reset maxArea internally
+      // or: setmaxArea("");
     } catch (err) {
       console.error("❌ Error submitting challenges:", err);
-      alert("Error submitting challenges");
+      alert("Error submitting challenges: " + err.message);
     }
   };
+
+
+
+  const handleSaveDraft = async () => {
+    if (questions.length === 0) {
+      alert("Please add at least one question before saving a draft!");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questions: questions.map((q) => ({
+              dArea: q.dArea,
+              body: q.body,
+            })),
+            createdBy: "Sathsara",
+            status: "draft",
+            maxArea: maxArea,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Server Error");
+
+      console.log("✅ Draft saved:", data);
+      alert("Draft saved successfully!");
+
+      // 🔹 CLEAR TABLE + COUNTERS
+      setquestions([]);
+      findMax([]);
+      // or: setmaxArea("");
+    } catch (err) {
+      console.error("❌ Error saving draft:", err);
+      alert("Error saving draft: " + err.message);
+    }
+  };
+
+
+
+
 
 
 
@@ -1349,9 +1470,15 @@ function Index() {
 
 
                 <AddQuestion onAdd={handleAddQuestion} />
+                <ViewQuestion
+                  questions={questions}
+                  onDelete={isReadOnly ? undefined : handleDeleteQuestion}
+                  onUpdate={isReadOnly ? undefined : handleUpdateQuestion}
+                  readOnly={isReadOnly}
+                />
 
                 {/* Table Section */}
-                <table className="table mt-4">
+                {/* <table className="table mt-4">
                   <thead>
                     <tr>
                       <th>Development Area</th>
@@ -1365,17 +1492,17 @@ function Index() {
                         <td>{q.dArea}</td>
                         <td>{q.body}</td>
 
-                        {/* ACTION ICONS */}
+                        
                         <td className="text-center">
 
-                          {/* Edit icon */}
+                         
                           <i
                             className="far fa-edit mr-3"
                             style={{ cursor: "pointer", fontSize: "18px" }}
                             onClick={() => childRef.current?.editComment?.(q._id)}
                           ></i>
 
-                          {/* Delete icon */}
+                          
                           <i
                             className="far fa-trash-alt"
                             style={{ cursor: "pointer", fontSize: "18px", color: "red" }}
@@ -1387,33 +1514,36 @@ function Index() {
                     ))}
                   </tbody>
                 </table>
+*/}
 
-
-                <ViewQuestion
+                {/* <ViewQuestion
                   questions={questions}
                   onChange={fetchQuestions}
                   loading={loading}
                   show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
                   ref={childRef}
-                ></ViewQuestion>
-                <Button
-                  // href="/events/true"
-                  variant=""
-                  className="btn-primary  float-right"
-                  type="link"
-                  onClick={handleSubmitAll}
-                >
-                  Submit All
-                </Button>
+                ></ViewQuestion> */}
+                {!isReadOnly && (
+                  <>
+                    <Button
+                      variant=""
+                      className="btn-primary float-right"
+                      type="button"
+                      onClick={handleSubmitAll}
+                    >
+                      Submit
+                    </Button>
 
-                <Button
-
-                  variant=""
-                  className="btn-secondary float-right mr-3"
-                  type="link"
-                >
-                  Save Draft
-                </Button>
+                    <Button
+                      variant=""
+                      className="btn-secondary float-right mr-3"
+                      type="button"
+                      onClick={handleSaveDraft}
+                    >
+                      Save Draft
+                    </Button>
+                  </>
+                )}
               </div>
             </AdminCard>
 

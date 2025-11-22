@@ -40,6 +40,7 @@ function App() {
         <PrivateRoute path="/notAvailable" component={NotAvailable} />
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/mysubmission" component={MySubmission} />
+
         <Route path="/login">
           <Login />
         </Route>

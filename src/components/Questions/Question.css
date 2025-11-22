@@ -48,3 +48,99 @@ textarea.form-control {
     border: 1px solid #1d253b4d !important;
     border-radius: 0.4285rem;
 }
+
+.action-col {
+    display: flex;
+    justify-content: center;
+}
+
+.action-col .btn-suc {
+    background-color: #e0ffd7 !important;
+    border: none !important;
+    background-image: none;
+}
+
+.action-col .btn-suc:hover {
+    background-color: #34a016 !important;
+    border: none !important;
+    background-image: none;
+}
+
+.action-col .btn-suc i {
+    color: #34a016 !important;
+}
+
+.action-col .btn-suc:hover i {
+    color: white !important;
+}
+
+.action-col .btn-close {
+    background-color: #e5e5e5 !important;
+    border: none !important;
+}
+
+.action-col .btn-close:hover {
+    background-color: #303030 !important;
+    border: none !important;
+}
+
+.action-col .btn-close i {
+    color: #303030 !important;
+}
+
+.action-col .btn-edit {
+    background-color: #e4faff !important;
+    border: none !important;
+}
+
+.action-col .btn-edit:hover {
+    background-color: #0D97B9 !important;
+    border: none !important;
+}
+
+.action-col .btn-edit i {
+    color: #0D97B9 !important;
+}
+
+.action-col .btn-del {
+    background-color: #ffc2c2 !important;
+    border: none !important;
+}
+
+.action-col .btn-del:hover {
+    background-color: #ff0000 !important;
+    border: none !important;
+}
+
+.action-col .btn-del i {
+    color: #ff0000 !important;
+}
+
+.action-col .btn:hover i {
+    color: white !important;
+}
+
+.challenge-table td {
+    text-align: unset !important;
+}
+
+.challenge-table .th-dev-area {
+    width: 30%;
+    text-align: center;
+}
+
+.challenge-table .th-chal {
+    width: 50%;
+    text-align: center;
+}
+
+.challenge-table .th-action {
+    width: 20%;
+    text-align: center;
+}
+
+.challenge-table .action-col div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

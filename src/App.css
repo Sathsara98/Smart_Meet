@@ -548,3 +548,8 @@
   padding-bottom: 10px;
   font-weight: 600;
 }
+
+.btn:hover {
+  box-shadow: none !important;
+  -webkit-transform: none !important;
+}

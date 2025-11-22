@@ -23,6 +23,8 @@ import Model from "../../components/Model";
 import axios from "axios";
 import Footer from "../Footer/Footer";
 
+import { useHistory } from "react-router-dom";
+
 import "./MySubmission.css";
 
 // function MySubmission() {
@@ -35,6 +37,9 @@ const ChallengePage = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const history = useHistory();
+
 
     //model
     const [model, setModel] = useState(null);
@@ -55,12 +60,26 @@ const ChallengePage = () => {
         );
     };
 
+
+    const handleOpenSubmission = (id, status) => {
+        const mode = status === "completed" ? "view" : "edit";
+
+        history.push("/addquestion", {
+            submissionId: id,
+            mode: mode,
+        });
+    };
+
+
+
+
+
     // Fetch data from your database API
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // Replace this URL with your backend endpoint
-                const res = await axios.get("http://localhost:5000/challenges");
+                const res = await axios.get("http://localhost:5000/admin/challenges");
                 setData(res.data);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -79,6 +98,7 @@ const ChallengePage = () => {
             : data.filter(
                 (item) => item.status.toLowerCase() === filter.toLowerCase()
             );
+
 
     // Pagination handlers
     const handleChangePage = (_, newPage) => setPage(newPage);
@@ -124,6 +144,7 @@ const ChallengePage = () => {
                                         <TableCell><b>Development Area</b></TableCell>
                                         <TableCell><b>Status</b></TableCell>
                                         <TableCell><b>Created Date</b></TableCell>
+                                        <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>
 
@@ -141,25 +162,29 @@ const ChallengePage = () => {
                                                 <TableCell>{row.developmentArea}</TableCell>
                                                 <TableCell>
                                                     <Chip
-                                                        label={row.status}
+                                                        label={row.status === "completed" ? "Completed" : "Draft"}
                                                         sx={{
                                                             backgroundColor:
-                                                                row.status === "Completed"
+                                                                row.status === "completed"
                                                                     ? "#C8FACD"
-                                                                    : row.status === "Draft"
+                                                                    : row.status === "draft"
                                                                         ? "#FFF9C4"
                                                                         : "#E0E0E0",
                                                             color:
-                                                                row.status === "Completed"
+                                                                row.status === "completed"
                                                                     ? "green"
-                                                                    : row.status === "Draft"
+                                                                    : row.status === "draft"
                                                                         ? "orange"
                                                                         : "black",
                                                             fontWeight: 600,
                                                         }}
                                                     />
                                                 </TableCell>
+
                                                 <TableCell>{row.createdDate}</TableCell>
+                                                <TableCell><i class="fa fa-chevron-right" aria-hidden="true" onClick={() =>
+                                                    handleOpenSubmission(row.id, row.status)
+                                                } style={{ cursor: "pointer" }}></i></TableCell>
                                             </TableRow>
                                         ))}
                                 </TableBody>
