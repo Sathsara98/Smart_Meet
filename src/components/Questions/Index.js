@@ -20,7 +20,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 function Index() {
   // const childRef = useRef();
@@ -34,54 +34,60 @@ function Index() {
   const [maxArea, setmaxArea] = useState("");
 
   const location = useLocation();
-  const submissionId = location.state?.submissionId || null;
-  const mode = location.state?.mode || "create"; // "create" | "edit" | "view"
+  const history = useHistory();
+
+  const [submissionId, setSubmissionId] = useState(null);
+  const [mode, setMode] = useState("create"); // 'create' | 'edit' | 'view'
+
+  // const submissionId = location.state?.submissionId || null;
+  // const mode = location.state?.mode || "create"; 
 
   const isReadOnly = mode === "view";
 
   useEffect(() => {
-    // when this page mounts, always start with a fresh, empty list
-    setquestions([]);
-    setmaxArea("");
-    setLoading(false);   // no initial loading spinner
+    const state = location.state || {};
+
+    if (state.submissionId) {
+      setSubmissionId(state.submissionId);
+      setMode(state.mode || "edit");
+      loadSubmission(state.submissionId);
+    } else {
+      // new submission
+      setquestions([]);
+      setmaxArea("");
+      setLoading(false);
+    }
+
+    // optional: clear navigation state so back/forward doesn’t replay it
+    history.replace({ ...location, state: {} });
   }, []);
 
-
-  const fetchQuestions = async () => {
+  // load a single submission by id
+  const loadSubmission = async (id) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/questions`
+        `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${id}`
       );
-      const data = await res.json();
-      console.log("Raw questions from backend:", data);
+      const doc = await res.json();
+      // flatten doc.questions into your table structure
+      const flattened =
+        (doc.questions || []).map((q, index) => ({
+          _id: q._id || `${doc._id}-${index}`,
+          dArea: q.dArea,
+          body: q.body,
+          disabled: false,
+        })) || [];
 
-      const flattened = [];
-
-      data.forEach((doc) => {
-        if (Array.isArray(doc.questions)) {
-          doc.questions.forEach((q, index) => {
-            if (q && q.dArea && q.body) { // ✅ only valid rows
-              flattened.push({
-                _id: q._id || `${doc._id}-${index}`,
-                body: q.body,
-                dArea: q.dArea,
-                disabled: false,
-              });
-            }
-          });
-        }
-      });
-
-      console.log("Flattened questions:", flattened);
       setquestions(flattened);
       findMax(flattened);
     } catch (e) {
-      console.log(e);
+      console.error("Error loading submission:", e);
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     // create mode → start fresh
@@ -171,6 +177,18 @@ function Index() {
     });
   };
 
+  // 🔹 Build payload for draft or submit
+  const buildPayload = (statusValue) => ({
+    questions: questions.map((q) => ({
+      dArea: q.dArea,
+      body: q.body,
+    })),
+    createdBy: "Sathsara",
+    status: statusValue,
+    maxArea: maxArea,
+  });
+
+
 
   const handleSubmitAll = async () => {
     if (questions.length === 0) {
@@ -178,39 +196,50 @@ function Index() {
       return;
     }
 
+    const payload = buildPayload("submitted");
+
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questions: questions.map((q) => ({
-              dArea: q.dArea,
-              body: q.body,
-            })),
-            createdBy: "Sathsara",
-            status: "submitted",
-            maxArea: maxArea,
-          }),
-        }
-      );
+      let res;
+      if (submissionId) {
+        // submit existing draft
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      } else {
+        // first-time submit
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      }
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Server Error");
 
-      console.log("✅ Submitted successfully:", data);
       alert("Challenges submitted successfully!");
 
-      // 🔹 CLEAR TABLE + COUNTERS
+      // after submitting you can either:
+      //  - clear form, or
+      //  - redirect back to MySubmission, etc.
       setquestions([]);
-      findMax([]);      // this will also reset maxArea internally
-      // or: setmaxArea("");
+      findMax([]);
+      setSubmissionId(null);
+      setMode("create");
     } catch (err) {
       console.error("❌ Error submitting challenges:", err);
       alert("Error submitting challenges: " + err.message);
     }
   };
+
 
 
 
@@ -220,39 +249,48 @@ function Index() {
       return;
     }
 
+    const payload = buildPayload("draft");
+
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questions: questions.map((q) => ({
-              dArea: q.dArea,
-              body: q.body,
-            })),
-            createdBy: "Sathsara",
-            status: "draft",
-            maxArea: maxArea,
-          }),
-        }
-      );
+      let res;
+      if (submissionId) {
+        // ✏️ editing existing draft -> UPDATE
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      } else {
+        // 🆕 new draft -> CREATE
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      }
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Server Error");
 
-      console.log("✅ Draft saved:", data);
-      alert("Draft saved successfully!");
+      // if we just created it, remember its id so next save becomes UPDATE
+      if (!submissionId && data.data && data.data._id) {
+        setSubmissionId(data.data._id);
+        setMode("edit");
+      }
 
-      // 🔹 CLEAR TABLE + COUNTERS
-      setquestions([]);
-      findMax([]);
-      // or: setmaxArea("");
+      alert("Draft saved successfully!");
     } catch (err) {
       console.error("❌ Error saving draft:", err);
       alert("Error saving draft: " + err.message);
     }
   };
+
 
 
 
@@ -1469,12 +1507,12 @@ function Index() {
 
 
 
-                <AddQuestion onAdd={handleAddQuestion} />
+                <AddQuestion onAdd={handleAddQuestion} disabled={mode === "view"} />
                 <ViewQuestion
                   questions={questions}
-                  onDelete={isReadOnly ? undefined : handleDeleteQuestion}
-                  onUpdate={isReadOnly ? undefined : handleUpdateQuestion}
-                  readOnly={isReadOnly}
+                  onDelete={mode === "view" ? undefined : handleDeleteQuestion}
+                  onUpdate={mode === "view" ? undefined : handleUpdateQuestion}
+                  readOnly={mode === "view"}
                 />
 
                 {/* Table Section */}
@@ -1523,7 +1561,7 @@ function Index() {
                   show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
                   ref={childRef}
                 ></ViewQuestion> */}
-                {!isReadOnly && (
+                {mode !== "view" && (
                   <>
                     <Button
                       variant=""
