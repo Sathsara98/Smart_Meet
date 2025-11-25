@@ -1,0 +1,26 @@
+.login-cover {
+  background: url(../assets/login_bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+
+}
+.login-cover1 {
+  background: url(../assets/login_bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+
+}
+.login-box {
+  border-radius: 12px;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  padding-right: 25px;
+  padding-left: 25px;
+  max-width: 480px;
+  background-color: rgba(9, 19, 79, 0.5);
+  align-items: center;
+}
+/* Rectangle 5 */
