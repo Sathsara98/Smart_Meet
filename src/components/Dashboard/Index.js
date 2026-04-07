@@ -23,6 +23,7 @@ import {
   NotificationManager,
 } from "react-notifications";
 import Auth from "../../authentication/Auth";
+import Footer from "../Footer/Footer";
 
 function Index() {
   const [eventList, setEventList] = useState([]);
@@ -66,7 +67,7 @@ function Index() {
     })
       .then((res) => res.json())
       .then((response) => {
-        
+
         //Filter event tht involves the logged user
         if (Auth.getUserLevel() === "Committee Member") {
           var eventArr = [];
@@ -96,7 +97,7 @@ function Index() {
       <SideBar dashboard={true} />
       {!isLoading ? (
         <div className="main-panel">
-          <NavbarDashboard title="Dashboard" />
+          <NavbarDashboard title="Hello, John!" subtitle="Welcome back to Meeting Management System" />
 
           <div className="content">
             {/* <div
@@ -114,11 +115,12 @@ function Index() {
                 <i class="fa fa-times-circle mt-2"></i>
               </button>
             </div> */}
-            <BreadCrum path={pathToPage} />
+            {/* <BreadCrum path={pathToPage} /> */}
 
             <AdminCard>
               <Calender events={eventList != null ? eventList : null} />
             </AdminCard>
+            <Footer />
           </div>
         </div>
       ) : null}

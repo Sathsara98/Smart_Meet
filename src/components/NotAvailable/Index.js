@@ -13,9 +13,9 @@ function Index() {
     <div className="wrapper">
       <SideBar notAvailable={true} />
       <div className="main-panel">
-        <NavbarDashboard title="Dashboard" />
+        <NavbarDashboard title="Dashboard" subtitle="" />
         <div className="content">
-          <BreadCrum path={pathToPage} />
+          {/* <BreadCrum path={pathToPage} /> */}
 
           <AdminCard>
             <TimeTable />

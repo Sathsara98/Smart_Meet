@@ -97,8 +97,9 @@ function NavbarDashboard(props) {
         <div className="navbar-wrapper ml-0 pl-0">
           {BurgerMenu}
           <span style={{ fontSize: "1.613em" }}>
-            <b className="text-white align-middle">{props.title}</b>
+            <b className="title-main align-middle">{props.title}</b>
           </span>
+          <span className="subtitle">{props.subtitle}</span>
         </div>
         <button
           className="navbar-toggler m-0 p-0 float-right  text-white"
@@ -127,7 +128,7 @@ function NavbarDashboard(props) {
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <i className={"fas fa-bell "} style={{ color: "white" }}></i>
+                <i className={"fas fa-bell "} style={{ color: "#1e1e1e" }}></i>
               </a>
               <ul
                 className="dropdown-menu dropdown-navbar"

@@ -1,0 +1,51 @@
+/* .content .content-card-wrapper {
+    box-shadow: none !important;
+} */
+
+.meeting-name {
+    padding-left: 15px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+
+
+
+h4.separator_minute {
+    font-size: 14px;
+    border-bottom: 2px solid #0D97B9;
+}
+
+.section-header {
+    color: #0D97B9;
+}
+
+.approval-form-row {
+    margin-left: 0px;
+}
+
+.attendence-sub-header {
+    font-size: 14px;
+}
+
+.delete-icon i {
+    color: red;
+    cursor: pointer;
+}
+
+@media screen and (max-width:768px) {
+    .meeting-detail-wrap {
+        flex-direction: column;
+    }
+
+    .meeting-detail-wrap .col-md-4,
+    .meeting-name {
+        padding: 0;
+    }
+
+    .minute-view-btn button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}

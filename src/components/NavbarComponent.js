@@ -1,12 +1,12 @@
 import React from "react";
 import { Navbar, Nav, NavDropdown, Button, Image } from "react-bootstrap";
-import govLogo from "../assets/gov-logo.png";
+import govLogo from "../assets/main logo.png";
 
 function NavbarComponent(props) {
   var varient = "navbar navbar-expand-lg fixed-top bg-darkcustom";
   var BurgerMenu = "";
   if (props.varient == "transparent") {
-    varient = "navbar navbar-expand-lg fixed-top bg-custom";
+    varient = "navbar navbar-expand-lg fixed-top";
   } else {
     BurgerMenu = (
       <div className="navbar-toggle d-inline">
@@ -19,13 +19,13 @@ function NavbarComponent(props) {
     );
   }
   return (
-    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0" style={{height:"100px"}}>
+    <nav className={varient} data-color="orange ml-0 pl-0 pr-0 mr-0" style={{ height: "100px" }}>
       <div className="container-fluid ml-0 pl-0 mr-0 pr-0">
         <div className="navbar-wrapper ml-0 pl-4">
           {BurgerMenu}
 
           <img src={govLogo} className="mr-3 ml-0 pl-0 logo-nav" />
-          <b className="text-white">
+          {/* <b className="text-white">
             <span style={{ fontSize: "1.113em" }}>
               Ministry of Industry and Commerce
             </span>{" "}
@@ -34,7 +34,7 @@ function NavbarComponent(props) {
               {" "}
               කර්මාන්ත හා වාණිජ කටයුතු අමාත්‍යාංශය
             </span>
-          </b>
+          </b> */}
         </div>
         {/* <button
           className="navbar-toggler m-0 p-0 float-right  text-white"

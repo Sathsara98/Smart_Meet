@@ -6,6 +6,8 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
 import logo from "../assets/logo.png";
+import backImg from "../assets/main_pg_img.png";
+import govLogo from "../assets/main logo.png";
 
 function Login() {
   const [error, setError] = useState("");
@@ -52,465 +54,159 @@ function Login() {
   }
   return (
     <div>
-      <Navbar varient="transparent" />
-      {/* Mobile only */}
-      <div className="login-cover1 center d-block d-sm-none position-absolute vh-100">
-        <div className="d-flex flex-column  justify-content-between align-items-between ">
-          <div
-            className=" w-100 p-0 "
-            style={{ borderRadius: "0px 0px 50px 0px" }}
-          >
-            {/* <div className="position-absolute " style={{ right: "0" }}>
-              <div className="d-flex flex-column justify-content-start align-items-end ">
-                <div>
-                  <Button
-                    className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons1"
-                    style={{ zIndex: "1071" }}
-                    href="/login"
-                  >
-                    <span
-                      id="loginButton"
-                      className="  pb-0  mt-0 text-strong font-weight-boldn "
-                      style={{ fontSize: "1.4em" }}
-                    >
-                      <strong>Logi</strong>
-                      <strong style={{ color: "#14A9FF" }}>n &nbsp; </strong>
-                    </span>
-                  </Button>
-                </div>
-              </div>
-            </div> */}
-            <div className="py-5"></div>
-            <div className="d-flex flex-column justify-content-center m-4">
-              <div className="w-100 d-flex ">
-                <img
-                  className=" px-5 pt-5 pb-3 mx-auto"
-                  src={logo}
-                  width="80%"
-                />
-              </div>
-              <div className="mb-2 ">
-                <h4
-                  className="text-center text-white mb-3"
-                  style={{ fontSize: "1em" }}
-                >
-                  <strong>
-                    The official meeting scheduler of advisory <br /> committee
-                    of Ministry of industry
-                  </strong>
-                </h4>
-              </div>
-            </div>
-          </div>
-          <div className="col-12 col-sm-12 p-0 ">
-            <div className="d-flex justify-content-center col align-items-center">
-              <div
-                className="container login-box"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.7)",
-                  marginTop: "5px",
-                  marginBottom: "5px",
-                  borderRadius: "15px 15px 15px 15px",
-                }}
-              >
-                <h3 className="text-center" style={{ color: "#003A5C" }}>
-                  Enter your login details
-                </h3>
-                <Formik
-                  validationSchema={schema}
-                  onSubmit={login}
-                  initialValues={{
-                    password: "",
-                    email: "",
-                  }}
-                >
-                  {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    values,
-                    touched,
-                    isValid,
-                    errors,
-                  }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
-                      <Form.Row>
-                        <Form.Group as={Col} controlId="formGridPassword">
-                          <div
-                            className="d-flex align-items-center justify-content-between p-1"
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                              backgroundColor: "rgb(255,255,255)",
-                              borderRadius: "50px 50px 50px 50px",
-                            }}
-                          >
-                            <div className="col-2 m-0 pl-0 ">
-                              <img
-                                className="ml-0 py-1 px-1 "
-                                style={{
-                                  width: "50px",
 
-                                  boxShadow:
-                                    "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
-                                  borderRadius: "50px 50px 50px 50px",
-                                }}
-                                src={`${process.env.PUBLIC_URL}/assets/img/username.png`}
-                                alt="Card image cap"
-                              />
-                            </div>
-                            <Form.Control
-                              style={{
-                                border: 0,
-                                padding: "20px",
-                                borderRadius: "50px 50px 50px 50px",
-                              }}
-                              className="form-control-lg  col-8 "
-                              required
-                              name="email"
-                              type="email"
-                              placeholder="Enter email here"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              isInvalid={!!errors.email}
-                              isValid={touched.email && !errors.email}
-                            />
-                          </div>
 
-                          <div className="text-center p-1 text-danger">
-                            {" "}
-                            {errors.email}
-                          </div>
-                        </Form.Group>
-                      </Form.Row>
-
-                      <Form.Row>
-                        <Form.Group as={Col} controlId="formGridEmail">
-                          <div
-                            className="d-flex align-items-center justify-content-between p-1 mt-4"
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                              backgroundColor: "rgb(255,255,255)",
-                              borderRadius: "50px 50px 50px 50px",
-                            }}
-                          >
-                            <div className="col-2 m-0 pl-0 ">
-                              <img
-                                className="ml-0 py-1 px-1 "
-                                style={{
-                                  width: "50px",
-
-                                  boxShadow:
-                                    "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
-                                  borderRadius: "50px 50px 50px 50px",
-                                }}
-                                src={`${process.env.PUBLIC_URL}/assets/img/password.png`}
-                                alt="Card image cap"
-                              />
-                            </div>
-                            <Form.Control
-                              style={{
-                                border: 0,
-                                padding: "20px",
-                                borderRadius: "50px 50px 50px 50px",
-                              }}
-                              className="form-control-lg  col-8 "
-                              required
-                              name="password"
-                              type="password"
-                              placeholder="Enter password here"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.password}
-                              isValid={touched.password && !errors.password}
-                              isInvalid={!!errors.password}
-                            />
-                          </div>
-                          <div className="text-center p-1 text-danger">
-                            {" "}
-                            {errors.password};
-                          </div>
-                        </Form.Group>
-                      </Form.Row>
-                      {error != "" ? (
-                        <div className="alert alert-danger" role="alert">
-                          {error}
-                        </div>
-                      ) : null}
-
-                      <center>
-                        <Button
-                          className="mt-2 mx-auto btnPrimary login-button"
-                          type="submit"
-                        >
-                          <span
-                            id="loginButton"
-                            className="pr-5 pl-5 pb-0 pt-0 mb-0 mt-0 text-strong font-weight-bold "
-                          >
-                            <h4
-                              className="text-shadow pb-0 pt-0 mb-0 mt-0"
-                              style={{ fontSize: "1.4em" }}
-                            >
-                              <strong> Login</strong>
-                            </h4>
-                          </span>
-                        </Button>
-                        <br />
-                        <a href="/forget">
-                          <h4 className="" style={{ color: "#000D61" }}>
-                            Forget Password?
-                          </h4>
-                        </a>
-                      </center>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* For large screens  */}
-      <div className="login-cover center d-none d-md-block position-absolute">
-        <div className="d-flex vh-100 justify-content-center align-items-center ">
-          <div
-            className="col-12 col-md-6 w-100 p-0 "
-            style={{ borderRadius: "0px 0px 50px 0px" }}
-          >
-            <div className="position-absolute " style={{ right: "0" }}>
-              <div className="d-flex flex-column justify-content-start align-items-end ">
-                <div>
-                  <Button
-                    className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons1"
-                    style={{ zIndex: "1071" }}
-                    href="/login"
-                  >
-                    <span
-                      id="loginButton"
-                      className="  pb-0  mt-0 text-strong font-weight-boldn "
-                      style={{ fontSize: "1.4em" }}
-                    >
-                      <strong>Logi</strong>
-                      <strong style={{ color: "#14A9FF" }}>n &nbsp; </strong>
-                    </span>
-                  </Button>
-                </div>
-              </div>
+      <div className="container-login">
+        <div class="image-section login-image-section">
+          <div class="decor-shape"></div>
+          <img src={backImg} alt="Meeting Image" class="meetingimg" />
+
+        </div>
+
+        <div class="login-form-section">
+          <div className="inner-wrapper  d-flex flex-column justify-content-center">
+            <div className="d-flex justify-content-center logo-wrapper">
+              <img src={govLogo} className="pb-3 ml-0 pl-0 logo-login" />
             </div>
 
-            <div className="d-flex flex-column justify-content-center m-4">
-              <div className="w-100 d-flex ">
-                <img
-                  className=" px-5 pt-5 pb-3 mx-auto"
-                  src={logo}
-                  width="65%"
-                />
-              </div>
-              <div className="mb-5 ">
-                <h4
-                  className="text-center text-white mb-5"
-                  style={{ fontSize: "1em" }}
-                >
-                  <strong>
-                    The official meeting scheduler of advisory <br /> committee
-                    of Ministry of industry
-                  </strong>
-                </h4>
-              </div>
+            <div className="welcome-wrapper text-center pt-3 py-3">
+              <h2 className="font-weight-bold mb-0">Welcome</h2>
+              <p>Sign in to your account</p>
             </div>
-          </div>
-          <div className="col-12 col-md-6  col-sm-12 p-0 ">
-            <div className="d-flex justify-content-center col align-items-center">
-              <div
-                className="container login-box"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.7)",
-                  marginTop: "5px",
-                  marginBottom: "5px",
-                  borderRadius: "15px 15px 15px 15px",
+            <div className="login-form mt-4">
+              <Formik
+                validationSchema={schema}
+                onSubmit={login}
+                initialValues={{
+                  password: "",
+                  email: "",
                 }}
               >
-                <h3 className="text-center" style={{ color: "#003A5C" }}>
-                  Enter your login details
-                </h3>
-                <Formik
-                  validationSchema={schema}
-                  onSubmit={login}
-                  initialValues={{
-                    password: "",
-                    email: "",
-                  }}
-                >
-                  {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    values,
-                    touched,
-                    isValid,
-                    errors,
-                  }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
-                      <Form.Row>
-                        <Form.Group as={Col} controlId="formGridPassword">
-                          <div
-                            className="d-flex align-items-center justify-content-between p-1"
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                              backgroundColor: "rgb(255,255,255)",
-                              borderRadius: "50px 50px 50px 50px",
-                            }}
-                          >
-                            <div className="col-2 m-0 pl-0 ">
-                              <img
-                                className="ml-0 py-1 px-1 "
-                                style={{
-                                  width: "50px",
+                {({
+                  handleSubmit,
+                  handleChange,
+                  handleBlur,
+                  values,
+                  touched,
+                  isValid,
+                  errors,
+                }) => (
+                  <Form noValidate onSubmit={handleSubmit}>
+                    <Form.Row>
+                      <Form.Group as={Col} controlId="formGridPassword">
+                        <div
+                          className="d-flex flex-column p-1"
 
-                                  boxShadow:
-                                    "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
-                                  borderRadius: "50px 50px 50px 50px",
-                                }}
-                                src={`${process.env.PUBLIC_URL}/assets/img/username.png`}
-                                alt="Card image cap"
-                              />
-                            </div>
-                            <Form.Control
-                              style={{
-                                border: 0,
-                                padding: "20px",
-                                borderRadius: "50px 50px 50px 50px",
-                              }}
-                              className="form-control-lg  col-8 "
-                              required
-                              name="email"
-                              type="email"
-                              placeholder="Enter email here"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              isInvalid={!!errors.email}
-                              isValid={touched.email && !errors.email}
-                            />
-                          </div>
-
-                          <div className="text-center p-1 text-danger">
-                            {" "}
-                            {errors.email}
-                          </div>
-                        </Form.Group>
-                      </Form.Row>
-
-                      <Form.Row>
-                        <Form.Group as={Col} controlId="formGridEmail">
-                          <div
-                            className="d-flex align-items-center justify-content-between p-1 mt-4"
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                              backgroundColor: "rgb(255,255,255)",
-                              borderRadius: "50px 50px 50px 50px",
-                            }}
-                          >
-                            <div className="col-2 m-0 pl-0 ">
-                              <img
-                                className="ml-0 py-1 px-1 "
-                                style={{
-                                  width: "50px",
-
-                                  boxShadow:
-                                    "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
-                                  borderRadius: "50px 50px 50px 50px",
-                                }}
-                                src={`${process.env.PUBLIC_URL}/assets/img/password.png`}
-                                alt="Card image cap"
-                              />
-                            </div>
-                            <Form.Control
-                              style={{
-                                border: 0,
-                                padding: "20px",
-                                borderRadius: "50px 50px 50px 50px",
-                              }}
-                              className="form-control-lg  col-8 "
-                              required
-                              name="password"
-                              type="password"
-                              placeholder="Enter password here"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.password}
-                              isValid={touched.password && !errors.password}
-                              isInvalid={!!errors.password}
-                            />
-                          </div>
-                          <div className="text-center p-1 text-danger">
-                            {" "}
-                            {errors.password};
-                          </div>
-                        </Form.Group>
-                      </Form.Row>
-                      {error != "" ? (
-                        <div className="alert alert-danger" role="alert">
-                          {error}
-                        </div>
-                      ) : null}
-
-                      <center>
-                        <Button
-                          className="mt-2 mx-auto btnPrimary login-button"
-                          type="submit"
                         >
-                          <span
-                            id="loginButton"
-                            className="pr-5 pl-5 pb-0 pt-0 mb-0 mt-0 text-strong font-weight-bold "
+                          <Form.Label className="font-weight-bold">Username</Form.Label>
+
+
+                          <Form.Control
+                            style={{
+                              border: "1px solid #bababa",
+                              padding: "10px",
+                              borderRadius: "5px",
+                              width: "100%",
+                              maxWidth: "unset",
+                            }}
+                            className="form-control-lg  col-8 "
+                            required
+                            name="email"
+                            type="email"
+                            placeholder="Enter email here"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            isInvalid={!!errors.email}
+                            isValid={touched.email && !errors.email}
+                          />
+                        </div>
+
+
+                        <div className=" p-1 text-danger">
+                          {" "}
+                          {errors.email}
+                        </div>
+                      </Form.Group>
+                    </Form.Row>
+
+
+                    <Form.Row>
+                      <Form.Group as={Col} controlId="formGridEmail">
+                        <div
+                          className="d-flex flex-column"
+
+                        >
+                          <Form.Label className="font-weight-bold">Password</Form.Label>
+                          <Form.Control
+                            style={{
+                              border: "1px solid #bababa",
+                              padding: "10px",
+                              borderRadius: "5px",
+                              width: "100%",
+                              maxWidth: "unset",
+                            }}
+                            className="form-control-lg  col-8 "
+                            required
+                            name="password"
+                            type="password"
+                            placeholder="Enter password here"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.password}
+                            isValid={touched.password && !errors.password}
+                            isInvalid={!!errors.password}
+                          />
+                        </div>
+                        <div className=" p-1 text-danger">
+                          {" "}
+                          {errors.password}
+                        </div>
+                      </Form.Group>
+                    </Form.Row>
+                    {error != "" ? (
+                      <div className="alert alert-danger" role="alert">
+                        {error}
+                      </div>
+                    ) : null}
+                    <a href="/forget">
+                      <h4 className="" style={{ color: "#0D97B9", textAlign: "right" }}>
+                        Forget Your Password?
+                      </h4>
+                    </a>
+
+
+                    <center>
+                      <Button
+                        className="login-btn mx-auto btn-primary w-100"
+                        type="submit"
+                      >
+                        <span
+                          id="loginButton"
+                          className="pr-3 pl-3 pb-0 pt-0 mb-0 mt-0  font-weight-bold"
+                        >
+                          <h4
+                            className="pb-0 pt-0 mb-0 mt-0"
+                            style={{ fontSize: "1.2em" }}
                           >
-                            <h4
-                              className="text-shadow pb-0 pt-0 mb-0 mt-0"
-                              style={{ fontSize: "1.4em" }}
-                            >
-                              <strong> Login</strong>
-                            </h4>
-                          </span>
-                        </Button>
-                        <br />
-                        <a href="/forget">
-                          <h4 className="" style={{ color: "#000D61" }}>
-                            Forget Password?
+                            <strong> Login</strong>
                           </h4>
-                        </a>
-                      </center>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
+                        </span>
+                      </Button>
+                      <br />
+
+                    </center>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
+
+
         </div>
       </div>
-      <div className="position-fixed" style={{ right: "0" ,zIndex: "1071"  }} >
-        <div className="d-flex flex-column justify-content-start align-items-end z-index-10" >
-          <div>
-            <Button
-              className="mt-4 mx-auto mr-0 pl-4 pr-3 pt-3 pb-3 index-right-buttons"
-              style={{ zIndex: "1071" }}
-              href="/"
-            >
-              <span
-                id="loginButton"
-                className="  pb-0  mt-0 text-strong font-weight-bold overflow-hidden"
-                style={{ fontSize: "1.4em" }}
-              >
-                <i class="fas fa-home"></i>
-                <strong>&nbsp; Hom</strong>
-                <strong style={{ color: "#14A9FF" }}>e</strong>
-              </span>
-            </Button>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }

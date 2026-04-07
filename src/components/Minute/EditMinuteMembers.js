@@ -16,6 +16,7 @@ import { getIn } from "formik";
 import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import Auth from "../../authentication/Auth";
+import "./Minute.css";
 function EditMinuteMembers() {
   var curr = new Date();
   var date = curr
@@ -74,7 +75,7 @@ function EditMinuteMembers() {
 
   useEffect(() => {
     loadLatestMinute();
-    return () => {};
+    return () => { };
   }, []);
   const loadLatestMinute = async () => {
     setLoading(true);
@@ -112,7 +113,7 @@ function EditMinuteMembers() {
       .catch((error) => console.log(error));
     setLoading(false);
   };
-  
+
   const fetchSingleUser = async (meeting) => {
     console.log(meeting);
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/user`, {
@@ -247,8 +248,8 @@ function EditMinuteMembers() {
       console.log(e);
     }
   };
-  const chipSubmit = () => {};
-  const chipRemove = () => {};
+  const chipSubmit = () => { };
+  const chipRemove = () => { };
   // const returnNum = (num) => {
   //   stars.push(parseInt(num));
   //   setStars(stars);
@@ -257,8 +258,8 @@ function EditMinuteMembers() {
   //     setStars(stars);
   //   }
   // };
-  if(!isAttended){
-    return(
+  if (!isAttended) {
+    return (
       <div>
         <h4 className="text-center">You have Zero Attended Meetings</h4>
       </div>
@@ -284,7 +285,7 @@ function EditMinuteMembers() {
             <div>
               <div className="form-row">
                 <div className="form-group col-3">
-                  <Form.Label>Name of Meeting</Form.Label>
+                  <Form.Label>Title</Form.Label>
                 </div>
 
                 <div className="form-group col-9">
@@ -325,7 +326,7 @@ function EditMinuteMembers() {
                 </div>
               </div>
               <div className="form-row">
-                <div className="form-group" className="col-3">
+                <div className="form-group col-3">
                   <Form.Label>Time</Form.Label>
                 </div>
 
@@ -404,7 +405,7 @@ function EditMinuteMembers() {
               </div>
               <div>
                 <div className="form-row">
-                  <div className="form-group" className="mb-0 mt-1" as={Col}>
+                  <div className="form-group mb-0 mt-1" as={Col}>
                     <Form.Label className="mb-0 mt-1">
                       Public Sector{" "}
                     </Form.Label>
@@ -421,7 +422,7 @@ function EditMinuteMembers() {
               </div>
               <div>
                 <div className="form-row">
-                  <div className="form-group" className="mb-0 mt-1" as={Col}>
+                  <div className="form-group mb-0 mt-1" as={Col}>
                     <Form.Label className="mb-0 mt-1">Academic</Form.Label>
 
                     <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
@@ -497,7 +498,7 @@ function EditMinuteMembers() {
               </div>
 
               <div className="form-row">
-                <div className="form-group" className="col-3">
+                <div className="form-group col-3">
                   <Form.Label>Approval from</Form.Label>
                 </div>
 
@@ -650,26 +651,26 @@ function EditMinuteMembers() {
                 <tbody>
                   {tableData != null
                     ? tableData.map((item, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{item.activity}</td>
-                            <td>{item.action}</td>
-                            <td>{item.responsibility}</td>
+                      return (
+                        <tr key={index}>
+                          <td>{item.activity}</td>
+                          <td>{item.action}</td>
+                          <td>{item.responsibility}</td>
 
-                            <td>
-                              <ReactStars
-                                count={5}
-                                value={item.rating}
-                                onChange={(e) => {
-                                  editRowRating(index, ratingChanged(e));
-                                }}
-                                size={17}
-                                activeColor="#ffd700"
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })
+                          <td>
+                            <ReactStars
+                              count={5}
+                              value={item.rating}
+                              onChange={(e) => {
+                                editRowRating(index, ratingChanged(e));
+                              }}
+                              size={17}
+                              activeColor="#ffd700"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
                     : null}
                 </tbody>
                 {/* <tbody>{tableDATA}</tbody> */}

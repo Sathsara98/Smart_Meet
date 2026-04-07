@@ -29,7 +29,7 @@ function MemberRatio() {
   return (
     <div className="mt-4">
       <span className="heading" style={styleTitle}>
-        The Ratio Of The Registered Users
+        Committee Composition
       </span>
       <Chart
         height={"250px"}
@@ -44,7 +44,7 @@ function MemberRatio() {
           ["Academic", stats.Academic],
         ]}
         options={{
-          is3D: true,
+          is3D: false,
           animation: {
             startup: true,
             easing: "linear",

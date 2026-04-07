@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import ReactChipInput from "react-chip-input";
 import { useReactToPrint } from "react-to-print";
-import { Typeahead } from 'react-bootstrap-typeahead'; 
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { Form, Col, Button, Table } from "react-bootstrap";
 
 import Model from "../../components/Model";
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+
+import "./Minute.css";
 
 const EditMinute1 = forwardRef((props, ref) => {
   var curr = new Date();
@@ -49,7 +51,7 @@ const EditMinute1 = forwardRef((props, ref) => {
     time: "",
     venue: "",
   });
-  const [options, setOptions] = useState(["saman","kamal"]);
+  const [options, setOptions] = useState(["saman", "kamal"]);
   useEffect(() => {
     setMeetingName(props.minute.meeting_name);
     setMeetingDate(props.minute.meeting_date);
@@ -350,7 +352,7 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
         </div>
         <div className="form-row">
-          <div className="form-group" className="col-3">
+          <div className="form-group col-3">
             <Form.Label>Time</Form.Label>
           </div>
 
@@ -387,146 +389,136 @@ const EditMinute1 = forwardRef((props, ref) => {
         <div className="w-100 mt-3">
           <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
             <div
-              className="pr-5 pb-2 pl-2 pt-1 "
-              style={{
-                backgroundColor: "#0A2057",
-                borderEndEndRadius: "90px",
-              }}
-            >
-              <strong>Attendance</strong>
+              className=" " >
+              <strong className="section-header"> Attendance</strong>
             </div>
           </h4>
         </div>
         <div className="w-100 ">
-          <h4 className=" text-center " style={{ color: "#070707" }}>
-            <strong>Present</strong>
+          <h4 style={{ color: "#070707" }}>
+            <strong className="attendence-sub-header">Present</strong>
           </h4>
         </div>
         <div>
-          <div className="form-row">
+          <div className="form-row approval-form-row">
             <div className="form-group mb-0" as={Col}>
               <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
             </div>
           </div>
-          
-           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="name"
-          multiple
-          onChange={setPrivatechips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={private_chips}
-        />
+
+          <Typeahead
+            id="basic-typeahead-multiple"
+            labelKey="name"
+            multiple
+            onChange={setPrivatechips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={private_chips}
+          />
         </div>
         <div>
-          <div className="form-row">
-            <div className="form-group" className="mb-0 mt-1" as={Col}>
+          <div className="form-row approval-form-row">
+            <div className="form-group mb-0 mt-1" as={Col}>
               <Form.Label className="mb-0 mt-1">Public Sector </Form.Label>
 
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-        
+
           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="name"
-          multiple
-          onChange={setPublicchips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={public_chips}
-        />
+            id="basic-typeahead-multiple"
+            labelKey="name"
+            multiple
+            onChange={setPublicchips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={public_chips}
+          />
         </div>
         <div>
-          <div className="form-row">
-            <div className="form-group" className="mb-0 mt-1" as={Col}>
+          <div className="form-row approval-form-row">
+            <div className="form-group mb-0 mt-1" as={Col}>
               <Form.Label className="mb-0 mt-1">Academic</Form.Label>
 
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-          
+
           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="academic_chips"
-          multiple
-          onChange={setAcademicchips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={academic_chips}
-        />
+            id="basic-typeahead-multiple"
+            labelKey="academic_chips"
+            multiple
+            onChange={setAcademicchips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={academic_chips}
+          />
         </div>
         <div>
-          <div className="form-row">
+          <div className="form-row approval-form-row">
             <div className="form-group mb-0 mt-1" as={Col}>
               <Form.Label className="mb-0 mt-1">Association</Form.Label>
 
               <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
             </div>
           </div>
-          
+
           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="association_chips"
-          multiple
-          onChange={setAssociationchips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={association_chips}
-        />
+            id="basic-typeahead-multiple"
+            labelKey="association_chips"
+            multiple
+            onChange={setAssociationchips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={association_chips}
+          />
         </div>
         <div>
           <div className="w-100 mt-3 mb-0 ">
-            <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-              <strong>Excused</strong>
+            <h4 style={{ color: "#070707" }}>
+              <strong className="attendence-sub-header">Excused</strong>
             </h4>
           </div>
-          
+
           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="excused_chips"
-          multiple
-          onChange={setExcusedchips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={excused_chips}
-        />
+            id="basic-typeahead-multiple"
+            labelKey="excused_chips"
+            multiple
+            onChange={setExcusedchips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={excused_chips}
+          />
         </div>
         <div>
           <div className="w-100 mt-3">
-            <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-              <strong>Absent</strong>
+            <h4 className=" " style={{ color: "#070707" }}>
+              <strong className="attendence-sub-header">Absent</strong>
             </h4>
           </div>
-          
+
           <Typeahead
-          id="basic-typeahead-multiple"
-          labelKey="absent_chips"
-          multiple
-          onChange={setAbsentchips}
-          options={options}
-          placeholder="Choose attendies..."
-          selected={absent_chips}
-        />
+            id="basic-typeahead-multiple"
+            labelKey="absent_chips"
+            multiple
+            onChange={setAbsentchips}
+            options={options}
+            placeholder="Choose attendies..."
+            selected={absent_chips}
+          />
         </div>
 
         <div className="w-100 mt-4">
           <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
             <div
-              className="pr-5 pb-2 pl-2 pt-1 "
-              style={{
-                backgroundColor: "#0A2057",
-                borderEndEndRadius: "90px",
-              }}
-            >
-              <strong>Approval</strong>
+              className="">
+              <strong className="section-header">Approval</strong>
             </div>
           </h4>
         </div>
 
         <div className="form-row">
-          <div className="form-group" className="col-3">
+          <div className="form-group col-3">
             <Form.Label>Approval from</Form.Label>
           </div>
 
@@ -609,13 +601,8 @@ const EditMinute1 = forwardRef((props, ref) => {
         <div className="w-100 mt-4">
           <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
             <div
-              className="pr-5 pb-2 pl-2 pt-1 "
-              style={{
-                backgroundColor: "#0A2057",
-                borderEndEndRadius: "90px",
-              }}
-            >
-              <strong>Objective</strong>
+              className=" ">
+              <strong className="section-header">Objective</strong>
             </div>
           </h4>
         </div>
@@ -626,8 +613,7 @@ const EditMinute1 = forwardRef((props, ref) => {
 
           <div className="form-group col-9">
             <Form.Control
-              className="text-black "
-              className="text-black "
+              className="text-black text-black "
               name="objective"
               type="text"
               value={meeting_objective}
@@ -636,6 +622,75 @@ const EditMinute1 = forwardRef((props, ref) => {
             />
           </div>
         </div>
+
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Activity</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="border border-light rounded"
+              as="textarea"
+              name="rowActivity"
+              value={row_activity}
+              placeholder="Enter New Activity..."
+              onChange={(e) => handleChangeO(e)}
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Action taken/ Action to be taken</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              className="border border-light rounded"
+              as="textarea"
+              name="rowAction"
+              value={row_action}
+              placeholder="Enter New Action..."
+              onChange={(e) => handleChangeO(e)}
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group col-3">
+            <Form.Label>Responsibility</Form.Label>
+          </div>
+
+          <div className="form-group col-9">
+            <Form.Control
+              name="rowResponsibility"
+              value={row_responsibility}
+              placeholder="Enter New Responsibility..."
+              onChange={(e) => handleChangeO(e)}
+            />
+          </div>
+        </div>
+
+        <div className="form-row d-flex justify-content-end">
+
+          <Button
+            variant=""
+            type="submit"
+            onClick={() => addRow()}
+            className="btn  btn-primary"
+          >
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </Button>
+        </div>
+
+
+
+
+
+
+
+
         {/* Table */}
         <Table
           striped
@@ -677,48 +732,49 @@ const EditMinute1 = forwardRef((props, ref) => {
           <tbody>
             {tableRows != null
               ? tableRows.map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <span className="text-black-table ">
-                          {item.activity}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-black-table  ">
-                          {item.action}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-black-table ">
-                          {item.responsibility}
-                        </span>
-                      </td>
-                      <td className=" text-center">
-                        <span className="text-black-table  ">
-                          {item.overall != null
-                            ? item.overall.toFixed(2)
-                            : "0.00"}{" "}
-                          %
-                        </span>
-                      </td>
-                      <td className="view-in-web">
-                        <Button
-                          variant="danger"
-                          className="btnPrimary  m-1 p-1"
-                          onClick={() => removeRow(index)}
-                        >
-                          x
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })
+                return (
+                  <tr key={index}>
+                    <td>
+                      <span className="text-black-table ">
+                        {item.activity}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-black-table  ">
+                        {item.action}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-black-table ">
+                        {item.responsibility}
+                      </span>
+                    </td>
+                    <td className=" text-center">
+                      <span className="text-black-table  ">
+                        {item.overall != null
+                          ? item.overall.toFixed(2)
+                          : "0.00"}{" "}
+                        %
+                      </span>
+                    </td>
+                    <td className="view-in-web delete-icon">
+                      <i class="fa fa-trash" aria-hidden="true" onClick={() => removeRow(index)}></i>
+                      {/* <Button
+                        variant=""
+                        className="  m-1 p-1"
+                        onClick={() => removeRow(index)}
+                      >
+                        <span aria-hidden="true">×</span>
+                      </Button> */}
+                    </td>
+                  </tr>
+                );
+              })
               : null}
           </tbody>
           {/* <tbody>{tableDATA}</tbody> */}
         </Table>
-        <div className="border border-light p-2 mt-4 mb-5 view-in-web">
+        {/* <div className="border border-light p-2 mt-4 mb-5 view-in-web">
           <Form.Label>
             Add New Row - (This will not be appeared in final minute)
           </Form.Label>
@@ -763,8 +819,8 @@ const EditMinute1 = forwardRef((props, ref) => {
               + Add Row
             </Button>
           </div>
-        </div>
-        <div className="form-row">
+        </div> */}
+        <div className="form-row mt-5">
           <div className="form-group col-3">
             <Form.Label>Closing Remarks</Form.Label>
           </div>
@@ -812,39 +868,39 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
         </div>
         <div
-          className="form-row "
+          className="form-row d-flex justify-content-end  mt-5 mb-5 "
           id="footer-modal-addMember"
-          className="d-flex justify-content-between"
         >
           <Button
-            variant="info"
-            type="submit"
-            className="btnPrimary view-in-web"
-            onClick={(e) => editMinute(e)}
-          >
-            Save
-          </Button>
-          <Button
-            variant="danger"
+            variant=""
             onClick={() => deleteMinute()}
-            className="btnPrimary view-in-web"
+            className="btn btn-secondary view-in-web"
           >
             Delete
           </Button>
           <Button
-            variant="info"
+            variant=""
+            type="submit"
+            className="btn btn-primary view-in-web ml-3 mr-3"
+            onClick={(e) => editMinute(e)}
+          >
+            Save
+          </Button>
+
+          <Button
+            variant=""
             onClick={() => props.bclick()}
-            className="btnPrimary view-in-web"
+            className="btn btn-ternitary view-in-web"
           >
             Print
           </Button>
-          <Button
+          {/* <Button
             variant="danger"
             onClick={props.close}
             className="btnPrimary view-in-web"
           >
             Close
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
 import Model from "../../components/Model";
+import "./Question.css";
 import {
   BreadCrum,
   SideBar,
@@ -19,8 +20,10 @@ import {
   Spinner,
 } from "react-bootstrap";
 
+import { useLocation, useHistory } from "react-router-dom";
+
 function Index() {
-  const childRef = useRef();
+  // const childRef = useRef();
   const [questions, setquestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,54 +33,271 @@ function Index() {
   let [marketing, setmarketing] = useState(0);
   const [maxArea, setmaxArea] = useState("");
 
+  const location = useLocation();
+  const history = useHistory();
+
+  const [submissionId, setSubmissionId] = useState(null);
+  const [mode, setMode] = useState("create"); // 'create' | 'edit' | 'view'
+
+  // const submissionId = location.state?.submissionId || null;
+  // const mode = location.state?.mode || "create"; 
+
+  const isReadOnly = mode === "view";
+
   useEffect(() => {
-    fetchQuestions();
+    const state = location.state || {};
+
+    if (state.submissionId) {
+      setSubmissionId(state.submissionId);
+      setMode(state.mode || "edit");
+      loadSubmission(state.submissionId);
+    } else {
+      // new submission
+      setquestions([]);
+      setmaxArea("");
+      setLoading(false);
+    }
+
+    // optional: clear navigation state so back/forward doesn’t replay it
+    history.replace({ ...location, state: {} });
   }, []);
 
-  const fetchQuestions = async () => {
+  // load a single submission by id
+  const loadSubmission = async (id) => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`)
-        .then(function (response) {
-          return response.json();
-        })
-        .then((res) => {
-          console.log(res);
-          let promise = res.map(async (que) => {
-            const requestOptions = {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                text: que.body,
-              }),
-            };
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${id}`
+      );
+      const doc = await res.json();
+      // flatten doc.questions into your table structure
+      const flattened =
+        (doc.questions || []).map((q, index) => ({
+          _id: q._id || `${doc._id}-${index}`,
+          dArea: q.dArea,
+          body: q.body,
+          disabled: false,
+        })) || [];
 
-            const res1 = await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
-              requestOptions
-            );
-            const data1 = await res1.json();
-            return {
-              _id: que._id,
-              body: que.body,
-              dArea: data1.SVM,
-              disabled: false,
-            };
-          });
-          console.log(res);
-          return Promise.all(promise);
-        })
-        .then((res) => {
-          console.log(res);
-          setquestions(res);
-
-          findMax(res);
-        });
+      setquestions(flattened);
+      findMax(flattened);
     } catch (e) {
-      //if failed to communicate with api this code block will run
-      console.log(e);
+      console.error("Error loading submission:", e);
+    } finally {
+      setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    // create mode → start fresh
+    if (!submissionId || mode === "create") {
+      setquestions([]);
+      setmaxArea("");
+      setLoading(false);
+      return;
+    }
+
+    // edit or view → load existing submission
+    const fetchOne = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`
+        );
+        const doc = await res.json();
+        if (!res.ok) throw new Error(doc.message || "Error loading submission");
+
+        const flattened =
+          Array.isArray(doc.questions) ?
+            doc.questions.map((q, index) => ({
+              _id: q._id || `${doc._id}-${index}`,
+              body: q.body,
+              dArea: q.dArea,
+              disabled: isReadOnly,
+            })) : [];
+
+        setquestions(flattened);
+        findMax(flattened);
+      } catch (e) {
+        console.error(e);
+        alert("Error loading submission: " + e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOne();
+  }, [submissionId, mode]);
+
+
+  // const handleAddQuestion = (newItem) => {
+  //   const newQuestion = {
+  //     _id: Date.now(),
+  //     body: newItem.challenge,
+  //     dArea: newItem.area,
+  //     disabled: false,
+  //   };
+  //   setquestions((prev) => [...prev, newQuestion]);
+  //   findMax([...questions, newQuestion]); 
+  // };
+  const handleAddQuestion = (newItem) => {
+    const newQuestion = {
+      _id: Date.now(),
+      body: newItem.challenge,
+      dArea: newItem.area,
+      disabled: false,
+    };
+
+    // use functional setState to avoid stale state
+    setquestions((prev) => {
+      const updatedList = [...prev, newQuestion];
+      findMax(updatedList);
+      return updatedList;
+    });
+
+  };
+  // DELETE one question
+  const handleDeleteQuestion = (id) => {
+    setquestions((prev) => {
+      const updated = prev.filter((q) => q._id !== id);
+      findMax(updated);
+      return updated;
+    });
+  };
+
+  // UPDATE one question
+  const handleUpdateQuestion = (id, updatedData) => {
+    setquestions((prev) => {
+      const updated = prev.map((q) =>
+        q._id === id ? { ...q, ...updatedData } : q
+      );
+      findMax(updated);
+      return updated;
+    });
+  };
+
+  // 🔹 Build payload for draft or submit
+  const buildPayload = (statusValue) => ({
+    questions: questions.map((q) => ({
+      dArea: q.dArea,
+      body: q.body,
+    })),
+    createdBy: "Sathsara",
+    status: statusValue,
+    maxArea: maxArea,
+  });
+
+
+
+  const handleSubmitAll = async () => {
+    if (questions.length === 0) {
+      alert("Please add at least one question!");
+      return;
+    }
+
+    const payload = buildPayload("submitted");
+
+    try {
+      let res;
+      if (submissionId) {
+        // submit existing draft
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      } else {
+        // first-time submit
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      }
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Server Error");
+
+      alert("Challenges submitted successfully!");
+
+      // after submitting you can either:
+      //  - clear form, or
+      //  - redirect back to MySubmission, etc.
+      setquestions([]);
+      findMax([]);
+      setSubmissionId(null);
+      setMode("create");
+    } catch (err) {
+      console.error("❌ Error submitting challenges:", err);
+      alert("Error submitting challenges: " + err.message);
+    }
+  };
+
+
+
+
+  const handleSaveDraft = async () => {
+    if (questions.length === 0) {
+      alert("Please add at least one question before saving a draft!");
+      return;
+    }
+
+    const payload = buildPayload("draft");
+
+    try {
+      let res;
+      if (submissionId) {
+        // ✏️ editing existing draft -> UPDATE
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      } else {
+        // 🆕 new draft -> CREATE
+        res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      }
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Server Error");
+
+      // if we just created it, remember its id so next save becomes UPDATE
+      if (!submissionId && data.data && data.data._id) {
+        setSubmissionId(data.data._id);
+        setMode("edit");
+      }
+
+      alert("Draft saved successfully!");
+    } catch (err) {
+      console.error("❌ Error saving draft:", err);
+      alert("Error saving draft: " + err.message);
+    }
+  };
+
+
+
+
+
+
+
+
   const pathToPage = ["Home", "Admin", "Add Questions"];
   const findMax = (data_new) => {
     setLoading(true);
@@ -1252,38 +1472,119 @@ function Index() {
         {model}
         <SideBar questions={true} />
         <div className="main-panel">
-          <NavbarDashboard title="Questions" />
+          <NavbarDashboard title="Add Challenges" subtitle="Submit Challenges to Shape Smarter Decisions" />
           <div className="content">
-            <BreadCrum path={pathToPage} />
-            <AdminCard title="Insert Questions">
-              <Alert variant={"secondary"}>
+            {/* <BreadCrum path={pathToPage} /> */}
+            <Row className="mb-4 dev-cards-wrapper">
+              {["Policy", "R&D", "Technology", "Workforce", "Productivity", "Marketing"].map((area) => {
+                const count = questions.filter((q) => q.dArea === area).length;
+                return (
+                  <Col key={area} md={2}>
+                    <div className="p-3 text-center border rounded dev-card">
+                      <h3 className="m-0">{count}</h3>
+                      <h6 className="m-0">{area}</h6>
+
+                    </div>
+                  </Col>
+                );
+              })}
+            </Row>
+            <AdminCard title="Insert Questions" >
+              <div style={{ minHeight: "350px" }}>
+
+
+                {/* <Alert variant={"secondary"}>
                 <Row>
                   <Container as={Col}>
                     <h4 className="text-center p-0 m-0">
-                      {questions.length>0?(
-                        <strong>Developing area - {maxArea}</strong>):null
+                      {questions.length > 0 ? (
+                        <strong>Developing area - {maxArea}</strong>) : null
                       }
                     </h4>
                   </Container>
                 </Row>
-              </Alert>
-              <AddQuestion onChange={fetchQuestions}></AddQuestion>
-              <ViewQuestion
-                questions={questions}
-                onChange={fetchQuestions}
-                loading={loading}
-                show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
-                ref={childRef}
-              ></ViewQuestion>
-              <Button
-                href="/events/true"
-                variant="info"
-                className="btnPrimary float-right"
-                type="link"
-              >
-              Submit All
-            </Button>
+              </Alert> */}
+
+
+
+                <AddQuestion onAdd={handleAddQuestion} disabled={mode === "view"} />
+                <ViewQuestion
+                  questions={questions}
+                  onDelete={mode === "view" ? undefined : handleDeleteQuestion}
+                  onUpdate={mode === "view" ? undefined : handleUpdateQuestion}
+                  readOnly={mode === "view"}
+                />
+
+                {/* Table Section */}
+                {/* <table className="table mt-4">
+                  <thead>
+                    <tr>
+                      <th>Development Area</th>
+                      <th>Challenge</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {questions.map((q, i) => (
+                      <tr key={i}>
+                        <td>{q.dArea}</td>
+                        <td>{q.body}</td>
+
+                        
+                        <td className="text-center">
+
+                         
+                          <i
+                            className="far fa-edit mr-3"
+                            style={{ cursor: "pointer", fontSize: "18px" }}
+                            onClick={() => childRef.current?.editComment?.(q._id)}
+                          ></i>
+
+                          
+                          <i
+                            className="far fa-trash-alt"
+                            style={{ cursor: "pointer", fontSize: "18px", color: "red" }}
+                            onClick={() => childRef.current?.deleteComment?.(q._id)}
+                          ></i>
+
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+*/}
+
+                {/* <ViewQuestion
+                  questions={questions}
+                  onChange={fetchQuestions}
+                  loading={loading}
+                  show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
+                  ref={childRef}
+                ></ViewQuestion> */}
+                {mode !== "view" && (
+                  <>
+                    <Button
+                      variant=""
+                      className="btn-primary float-right"
+                      type="button"
+                      onClick={handleSubmitAll}
+                    >
+                      Submit
+                    </Button>
+
+                    <Button
+                      variant=""
+                      className="btn-secondary float-right mr-3"
+                      type="button"
+                      onClick={handleSaveDraft}
+                    >
+                      Save Draft
+                    </Button>
+                  </>
+                )}
+              </div>
             </AdminCard>
+
           </div>
         </div>
       </div>

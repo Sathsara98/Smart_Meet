@@ -31,13 +31,13 @@ function TimeTable() {
     if (props.availability > 0) {
       return (
         <h5 className="m-auto text-white" cell={props.cell}>
-          Not Available
+
         </h5>
       );
     } else {
       return (
         <h5 className="m-auto" cell={props.cell}>
-          Available
+
         </h5>
       );
     }
@@ -79,8 +79,8 @@ function TimeTable() {
     let items = [...days];
     if (items[props.target.attributes.cell.value - 1] == 0) {
       items[props.target.attributes.cell.value - 1] = 1;
-        // parseInt(
-        // props.target.attributes.cell.value
+      // parseInt(
+      // props.target.attributes.cell.value
       // );
     } else {
       items[props.target.attributes.cell.value - 1] = 0;
@@ -88,15 +88,11 @@ function TimeTable() {
     setdays(items);
     console.log(items);
   }
-  function name() {}
+  function name() { }
   return (
     <div className="">
       <div className="timetable w-100 ">
-        <div>
-          <Button variant="info" className="btnPrimary " onClick={saveNat}>
-            Save
-          </Button>
-        </div>
+
         <div className="week-names">
           <div>
             <b>monday</b>
@@ -164,6 +160,11 @@ function TimeTable() {
             );
           })}
         </div>
+      </div>
+      <div className="d-flex justify-content-end mt-3">
+        <Button className="btn-Primary " onClick={saveNat}>
+          Save
+        </Button>
       </div>
     </div>
   );
