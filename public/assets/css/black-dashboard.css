@@ -652,8 +652,8 @@ pre code {
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px;
+  /* margin-right: -15px;
+  margin-left: -15px; */
 }
 
 .no-gutters {
@@ -4840,6 +4840,7 @@ input[type="button"].btn-block {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+  align-items: center;
 }
 
 .navbar-nav .nav-link {
@@ -5896,9 +5897,9 @@ a.badge-darker.focus {
   border-color: #29f4cd;
 }
 
-.alert-success hr {
+/* .alert-success hr {
   border-top-color: #11f3c7;
-}
+} */
 
 .alert-success .alert-link {
   color: #00bf9a;
@@ -6581,6 +6582,7 @@ a.close.disabled {
 .modal-dialog-scrollable .modal-content {
   max-height: calc(100vh - 1rem);
   overflow: hidden;
+  padding: 20px;
 }
 
 .modal-dialog-scrollable .modal-header,
@@ -6655,7 +6657,7 @@ a.close.disabled {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 24px 24px 0 24px;
+  padding: 0px;
   border-bottom: 1px solid #e9ecef;
   border-top-left-radius: 0.2857rem;
   border-top-right-radius: 0.2857rem;
@@ -6680,7 +6682,7 @@ a.close.disabled {
 .modal-body {
   position: relative;
   flex: 1 1 auto;
-  padding: 5px 24px 16px 24px;
+  padding: 10px;
 }
 
 .modal-body .content form label {
@@ -6691,7 +6693,7 @@ a.close.disabled {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 24px 24px 16px 24px;
+  padding: 0px;
   border-top: 1px solid #e9ecef;
   border-bottom-right-radius: 0.2857rem;
   border-bottom-left-radius: 0.2857rem;
@@ -12647,6 +12649,10 @@ a.text-darker:focus {
   font-size: 12px !important;
 }
 
+.alert.alert-success .alert-heading p {
+  color: unset !important;
+}
+
 .alert .alert-link {
   color: #ffffff;
 }
@@ -14638,7 +14644,7 @@ fieldset[disabled] .btn-link.active {
 }
 
 .dropdown-menu.dropdown-navbar {
-  left: -80px;
+  left: -120px;
 }
 
 .dropdown-menu.dropdown-navbar:before,
@@ -14719,7 +14725,8 @@ fieldset[disabled] .btn-link.active {
 }
 
 .footer {
-  padding: 24px 0 24px 250px;
+  /* padding: 24px 0 24px 250px; */
+  flex-shrink: 0;
 }
 
 .footer [class*="container-"] {
@@ -15920,7 +15927,7 @@ img {
 }
 
 .navbar {
-  padding: 10px 30px 10px 15px;
+  padding: 10px;
   width: 100%;
   z-index: 1050;
 }
@@ -17511,8 +17518,9 @@ table.tablesorter thead tr .headerSortDown {
   background: -moz-linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   background: linear-gradient(0deg, #ba54f5 0%, #e14eca 100%);
   /* height: calc(100vh - 90px); */
+  flex-shrink: 0;
   width: 240px;
-  position: fixed;
+  position: static;
   top: 0;
   left: 0;
   z-index: 1;
@@ -17684,7 +17692,7 @@ table.tablesorter thead tr .headerSortDown {
   margin: 0 15px;
 } */
 
-.sidebar .nav li:hover:not(.active)>a p,
+/* .sidebar .nav li:hover:not(.active)>a p,
 .sidebar .nav li:hover:not(.active)>a i,
 .sidebar .nav li:focus:not(.active)>a p,
 .sidebar .nav li:focus:not(.active)>a i,
@@ -17700,7 +17708,7 @@ table.tablesorter thead tr .headerSortDown {
 .off-canvas-sidebar .nav li:hover:not(.active)>a i,
 .off-canvas-sidebar .nav li:focus:not(.active)>a i {
   color: #ffffff;
-}
+} */
 
 .sidebar .nav li.active>a:not([data-toggle="collapse"]),
 .off-canvas-sidebar .nav li.active>a:not([data-toggle="collapse"]) {
@@ -18018,8 +18026,9 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .main-panel>.content {
-  padding: 78px 30px 30px 270px;
-  min-height: calc(100vh - 70px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-panel>.navbar {
@@ -19814,6 +19823,12 @@ Copyright (c) 2015 Daniel Eden
 
 .white-content .main-panel {
   background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 
 .white-content h1,
@@ -21018,4 +21033,60 @@ Copyright (c) 2015 Daniel Eden
     padding-bottom: 0px;
   }
 
+}
+
+.dash-row .col-lg-6,
+.dash-row .col-lg-3,
+.dash-row .col-lg-9 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.c-header {
+  font-weight: 600;
+  color: #0D97B9;
+  border-bottom: 0.5px solid #E5E5E5;
+}
+
+.dashboard-grid .col-lg-6,
+.dashboard-grid .col-lg-9,
+.dashboard-grid .col-lg-3 {
+  padding: 0 !important;
+}
+
+.dashboard-grid {
+  /* height: calc(100vh - 216px); */
+  /* subtract navbar height if you have one */
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  /* top = 50%, bottom = 50% */
+  gap: 20px;
+  padding-bottom: 10px;
+  overflow: hidden;
+}
+
+.dashboard-grid .content-card-wrapper {
+  height: 100%;
+}
+
+.dash-row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.mem-composition span {
+  display: none;
+}
+
+.img-cards-wrapper {
+  padding: 0 !important;
+}
+
+.dashboard-grid .col-lg-6 {
+  padding: 10px;
+}
+
+.content-profile .content-card-wrapper {
+  height: calc(90vh - 5rem);
+  overflow-y: auto;
 }

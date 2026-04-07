@@ -15,8 +15,8 @@ function MinuteCard(props) {
       style={{
         marginTop: "2%",
         borderRadius: "15px",
-        marginLeft: "30px",
-        marginRight: "30px",
+        marginLeft: "10px",
+        marginRight: "10px",
         boxShadow: "none"
       }}
     >

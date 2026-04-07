@@ -1,0 +1,44 @@
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Override global top offset (App.css .content uses top:50px) so it doesn't cause overflow */
+.main-panel .content {
+    position: relative;
+    top: 40px;
+    /* cancel global top */
+    padding-top: 50px;
+    /* keep the visual spacing but inside flow */
+    box-sizing: border-box;
+}
+
+/* Let the main dashboard grid expand and push the footer down */
+.content>.dashboard-grid {
+    flex: 1 1 auto;
+}
+
+/* Make footer stick to bottom of the page without overlapping content */
+.content .footer {
+    margin-top: auto;
+    margin-bottom: 0;
+    /* remove the extra external top margin from the global footer style */
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

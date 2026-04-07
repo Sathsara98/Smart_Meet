@@ -253,7 +253,66 @@
 .rbc-toolbar-label {
   font-weight: 700;
   text-align: right !important;
-  font-size: 1.5em;
+  font-size: 12px;
+}
+
+.rbc-btn-group button {
+  font-size: 12px;
+  padding: 5px !important;
+}
+
+.rbc-toolbar {
+  margin-top: 5px;
+}
+
+/* Compact dashboard calendar styles */
+.dashboard-calendar-small {
+  padding: 0 !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+.dashboard-calendar-small .rbc-month-view .rbc-row {
+  min-height: 36px !important;
+  /* reduces day square height */
+}
+
+.dashboard-calendar-small .rbc-date-cell,
+.dashboard-calendar-small .rbc-day-bg {
+  padding: 4px !important;
+}
+
+.dashboard-calendar-small .rbc-date-cell a {
+  font-size: 0.75em !important;
+  font-weight: 600;
+}
+
+.dashboard-calendar-small .rbc-header {
+  font-size: 0.8em !important;
+  padding: 4px 6px !important;
+}
+
+.dashboard-calendar-small .rbc-event {
+  display: none !important;
+}
+
+/* Highlight the entire day cell when there is an event (solid red fill) */
+.dashboard-calendar-small .has-event .rbc-day-bg {
+  background-color: #ff4d4f !important;
+  /* solid red */
+  border-radius: 8px;
+  box-shadow: none !important;
+}
+
+/* Make the date label stand out on highlighted days */
+.dashboard-calendar-small .has-event .rbc-date-cell a {
+  color: #ffffff !important;
+  /* white for contrast */
+  font-weight: 700;
+}
+
+.dashboard-calendar-small .has-event {
+  position: relative;
 }
 
 .form-label {
@@ -505,16 +564,21 @@
   -webkit-box-shadow: -2px 3px 14px -4px rgba(74, 74, 74, 0.4) !important;
   -moz-box-shadow: -2px 3px 14px -4px rgba(74, 74, 74, 0.4);
   border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+
 }
+
+
 
 .content .content-card-wrapper .card-header {
   display: none;
 }
 
-.content {
+/* .content {
   position: relative;
   top: 50px;
-}
+} */
 
 .content-card-wrapper .card {
   box-shadow: none !important;
@@ -552,4 +616,91 @@
 .btn:hover {
   box-shadow: none !important;
   -webkit-transform: none !important;
+  transform: none !important;
+}
+
+.dialog-btn.btn-secondary {
+  background-color: #57585a !important;
+  color: #f4f5f7 !important;
+  border-color: #57585a !important;
+  /* box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08); */
+}
+
+.dialog-btn.btn-primary {
+  color: #ffffff !important;
+  background-color: #0D97B9 !important;
+}
+
+.dialog-btn.btn-primary:hover {
+  color: #ffffff !important;
+  background-color: #0a7a96 !important;
+}
+
+.dialog-btn.btn-secondary:hover {
+  background-color: #6b6b6b !important;
+  color: #dee1e7 !important;
+  border-color: #6b6b6b !important;
+}
+
+.MuiDialogActions-root {
+  padding: 16px 24px !important;
+}
+
+.MuiButton-root:focus {
+  outline: none !important;
+}
+
+.dropdown-toggle.nav-link.dropdownarrow:hover {
+  background: none;
+}
+
+/* ============================= */
+/* GLOBAL CUSTOM SCROLLBAR */
+/* ============================= */
+
+/* Chrome, Edge, Safari */
+body::-webkit-scrollbar {
+  width: 0px;
+  transition: width 0.3s ease;
+}
+
+body:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+body:hover::-webkit-scrollbar-track {
+  background: transparent;
+  /* clean modern look */
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,
+      #e6e6e6,
+      #f8fbfc);
+  border-radius: 20px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,
+      #0D97B9,
+      #0b7d99);
+}
+
+/* Firefox */
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #f1f1f1 transparent;
+}
+
+.content-card-wrapper,
+.minute-card-wrapper {
+  margin-top: 2%;
+}
+
+.dashboard-grid .content-card-wrapper {
+  margin-top: unset !important;
+}
+
+.modal-footer .btn {
+  min-width: 90px;
 }

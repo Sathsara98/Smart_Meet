@@ -12,3 +12,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Make root elements full height so app can use 100vh flex layouts */
+html,
+body,
+#root {
+  height: 100%;
+}

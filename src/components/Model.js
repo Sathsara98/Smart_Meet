@@ -28,22 +28,22 @@ export default function Model(props) {
           </h4>
         </Modal.Body>
         <div
-          className="form-row mr-2 mb-1 "
+          className="form-row w-100 "
           id="footer-modal-addMember "
 
         >
-          <div className="modal-footer d-flex justify-content-center">
+          <div className="modal-footer d-flex justify-content-center w-100">
             <Button
-              className="btn-Primary "
-              variant="info"
+              className="btn  btn-primary "
+              variant=""
               onClick={() => props.handleClick(true)}
             >
               Ok
             </Button>
             {props.confirmation ? (
               <Button
-                className="btnPrimary pr-4 pl-4"
-                variant="danger"
+                className="btn-secondary ml-2 pr-4 pl-4"
+                variant=""
                 onClick={() => props.handleClick(false)}
               >
                 Close

@@ -164,18 +164,25 @@ export default function Index() {
       sinfile.append("userID", userId);
       sinfile.append("previousImg", preFileShow);
 
-      console.log(preFileShow);
+      console.log("handleClick: Starting image upload, userId=", userId, "currentFile=", currentFile);
       axios
         .put(`${process.env.REACT_APP_BACKEND_URL}/users/user-image`, sinfile)
         .then((res) => {
+          console.log("handleClick: Upload successful, response=", res.data);
           setEditImg(false);
           setIsImgUploading(false);
           setPreFileShow(res.data.userImage);
         })
         .catch((error) => {
-          console.log(error);
+          console.error("handleClick: Upload failed, error=", error);
+          console.error("Error response data:", error.response?.data);
+          console.error("Full error object:", JSON.stringify(error.response?.data, null, 2));
+          console.error("Error status:", error.response?.status);
+          console.error("Error message:", error.message);
+          setIsImgUploading(false);
         });
     } else {
+      console.log("handleClick: Opening file picker");
       hiddenFileInput.current.click();
       setEditImg(true);
     }
@@ -243,7 +250,7 @@ export default function Index() {
       <SideBar profile={true} />
       <div className="main-panel">
         <NavbarDashboard title="Profile" subtitle="Manage Your Profile" />
-        <div className="content">
+        <div className="content content-profile">
           {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="">
             <div className="row">
@@ -567,7 +574,7 @@ export default function Index() {
             <div className="row">
 
               <div className="card timeline-card-wrap">
-                <div className="card-body">
+                <div className="card-body p-0">
                   <h4 className="availability-title">My Weekly Availability</h4>
                   <TimeTable />
                 </div>

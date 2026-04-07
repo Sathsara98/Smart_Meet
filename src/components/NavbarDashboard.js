@@ -88,7 +88,7 @@ function NavbarDashboard(props) {
   );
   return (
     <nav
-      className="navbar navbar-expand-lg fixed-top"
+      className="navbar navbar-expand-lg "
       data-color="orange ml-0 pl-0 pr-0 mr-0"
       id="navdash"
     >
@@ -121,7 +121,7 @@ function NavbarDashboard(props) {
 
         <div className="collapse navbar-collapse" id="navigation">
           <ul className="navbar-nav ml-auto">
-            <li className="dropdown nav-item">
+            <li className="dropdown nav-item pr-0">
               <a
                 className="dropdown-toggle nav-link dropdownarrow"
                 data-toggle="dropdown"
@@ -159,7 +159,7 @@ function NavbarDashboard(props) {
                 )}
               </ul>
             </li>
-            <li className="dropdown nav-item">
+            <li className="dropdown nav-item pr-0">
               <a
                 href="#"
                 className="dropdown-toggle nav-link dropdownarrow"

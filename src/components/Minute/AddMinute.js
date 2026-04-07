@@ -11,6 +11,14 @@ import {
   span,
   Table,
 } from "react-bootstrap";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button as MUIButton,
+} from "@material-ui/core";
 
 import { Formik } from "formik";
 import { getIn } from "formik";
@@ -52,6 +60,10 @@ function AddMinute(props) {
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [activityIndexToDelete, setActivityIndexToDelete] = useState(null);
+  const [hoverNo, setHoverNo] = useState(false);
+  const [hoverYes, setHoverYes] = useState(false);
 
   // curr.setDate(curr.getDate());
   useEffect(() => {
@@ -141,6 +153,23 @@ function AddMinute(props) {
       setMeetingObjective(event.target.value);
     } else if (event.target.name === "remarks") {
       setMeetingRemarks(event.target.value);
+    }
+  };
+
+  const handleDeleteClick = (index) => {
+    setActivityIndexToDelete(index);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setActivityIndexToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (activityIndexToDelete !== null) {
+      removeRow(activityIndexToDelete);
+      handleCloseDialog();
     }
   };
 
@@ -707,7 +736,7 @@ function AddMinute(props) {
                       <td>
                         <Button
                           className="btnPrimary  m-1 p-1"
-                          onClick={() => removeRow(index)}
+                          onClick={() => handleDeleteClick(index)}
                         >
                           x
                         </Button>
@@ -786,6 +815,56 @@ function AddMinute(props) {
           </div>
         )}
       </Formik>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Activity"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this activity? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MUIButton
+            onClick={handleCloseDialog}
+            onMouseEnter={() => setHoverNo(true)}
+            onMouseLeave={() => setHoverNo(false)}
+            style={{
+              backgroundColor: hoverNo ? '#474849' : '#57585a',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            No
+          </MUIButton>
+          <MUIButton
+            onClick={handleConfirmDelete}
+            onMouseEnter={() => setHoverYes(true)}
+            onMouseLeave={() => setHoverYes(false)}
+            style={{
+              backgroundColor: hoverYes ? '#055a75' : '#0a7a96',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            Yes
+          </MUIButton>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

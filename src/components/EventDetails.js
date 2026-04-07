@@ -11,7 +11,20 @@ import {
 import * as yup from "yup";
 import { Formik } from "formik";
 import MeetingMember from "./MeetingMember";
+
 function EventDetails(props) {
+  // Debug logging to understand what we're receiving
+  React.useEffect(() => {
+    console.log("EventDetails event:", props.event);
+    console.log("EventDetails questions:", props.event?.questions);
+    console.log("EventDetails questions type:", typeof props.event?.questions);
+    console.log("EventDetails questions is array:", Array.isArray(props.event?.questions));
+    console.log("EventDetails questions length:", props.event?.questions?.length);
+  }, [props.event]);
+
+  // If there's no event (parent cleared it), render nothing to avoid accessing properties on null
+  if (!props.event) return null;
+
   return (
     <div>
       <div className="content">
@@ -20,14 +33,14 @@ function EventDetails(props) {
             <Form noValidate>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <Form.Label>Event Sector</Form.Label>
+                  <Form.Label>Development Area</Form.Label>
                   <br />
-                  <span style={{ fontSize: 22 }}>{props.event.sector}</span>
+                  <span style={{ fontWeight: 600 }}>{props.event.sector}</span>
                 </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Event Name</Form.Label>
+                  <Form.Label>Meeting Name</Form.Label>
                   <Form.Control
                     required
                     name="name"
@@ -81,7 +94,7 @@ function EventDetails(props) {
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col}>
-                  <Form.Label>Time Slot</Form.Label>
+                  <Form.Label>Time</Form.Label>
 
                   <Form.Control
                     className="inputBackground "
@@ -96,9 +109,9 @@ function EventDetails(props) {
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Group as={Col} controlId="formGridEmail" className="members-wrapper">
                   <Form.Label>Members</Form.Label>
-                  <div className="row col-12 m-auto">
+                  <div className="row col-12 m-auto p-0">
                     {props.event.members != null ? (
                       props.event.members.map((e) => {
                         return (
@@ -114,31 +127,31 @@ function EventDetails(props) {
                 </Form.Group>
               </Form.Row>
               <Form.Row>
-                  <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Questions</Form.Label>
-                    <div className=" col-12 m-auto">
-                     {props.event.questions.length>0 ? (
-                        props.event.questions.map((e) => {
-                          return (
-                             <p><i class="far fa-question-circle"></i> {e.body}</p>
-                          );
-                        })
-                      ) : (
-                        <div className=" ml-4 mb-4">
-                          No questions...
-                        </div>
-                      )} 
-                    </div>
-                  </Form.Group>
-                </Form.Row>
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Label>Challenges</Form.Label>
+                  <div className=" col-12 m-auto">
+                    {props.event && props.event.questions && Array.isArray(props.event.questions) && props.event.questions.length > 0 ? (
+                      props.event.questions.map((e, idx) => {
+                        return (
+                          <p key={idx}><i className="far fa-question-circle"></i> <strong>{e.dArea}:</strong> {e.body}</p>
+                        );
+                      })
+                    ) : (
+                      <div className=" ml-4 mb-4">
+                        No Challenges...
+                      </div>
+                    )}
+                  </div>
+                </Form.Group>
+              </Form.Row>
               <Form.Row
                 id="footer-modal-addMember"
-                className="d-flex justify-content-between"
+                className="d-flex justify-content-end"
               >
                 <Button
-                  variant="danger"
+                  variant=""
                   onClick={props.close}
-                  className="btnPrimary"
+                  className="btn btn-secondary"
                 >
                   Close
                 </Button>

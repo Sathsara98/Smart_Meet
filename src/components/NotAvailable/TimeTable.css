@@ -9,6 +9,11 @@
   max-height: 80vh !important;
 }
 
+.timetable .content {
+  top: unset !important;
+  padding-top: unset !important;
+}
+
 .timetable .accent-blue-gradient {
   display: flex;
   width: 100%;

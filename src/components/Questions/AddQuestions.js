@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import "./Question.css";
 
-function AddQuestions({ onAdd }) {
+function AddQuestions({ onAdd, disabled }) {
   const [area, setArea] = useState("");
   const [challenge, setChallenge] = useState("");
   const [error, setError] = useState("");
@@ -19,8 +19,12 @@ function AddQuestions({ onAdd }) {
     setError("");
   };
 
+  if (disabled) {
+    return null;
+  }
+
   return (
-    <Form>
+    <Form className="form-challenge">
       <Row className="">
 
         {/* Development Area */}

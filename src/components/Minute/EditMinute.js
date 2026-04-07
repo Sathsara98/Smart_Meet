@@ -3,6 +3,14 @@ import ReactChipInput from "react-chip-input";
 import { useReactToPrint } from "react-to-print";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Form, Col, Button, Table } from "react-bootstrap";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button as MUIButton,
+} from "@material-ui/core";
 
 import Model from "../../components/Model";
 
@@ -52,6 +60,12 @@ const EditMinute1 = forwardRef((props, ref) => {
     venue: "",
   });
   const [options, setOptions] = useState(["saman", "kamal"]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [activityIndexToDelete, setActivityIndexToDelete] = useState(null);
+  const [hoverNo, setHoverNo] = useState(false);
+  const [hoverYes, setHoverYes] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState("");
   useEffect(() => {
     setMeetingName(props.minute.meeting_name);
     setMeetingDate(props.minute.meeting_date);
@@ -129,6 +143,32 @@ const EditMinute1 = forwardRef((props, ref) => {
         setTableData([...tableData]);
       }
     });
+  };
+
+  const handleDeleteClick = (index) => {
+    setActivityIndexToDelete(index);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setActivityIndexToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (activityIndexToDelete !== null) {
+      let obj = tableRows.splice(activityIndexToDelete, 1);
+      let i = tableData.findIndex(
+        (e) =>
+          e.activity === obj[0].activity &&
+          e.action === obj[0].action &&
+          e.responsibility === obj[0].responsibility
+      );
+      tableData.splice(i, 1);
+      setTableRows([...tableRows]);
+      setTableData([...tableData]);
+      handleCloseDialog();
+    }
   };
 
   //Handle change overidder
@@ -222,12 +262,12 @@ const EditMinute1 = forwardRef((props, ref) => {
         if (data.hasOwnProperty("error")) {
           setError(data.error);
         } else {
-          returnModel(true, "Updated!", false, function (res) {
-            if (res) {
-              props.load();
-              props.close();
-            }
-          });
+          setUpdateMessage("Updated!");
+          setOpenUpdateDialog(true);
+          setTimeout(() => {
+            props.load();
+            props.close();
+          }, 1500);
         }
       } catch (e) {
         console.log(e);
@@ -758,7 +798,7 @@ const EditMinute1 = forwardRef((props, ref) => {
                       </span>
                     </td>
                     <td className="view-in-web delete-icon">
-                      <i class="fa fa-trash" aria-hidden="true" onClick={() => removeRow(index)}></i>
+                      <i class="fa fa-trash" aria-hidden="true" onClick={() => handleDeleteClick(index)}></i>
                       {/* <Button
                         variant=""
                         className="  m-1 p-1"
@@ -903,6 +943,76 @@ const EditMinute1 = forwardRef((props, ref) => {
           </Button> */}
         </div>
       </div>
+
+      <Dialog
+        open={openUpdateDialog}
+        aria-labelledby="update-dialog-title"
+        aria-describedby="update-dialog-description"
+        PaperProps={{
+          style: {
+            minWidth: '350px'
+          }
+        }}
+      >
+        <DialogTitle id="update-dialog-title">
+          {"Success"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="update-dialog-description">
+            {updateMessage}
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Activity"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this activity? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MUIButton
+            onClick={handleCloseDialog}
+            onMouseEnter={() => setHoverNo(true)}
+            onMouseLeave={() => setHoverNo(false)}
+            style={{
+              backgroundColor: hoverNo ? '#474849' : '#57585a',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            No
+          </MUIButton>
+          <MUIButton
+            onClick={handleConfirmDelete}
+            onMouseEnter={() => setHoverYes(true)}
+            onMouseLeave={() => setHoverYes(false)}
+            style={{
+              backgroundColor: hoverYes ? '#055a75' : '#0a7a96',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            Yes
+          </MUIButton>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 });

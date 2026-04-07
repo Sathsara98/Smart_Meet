@@ -144,3 +144,7 @@ textarea.form-control {
     justify-content: center;
     align-items: center;
 }
+
+.dev-cards-wrapper {
+    margin-top: 2%;
+}

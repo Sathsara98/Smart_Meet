@@ -290,7 +290,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="name"
                     type="text"
@@ -311,7 +311,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="date"
                     type="date"
@@ -332,7 +332,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="time"
                     type="time"
@@ -353,7 +353,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="venue"
                     type="text"
@@ -371,18 +371,15 @@ function EditMinuteMembers() {
               <div className="w-100 mt-3">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=""
+
                   >
-                    <strong>Attendance</strong>
+                    <strong className="section-header">Attendance</strong>
                   </div>
                 </h4>
               </div>
               <div className="w-100 ">
-                <h4 className=" text-center " style={{ color: "#070707" }}>
+                <h4 className=" " style={{ color: "#070707" }}>
                   <strong>Present</strong>
                 </h4>
               </div>
@@ -453,7 +450,7 @@ function EditMinuteMembers() {
               <div>
                 <div className="w-100 mt-3 mb-0 ">
                   <h4
-                    className=" text-center mb-2"
+                    className=" mb-2"
                     style={{ color: "#070707" }}
                   >
                     <strong>Excused</strong>
@@ -469,7 +466,7 @@ function EditMinuteMembers() {
               <div>
                 <div className="w-100 mt-3">
                   <h4
-                    className=" text-center mb-2"
+                    className="  mb-2"
                     style={{ color: "#070707" }}
                   >
                     <strong>Absent</strong>
@@ -486,13 +483,10 @@ function EditMinuteMembers() {
               <div className="w-100 mt-4">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=""
+
                   >
-                    <strong>Approval</strong>
+                    <strong className="section-header">Approval</strong>
                   </div>
                 </h4>
               </div>
@@ -504,7 +498,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="approvalDate"
                     type="date"
@@ -525,7 +519,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="motion"
                     type="text"
@@ -543,7 +537,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="motionBy"
                     type="text"
@@ -560,7 +554,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="proposedBy"
                     type="text"
@@ -577,7 +571,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="secondedBy"
                     type="text"
@@ -590,13 +584,10 @@ function EditMinuteMembers() {
               <div className="w-100 mt-4">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=" "
+
                   >
-                    <strong>Objective</strong>
+                    <strong className="section-header">Objective</strong>
                   </div>
                 </h4>
               </div>
@@ -607,7 +598,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="objective"
                     type="text"
@@ -683,7 +674,7 @@ function EditMinuteMembers() {
 
                 <div className="col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="remarks"
                     type="text"
@@ -694,11 +685,11 @@ function EditMinuteMembers() {
                 </div>
               </div>
 
-              <div className="form-row mt-5 ">
+              <div className="form-row mt-5 display-flex justify-content-end">
                 <Button
-                  variant="info"
+                  variant=""
                   type="submit"
-                  className="btnPrimary "
+                  className="btn btn-primary  "
                   onClick={editMinute}
                 >
                   Save

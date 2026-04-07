@@ -130,10 +130,11 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
                     <>
                       <button
                         type="button"
-                        className="btn btn-edit mr-2"
+                        className="btn btn-sm btn-edit mr-2"
                         onClick={() => startEdit(q)}
                       >
-                        Edit
+                        <i className="fa fa-pencil-alt"></i>
+
                       </button>
 
                       <button

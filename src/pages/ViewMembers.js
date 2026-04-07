@@ -24,6 +24,12 @@ import {
   TablePagination,
   CircularProgress,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@material-ui/core";
 import Auth from '../authentication/Auth'
 
@@ -33,6 +39,10 @@ function ViewMembers(props) {
   const [page, setPage] = useState(1);
   const [memberList, setMemberList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [memberIdToDelete, setMemberIdToDelete] = useState(null);
+  const [hoverNo, setHoverNo] = useState(false);
+  const [hoverYes, setHoverYes] = useState(false);
 
   const tableDATA = memberList.map((p, index) => {
     return (
@@ -66,12 +76,29 @@ function ViewMembers(props) {
             >
               
             </button> */}
-            <i class="fa fa-trash" aria-hidden="true" onClick={() => deleteMember(p._id)}></i>
+            <i class="fa fa-trash" aria-hidden="true" onClick={() => handleDeleteClick(p._id)}></i>
           </TableCell>
         ) : null}
       </TableRow>
     );
   });
+
+  const handleDeleteClick = (memberId) => {
+    setMemberIdToDelete(memberId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setMemberIdToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (memberIdToDelete) {
+      await deleteMember(memberIdToDelete);
+      handleCloseDialog();
+    }
+  };
 
   const deleteMember = async (event) => {
     // event.preventDefault();
@@ -183,6 +210,52 @@ function ViewMembers(props) {
           </AdminCard>
         </div>
       </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Member"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this member? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            onMouseEnter={() => setHoverNo(true)}
+            onMouseLeave={() => setHoverNo(false)}
+            style={{
+              backgroundColor: hoverNo ? '#57585a' : '#6b6b6b',
+              color: 'white',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer',
+              border: 'none'
+            }}
+          >
+            No
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            onMouseEnter={() => setHoverYes(true)}
+            onMouseLeave={() => setHoverYes(false)}
+            style={{
+              backgroundColor: hoverYes ? '#0a7a96' : '#0D97B9',
+              color: 'white',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer',
+              border: 'none'
+            }}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -31,7 +31,7 @@ function TimeTable() {
     if (props.availability > 0) {
       return (
         <h5 className="m-auto text-white" cell={props.cell}>
-
+          Available
         </h5>
       );
     } else {
