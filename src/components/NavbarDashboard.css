@@ -6,6 +6,8 @@
   /* margin-top: 10px; */
   flex-shrink: 0;
   display: flex;
+  position: sticky;
+  top: 0;
 }
 
 @media (max-width: 990px) {

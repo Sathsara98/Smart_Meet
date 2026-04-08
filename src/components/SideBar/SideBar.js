@@ -74,6 +74,12 @@ function SideBar(props) {
                 <p>Committee Management</p>
               </a>
             </li>
+            <li className={props.reports ? "active" : ""}>
+              <a href="/reports">
+                <i className="fa fa-chart-bar"></i>
+                <p>Reports</p>
+              </a>
+            </li>
 
             <li className={props.profile ? "active" : ""}>
               <a href="/profile">

@@ -18029,6 +18029,9 @@ table.tablesorter thead tr .headerSortDown {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: 1rem;
 }
 
 .main-panel>.navbar {
@@ -20729,7 +20732,7 @@ Copyright (c) 2015 Daniel Eden
 .container .text-section {
   width: 100%;
   max-width: unset !important;
-  padding-right: 50px;
+  padding: 0 40px;
 
 }
 
@@ -20765,52 +20768,77 @@ Copyright (c) 2015 Daniel Eden
   position: relative;
 } */
 
-.image-section img.meetingimg {
+/* .image-section img.meetingimg {
   width: 65%;
-}
+} */
 
 
 .login-form-section {
   flex: 1;
-  max-width: 550px;
+  /* max-width: 550px; */
 }
 
-.login-image-section {
+/* .login-image-section {
   justify-content: unset !important;
   display: flex;
   align-items: center;
+} */
+
+.login-image-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
 }
 
-.container-login {
+/* .container-login {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 0;
-  /* padding: 60px 80px; */
+  padding: 60px 80px;
   margin: 0 auto;
   height: 100vh;
   background: white;
   max-width: 1800px;
 
+} */
+
+.container-login {
+  Display: flex;
+  min-height: 100vh;
 }
 
-.container-login .image-section img.meetingimg {
+/* .container-login .image-section img.meetingimg {
   width: 90%;
   height: auto;
   background-repeat: no-repeat;
   background-size: cover;
   object-fit: contain;
+} */
+
+.container-login .image-section img.meetingimg {
+  max-width: 100%;
+  height: auto;
 }
 
 .container-login .login-form-section {
-  width: 100%;
-  max-width: unset !important;
+  /* width: 100%;
+  max-width: unset !important; */
   display: flex;
   align-items: center;
+  flex: 1;
+
+  justify-content: center;
 
 }
 
 .login-form-section .inner-wrapper {
   width: 100%;
+  max-width: 500px;
+  padding: 30px;
+
 }
 
 .login-btn {
@@ -20836,9 +20864,9 @@ Copyright (c) 2015 Daniel Eden
   padding-bottom: 30px;
 }
 
-.login-form {
+/* .login-form {
   padding: 0 70px;
-}
+} */
 
 /* @media (max-width: 900px) {
   .container {
@@ -20884,13 +20912,14 @@ Copyright (c) 2015 Daniel Eden
   }
 
   .container-login {
-    max-width: 90vw !important;
+    /* max-width: 90vw !important; */
     display: flex;
     flex-direction: column;
   }
 
   .inner-wrapper {
     margin: 20px 0;
+    max-width: 330px !important;
   }
 
   .container .image-section img.meetingimg {
@@ -20909,7 +20938,7 @@ Copyright (c) 2015 Daniel Eden
     background-repeat: no-repeat;
     background-size: cover;
     object-fit: contain;
-    padding-top: 30px;
+    /* padding-top: 30px; */
   }
 
   .logo-login {
@@ -20949,9 +20978,9 @@ Copyright (c) 2015 Daniel Eden
     max-height: 800px;
   }
 
-  .container-login .image-section img.meetingimg {
+  /* .container-login .image-section img.meetingimg {
     width: 90%;
-  }
+  } */
 
   .login-form {
     padding: 0px;
@@ -20973,9 +21002,9 @@ Copyright (c) 2015 Daniel Eden
     max-height: 800px;
   }
 
-  .container-login .image-section img.meetingimg {
+  /* .container-login .image-section img.meetingimg {
     width: 90%;
-  }
+  } */
 
   .login-form {
     padding: 0px;
@@ -20997,9 +21026,9 @@ Copyright (c) 2015 Daniel Eden
     max-height: 800px;
   }
 
-  .container-login .image-section img.meetingimg {
+  /* .container-login .image-section img.meetingimg {
     width: 90%;
-  }
+  } */
 
   .login-form {
     padding: 0px;
@@ -21021,9 +21050,9 @@ Copyright (c) 2015 Daniel Eden
     max-height: 800px;
   }
 
-  .container-login .image-section img.meetingimg {
+  /* .container-login .image-section img.meetingimg {
     width: 90%;
-  }
+  } */
 
   .login-form {
     padding: 0px;
@@ -21062,7 +21091,7 @@ Copyright (c) 2015 Daniel Eden
   /* top = 50%, bottom = 50% */
   gap: 20px;
   padding-bottom: 10px;
-  overflow: hidden;
+
 }
 
 .dashboard-grid .content-card-wrapper {

@@ -21,6 +21,7 @@ import {
 } from "react-bootstrap";
 
 import { useLocation, useHistory } from "react-router-dom";
+import Footer from "../Footer/Footer";
 
 function Index() {
   // const childRef = useRef();
@@ -519,7 +520,7 @@ function Index() {
                 )}
               </div>
             </AdminCard>
-
+            <Footer />
           </div>
         </div>
       </div>

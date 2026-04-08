@@ -15,6 +15,7 @@ import Print from "./components/Print";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import MySubmission from "./components/MySubmission/MySubmission";
+import Reports from "./components/Reports/Reports";
 import Footer from "./components/Footer/Footer";
 
 import {
@@ -44,6 +45,7 @@ function App() {
         <PrivateRoute path="/notAvailable" component={NotAvailable} />
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/mysubmission" component={MySubmission} />
+        <PrivateRoute path="/reports" component={Reports} />
 
         <Route path="/login">
           <Login />

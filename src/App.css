@@ -609,7 +609,7 @@
 
 .availability-title {
   color: #0d97b9 !important;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   font-weight: 600;
 }
 
@@ -703,4 +703,19 @@ body {
 
 .modal-footer .btn {
   min-width: 90px;
+}
+
+.MuiTab-root,
+b,
+table,
+.MuiTableCell-root {
+  font-family: poppins, sans-serif !important;
+}
+
+button:focus {
+  outline: none !important;
+}
+
+.MuiTableCell-head {
+  font-weight: 600 !important;
 }

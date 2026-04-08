@@ -25,6 +25,7 @@ import { Formik } from "formik";
 import backImg from "../assets/home_page/metal.jpg";
 import Auth from "../authentication/Auth";
 import { useParams } from "react-router";
+import Footer from "../components/Footer/Footer";
 
 
 const ManageEvents = () => {
@@ -193,7 +194,7 @@ const ManageEvents = () => {
               })
               : null}
           </Row>
-
+          <Footer />
 
 
 

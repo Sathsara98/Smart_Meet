@@ -42,6 +42,7 @@ function Index() {
   const [event, setEvent] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [submissionData, setSubmissionData] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const createNotification = (type) => {
@@ -72,7 +73,21 @@ function Index() {
   useEffect(() => {
     loadEvents();
     loadSubmissions();
+    loadQuestions();
   }, []);
+
+  const loadQuestions = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/submitted-questions`);
+      const data = await res.json();
+      setQuestions(Array.isArray(data) ? data : []);
+    }
+    catch (err) {
+      console.error("Error fetching questions", err);
+      setQuestions([]);
+    }
+  };
+
   const loadEvents = async () => {
     setLoading(true);
     await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
@@ -129,11 +144,11 @@ function Index() {
     (submission) => submission.status === "completed"
   );
 
-  // Prepare data for bar chart - count challenges by development area (all submissions)
+  // Prepare data for bar chart - count individual challenges by development area (all submissions)
   const developmentAreaCounts = {};
-  submissionData.forEach((submission) => {
-    const area = submission.developmentArea || "Unknown";
-    developmentAreaCounts[area] = (developmentAreaCounts[area] || 0) + submission.noOfChallenges;
+  questions.forEach((q) => {
+    const area = q.developmentArea || "Unknown";
+    developmentAreaCounts[area] = (developmentAreaCounts[area] || 0) + 1;
   });
 
   // Color mapping for development areas

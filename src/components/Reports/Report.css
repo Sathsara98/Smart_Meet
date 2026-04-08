@@ -1,0 +1,30 @@
+.tabContainer {
+    align-items: unset;
+}
+
+.content {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.filter-section {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.table-container-wrapper .content-card-wrapper {
+    margin-top: 10px;
+}
+
+g text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+}
+
+.tabs-wrapper .MuiTabs-flexContainer {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.MuiTabs-flexContainer .Mui-selected {
+    border-bottom: 2px solid #007bff;
+}

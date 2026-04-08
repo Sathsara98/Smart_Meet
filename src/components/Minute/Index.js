@@ -21,6 +21,7 @@ import EditMinuteMembers from "./EditMinuteMembers";
 import EditMinute from "./EditMinute";
 import MinuteCard from "./MinuteCard";
 import "./Minute.css";
+import Footer from "../Footer/Footer";
 
 const pathToPage = ["Home", "User", "Minute"];
 
@@ -217,7 +218,7 @@ function Index() {
             <Minute />
 
           </div>
-
+          <Footer />
         </div>
       </div>
     </div>

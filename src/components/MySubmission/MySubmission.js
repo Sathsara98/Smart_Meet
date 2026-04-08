@@ -79,7 +79,7 @@ const ChallengePage = () => {
         const fetchData = async () => {
             try {
                 // Replace this URL with your backend endpoint
-                const res = await axios.get("http://localhost:5000/admin/challenges");
+                const res = await axios.get("http://localhost:5001/admin/challenges");
                 setData(res.data);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -139,11 +139,11 @@ const ChallengePage = () => {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell><b>ID</b></TableCell>
+                                        <TableCell><b>Created Date</b></TableCell>
                                         <TableCell><b>No. of Challenges</b></TableCell>
                                         <TableCell><b>Development Area</b></TableCell>
                                         <TableCell><b>Status</b></TableCell>
-                                        <TableCell><b>Created Date</b></TableCell>
+
                                         <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -157,7 +157,7 @@ const ChallengePage = () => {
                                                 hover
                                                 sx={{ "&:last-child td": { border: 0 } }}
                                             >
-                                                <TableCell>{row.id}</TableCell>
+                                                <TableCell>{row.createdDate}</TableCell>
                                                 <TableCell>{row.noOfChallenges}</TableCell>
                                                 <TableCell>{row.developmentArea}</TableCell>
                                                 <TableCell>
@@ -180,8 +180,6 @@ const ChallengePage = () => {
                                                         }}
                                                     />
                                                 </TableCell>
-
-                                                <TableCell>{row.createdDate}</TableCell>
                                                 <TableCell><i class="fa fa-chevron-right" aria-hidden="true" onClick={() =>
                                                     handleOpenSubmission(row.id, row.status)
                                                 } style={{ cursor: "pointer" }}></i></TableCell>

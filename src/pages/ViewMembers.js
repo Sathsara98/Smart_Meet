@@ -32,6 +32,7 @@ import {
   Button,
 } from "@material-ui/core";
 import Auth from '../authentication/Auth'
+import Footer from "../components/Footer/Footer";
 
 function ViewMembers(props) {
   const { type } = useParams();
@@ -208,6 +209,7 @@ function ViewMembers(props) {
             </TableContainer>
 
           </AdminCard>
+          <Footer />
         </div>
       </div>
 

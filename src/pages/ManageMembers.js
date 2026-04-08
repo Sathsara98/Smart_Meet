@@ -21,6 +21,7 @@ import {
 import Auth from "../authentication/Auth";
 import * as yup from "yup";
 import { Formik } from "formik";
+import Footer from "../components/Footer/Footer";
 
 const ManageMembers = () => {
   const [show, setShow] = useState(false);
@@ -134,6 +135,7 @@ const ManageMembers = () => {
               <MemberRatio />
             </center>
           </AdminCard>
+          <Footer />
         </div>
       </div>
     </div>

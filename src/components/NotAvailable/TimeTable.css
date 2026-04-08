@@ -11,7 +11,7 @@
 
 .timetable .content {
   top: unset !important;
-  padding-top: unset !important;
+  padding: unset !important;
 }
 
 .timetable .accent-blue-gradient {
