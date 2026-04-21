@@ -163,19 +163,23 @@ const ChallengePage = () => {
                                                 <TableCell>
                                                     <Chip
                                                         label={row.status === "completed" ? "Completed" : "Draft"}
-                                                        sx={{
+                                                        style={{
                                                             backgroundColor:
                                                                 row.status === "completed"
                                                                     ? "#C8FACD"
                                                                     : row.status === "draft"
                                                                         ? "#FFF9C4"
-                                                                        : "#E0E0E0",
+                                                                        : row.status === "submitted"
+                                                                            ? "#BBDEFB"
+                                                                            : "#E0E0E0",
                                                             color:
                                                                 row.status === "completed"
                                                                     ? "green"
                                                                     : row.status === "draft"
                                                                         ? "orange"
-                                                                        : "black",
+                                                                        : row.status === "submitted"
+                                                                            ? "#1565C0"
+                                                                            : "black",
                                                             fontWeight: 600,
                                                         }}
                                                     />

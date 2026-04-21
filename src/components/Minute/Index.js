@@ -30,11 +30,13 @@ function Index() {
   const [userd, setUserId] = useState(Auth.getUserId());
   const [userRole, setUserRole] = useState(Auth.getUserLevel());
 
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
+
   const handleClose = () => setShow(false);
 
-  const handleShow = () => {
+  const handleShow = (meeting) => {
+    setSelectedMeeting(meeting);
     setShow(true);
-    console.log("Show True");
   };
   const [show2, setShow2] = useState(false);
   const handleClose2 = () => setShow2(false);
@@ -165,7 +167,11 @@ function Index() {
               </h2>
             </Modal.Header>
             <Modal.Body>
-              <AddMinute close={handleClose} load={loadMinutes} />
+              <AddMinute
+                close={handleClose}
+                load={loadMinutes}
+                selectedMeeting={selectedMeeting}
+              />
             </Modal.Body>
             {/* <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>

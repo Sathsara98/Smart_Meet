@@ -254,9 +254,9 @@ export default function Index() {
           {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="">
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-lg-4 pl-0">
                 <div className="card">
-                  <div className="card-body">
+                  <div className="card-body p-0">
                     <div className="d-flex flex-column align-items-center text-center">
                       <input
                         className=" px-3 py-2 text-sm  text-gray-700  rounded-full  appearance-none focus:outline-none focus:shadow-outline "
@@ -352,10 +352,10 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8">
+              <div className="col-lg-8 pr-0">
                 <div className="card">
                   <form onSubmit={handleSubmit(onSubmit)} className="profile-form">
-                    <div className="card-body">
+                    <div className="card-body p-0">
                       <div className="row mb-3">
                         <div className="col-sm-3">
                           <h6 className="mb-0">Name</h6>

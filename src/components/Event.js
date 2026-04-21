@@ -58,7 +58,7 @@ function Event(props) {
             <div className="col-md-10 d-flex flex-column justify-content-center">
               <h4 className="meeting-name">{props.event.name}</h4>
               <div className="d-flex meeting-detail-wrap">
-                <div className="col-md-4">
+                <div className="col-md-4 pl-0">
                   Date:{props.event.time}
                 </div>
                 <div className="col-md-4">

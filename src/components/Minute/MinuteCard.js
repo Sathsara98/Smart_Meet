@@ -13,7 +13,7 @@ function MinuteCard(props) {
   return (
     <Card
       style={{
-        marginTop: "2%",
+        margin: "2% 10px 0%",
         borderRadius: "15px",
         marginLeft: "10px",
         marginRight: "10px",
@@ -72,7 +72,7 @@ function MinuteCard(props) {
                 {props.minute.meeting_name}
               </h4>
               <div className="d-flex meeting-detail-wrap">
-                <div className="col-md-4">Date :{" "}{props.minute.meeting_date}</div>
+                <div className="col-md-4 pl-0">Date :{" "}{props.minute.meeting_date}</div>
                 <div className="col-md-4">Time :{" "}{props.minute.meeting_time}</div>
                 <div className="col-md-4">Venue :{" "}{props.minute.meeting_venue}</div>
               </div>
@@ -80,11 +80,15 @@ function MinuteCard(props) {
 
             </div>
             <div className="col-md-2 minute-view-btn">
-              <Button
-                variant=""
-                className="btn  btn-primary float-right"
-                type="submit"
-                onClick={() => props.more(props.minute)}
+
+              <Button className="btn  btn-primary float-right"
+                onClick={() => {
+                  if (!props.minute.isFinalized) {
+                    props.more(props.minute);
+                  } else {
+                    alert("This minute is finalized and cannot be edited");
+                  }
+                }}
               >
                 View
               </Button>

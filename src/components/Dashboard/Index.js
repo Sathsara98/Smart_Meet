@@ -177,8 +177,10 @@ function Index() {
       <SideBar dashboard={true} />
       {!isLoading ? (
         <div className="main-panel">
-          <NavbarDashboard title="Hello, John!" subtitle="Welcome back to Meeting Management System" />
-
+          <NavbarDashboard
+            title={'Hello, ' + Auth.getUserName() + '!'}
+            subtitle="Welcome back to Meeting Management System"
+          />
           <div className="content">
             {/* <div
               class="alert alert-info alert-dismissible fade show"
@@ -258,12 +260,12 @@ function Index() {
                 {/* Recent Challenges */}
                 <div class="col-lg-9">
                   <AdminCard>
-                    <div class="c-header fw-bold pb-2">Recent Challenges</div>
+                    <div class="c-header fw-bold pb-2">Recent Completed Challenges</div>
                     <TableContainer>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell><b>ID</b></TableCell>
+                            {/* <TableCell><b>ID</b></TableCell> */}
                             <TableCell><b>No. of Challenges</b></TableCell>
                             <TableCell><b>Development Area</b></TableCell>
                             <TableCell><b>Status</b></TableCell>
@@ -275,7 +277,7 @@ function Index() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => (
                               <TableRow key={row.id} hover>
-                                <TableCell>{row.id}</TableCell>
+                                {/* <TableCell>{row.id}</TableCell> */}
                                 <TableCell>{row.noOfChallenges}</TableCell>
                                 <TableCell>{row.developmentArea}</TableCell>
                                 <TableCell>

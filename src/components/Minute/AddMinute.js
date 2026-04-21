@@ -67,7 +67,14 @@ function AddMinute(props) {
 
   // curr.setDate(curr.getDate());
   useEffect(() => {
-    loadMembers();
+    let isMounted = true;
+
+    loadMembers(isMounted);
+    loadMeetings(isMounted);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const schema = yup.object({
@@ -173,7 +180,7 @@ function AddMinute(props) {
     }
   };
 
-  const loadMembers = () => {
+  const loadMembers = (isMounted = true) => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`, {
       method: "GET",
       headers: new Headers({
@@ -182,23 +189,89 @@ function AddMinute(props) {
     })
       .then((res) => res.json())
       .then((response) => {
-        var memarray = [];
+        if (!isMounted) return;
+
+        const privateMembers = [];
+        const publicMembers = [];
+        const academicMembers = [];
+        const associationMembers = [];
+        const allMembers = [];
+
         response.forEach((element) => {
-          memarray.push(element.name);
+          allMembers.push(element.name);
+
+          if (element.sector === "Private") {
+            privateMembers.push(element.name);
+          } else if (element.sector === "Public") {
+            publicMembers.push(element.name);
+          } else if (element.sector === "Academic") {
+            academicMembers.push(element.name);
+          } else if (element.sector === "Association") {
+            associationMembers.push(element.name);
+          }
         });
-        setOptions(memarray);
+
+        setPrivateOptions(privateMembers);
+        setPublicOptions(publicMembers);
+        setAcademicOptions(academicMembers);
+        setAssociationOptions(associationMembers);
+        setAllOptions(allMembers);
+      })
+      .catch((error) => console.log(error));
+  };
+  const loadMeetings = (isMounted = true) => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/meetings/`, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (!isMounted) return;
+
+        if (Array.isArray(response)) {
+          setMeetings(response);
+        } else if (Array.isArray(response.data)) {
+          setMeetings(response.data);
+        } else if (Array.isArray(response.meetings)) {
+          setMeetings(response.meetings);
+        } else {
+          setMeetings([]);
+        }
       })
       .catch((error) => console.log(error));
   };
 
+  const [privateOptions, setPrivateOptions] = useState([]);
+  const [publicOptions, setPublicOptions] = useState([]);
+  const [academicOptions, setAcademicOptions] = useState([]);
+  const [associationOptions, setAssociationOptions] = useState([]);
+  const [allOptions, setAllOptions] = useState([]);
+
+  const [meetings, setMeetings] = useState([]);
+  const [selectedMeetingId, setSelectedMeetingId] = useState("");
+
+  const totalParticipants =
+    private_chips.length +
+    public_chips.length +
+    academic_chips.length +
+    association_chips.length;
+
+
   const addMinute = async (event) => {
     event.preventDefault();
+    if (!selectedMeetingId) {
+      alert("Please select a meeting.");
+      return;
+    }
     console.log("event");
     try {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          meetingId: selectedMeetingId,
           name: meeting_name,
           date: meeting_date,
           time: meeting_time,
@@ -217,6 +290,11 @@ function AddMinute(props) {
           objective: meeting_objective,
           activities: tableData,
           remarks: meeting_remarks,
+          isFinalized: true,
+          s_finalized: true,
+          total_participants: totalParticipants,
+          total_rated_participants: 0,
+          rating_completed: false
         }),
       };
       const res = await fetch(
@@ -225,6 +303,7 @@ function AddMinute(props) {
       );
 
       const data = await res.json();
+
 
       console.log(data);
       if (data.hasOwnProperty("error")) {
@@ -256,6 +335,47 @@ function AddMinute(props) {
           <div>
             <div className="form-row">
               <div className="form-group col-3">
+                <Form.Label>Meeting Date</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  as="select"
+                  value={selectedMeetingId}
+                  onChange={(e) => {
+                    const meetingId = e.target.value;
+                    setSelectedMeetingId(meetingId);
+
+                    const selectedMeeting = meetings.find((m) => m._id === meetingId);
+
+                    if (selectedMeeting) {
+                      setMeetingName(selectedMeeting.name || "");
+                      setMeetingDate(selectedMeeting.date || date);
+                      setMeetingTime(selectedMeeting.time || "");
+                      setMeetingVenue(selectedMeeting.venue || "");
+                    } else {
+                      setMeetingName("");
+                      setMeetingDate(date);
+                      setMeetingTime("");
+                      setMeetingVenue("");
+                    }
+                  }}
+                >
+                  <option value="">Select Meeting Date</option>
+                  {Array.isArray(meetings) &&
+                    meetings.map((meeting) => (
+                      <option key={meeting._id} value={meeting._id}>
+                        {meeting.date}
+                      </option>
+                    ))}
+                </Form.Control>
+              </div>
+            </div>
+
+
+
+            <div className="form-row">
+              <div className="form-group col-3">
                 <Form.Label>Name of Meeting</Form.Label>
               </div>
 
@@ -268,7 +388,7 @@ function AddMinute(props) {
                   placeholder="Enter Name..."
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.name}
+                  isInvalid={!!errors.name && touched.name}
                   isValid={touched.name && !errors.name}
                   autoComplete="off"
                 />
@@ -288,7 +408,7 @@ function AddMinute(props) {
                   value={meeting_date}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.date}
+                  isInvalid={!!errors.date && touched.date}
                   isValid={touched.date && !errors.date}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -305,11 +425,11 @@ function AddMinute(props) {
                 <Form.Control
                   required
                   name="time"
-                  type="time"
+                  type="text"
                   value={meeting_time}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.time}
+                  isInvalid={!!errors.time && touched.time}
                   isValid={touched.time && !errors.time}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -330,8 +450,8 @@ function AddMinute(props) {
                   value={meeting_venue}
                   placeholder="Enter Venue..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
-                  isInvalid={!!errors.venue}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.venue && touched.venue}
                   isValid={touched.venue && !errors.venue}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -360,12 +480,10 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="private_chips"
                 multiple
                 onChange={setPrivatechips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={privateOptions}
+                placeholder="Choose private members..."
                 selected={private_chips}
               />
             </div>
@@ -379,12 +497,10 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="public_chips"
                 multiple
                 onChange={setPublicchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={publicOptions}
+                placeholder="Choose public members..."
                 selected={public_chips}
               />
             </div>
@@ -397,13 +513,12 @@ function AddMinute(props) {
                 </div>
               </div>
 
+
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="academic_chips"
                 multiple
                 onChange={setAcademicchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={academicOptions}
+                placeholder="Choose academic members..."
                 selected={academic_chips}
               />
             </div>
@@ -416,13 +531,13 @@ function AddMinute(props) {
                 </div>
               </div>
 
+
+
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="association_chips"
                 multiple
                 onChange={setAssociationchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={associationOptions}
+                placeholder="Choose association members..."
                 selected={association_chips}
               />
             </div>
@@ -434,12 +549,11 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="excused_chips"
+                id="excused-typeahead"
                 multiple
                 onChange={setExcusedchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={allOptions}
+                placeholder="Choose attendees..."
                 selected={excused_chips}
               />
             </div>
@@ -451,12 +565,11 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="absent_chips"
+                id="absent-typeahead"
                 multiple
                 onChange={setAbsentchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={allOptions}
+                placeholder="Choose attendees..."
                 selected={absent_chips}
               />
             </div>
@@ -478,16 +591,16 @@ function AddMinute(props) {
               <div className="form-group col-9">
                 <Form.Control
                   required
-                  name="approvalDate"
+                  name="approval"
                   type="date"
                   value={meeting_approval_from}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.date}
-                  isValid={touched.date && !errors.date}
+                  isInvalid={!!errors.approval && touched.approval}
+                  isValid={touched.approval && !errors.approval}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.date && touched.date && errors.date}
+                  {errors.approval && touched.approval && errors.approval}
                 </Form.Control.Feedback>
               </div>
             </div>
@@ -576,7 +689,7 @@ function AddMinute(props) {
                   value={meeting_objective}
                   placeholder="Enter here..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
             </div>
@@ -760,7 +873,7 @@ function AddMinute(props) {
                   value={meeting_remarks}
                   placeholder="Enter here..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
             </div>

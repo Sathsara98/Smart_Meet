@@ -1,4 +1,4 @@
-const getToken = () => { 
+const getToken = () => {
     return localStorage.getItem('token');
 }
 
@@ -18,15 +18,22 @@ const isAuthenticated = () => {
 }
 
 const getUserId = () => {
-    let uId=null;
+    let uId = null;
     const user = parseJwt(getToken());
-   
-    uId =user.id;
-    
+    uId = user.id;
     return uId;
 }
 
-const parseJwt = (token)=> {
+const getUserName = () => {
+    if (isAuthenticated()) {
+        const user = parseJwt(getToken());
+        console.log("Decoded User:", user);
+        return user.name || "User";
+    }
+    return "User";
+}
+
+const parseJwt = (token) => {
     if (!token) { return; }
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -37,14 +44,17 @@ const logout = (callback) => {
     if (isAuthenticated()) {
         localStorage.removeItem('token');
         console.log("User Logged Out")
-        callback(true) ;
-    }else {
-        callback(false) ;}
+        callback(true);
+    } else {
+        callback(false);
+    }
 }
+
 module.exports = {
     getToken,
     getUserLevel,
     isAuthenticated,
     getUserId,
+    getUserName,
     logout
 }

@@ -34,6 +34,7 @@ function EditMinuteMembers() {
   const [absent_chips, setAbsentchips] = useState([]);
   const stars = [];
 
+  const [userName, setUserName] = useState("");
   const [tableData, setTableData] = useState([]);
   const [tableDataEach, setTableDataEach] = useState([]);
   const [meeting_name, setMeetingName] = useState("");
@@ -79,40 +80,42 @@ function EditMinuteMembers() {
   }, []);
   const loadLatestMinute = async () => {
     setLoading(true);
-    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then((minute) => {
-        setMinute(minute);
-        setMeetingName(minute.meeting_name);
-        setMeetingDate(minute.meeting_date);
-        setMeetingTime(minute.meeting_time);
-        setMeetingVenue(minute.meeting_venue);
-        setPrivatechips(minute.present_private);
-        setPublicchips(minute.present_public);
-        setAcademicchips(minute.present_academic);
-        setAssociationchips(minute.present_association);
-        setExcusedchips(minute.excused);
-        setAbsentchips(minute.absent);
-        setMeetingApproval(minute.meeting_approval_from);
-        setMeetingMotion(minute.meeting_motion);
-        setMeetingMotionby(minute.meeting_motionBy);
-        setMeetingProposedBy(minute.meeting_proposedBy);
-        setMeetingSecondedBy(minute.meeting_secondedBy);
-        setMeetingObjective(minute.meeting_objective);
-        setTableData(minute.meeting_activities);
-        setMeetingRemarks(minute.meeting_remarks);
-        setTableDataEach(minute.meeting_activities_each);
-        return minute;
-      })
-      .then(function (minute) {
-        ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
-        fetchSingleUser(minute);
-      })
-      .catch((error) => console.log(error));
-    setLoading(false);
+    try {
+      const minute = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
+        .then((response) => response.json());
+
+      setMinute(minute);
+      setMeetingName(minute.meeting_name);
+      setMeetingDate(minute.meeting_date);
+      setMeetingTime(minute.meeting_time);
+      setMeetingVenue(minute.meeting_venue);
+      setPrivatechips(minute.present_private);
+      setPublicchips(minute.present_public);
+      setAcademicchips(minute.present_academic);
+      setAssociationchips(minute.present_association);
+      setExcusedchips(minute.excused);
+      setAbsentchips(minute.absent);
+      setMeetingApproval(minute.meeting_approval_from);
+      setMeetingMotion(minute.meeting_motion);
+      setMeetingMotionby(minute.meeting_motionBy);
+      setMeetingProposedBy(minute.meeting_proposedBy);
+      setMeetingSecondedBy(minute.meeting_secondedBy);
+      setMeetingObjective(minute.meeting_objective);
+      setTableData(minute.meeting_activities);
+      setMeetingRemarks(minute.meeting_remarks);
+      setTableDataEach(minute.meeting_activities_each);
+
+      ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
+      fetchSingleUser(minute);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  console.log("USER ID:", userID);
+  console.log("USER NAME:", userName);
 
   const fetchSingleUser = async (meeting) => {
     console.log(meeting);
@@ -125,6 +128,8 @@ function EditMinuteMembers() {
     })
       .then((res) => res.json())
       .then((response) => {
+        setUserName(response[0].name);
+
         if (response[0].sector === "Public") {
           if (meeting.present_public.includes(response[0].name)) {
             setIsAttended(true);
@@ -142,7 +147,6 @@ function EditMinuteMembers() {
             setIsAttended(true);
           }
         }
-        console.log(meeting.present_association);
       })
 
       .catch((error) => console.log(error));
@@ -199,35 +203,28 @@ function EditMinuteMembers() {
 
   const editMinute = async (event) => {
     event.preventDefault();
-    console.log("event");
-    try {
-      const activity_each = {
-        userID: userID,
-        tableData: tableData,
-      };
-      let isRated = false;
-      tableDataEach.forEach((element) => {
-        if (element.userID === userID) {
-          element.tableData = tableData;
-          isRated = true;
-        }
-      });
 
-      if (!isRated) {
-        tableDataEach.push(activity_each);
-        setTableDataEach(tableDataEach);
-      } else {
-        setTableDataEach(tableDataEach);
-      }
+    const hasUnrated = tableData.some(
+      (item) => item.rating === 0 || item.rating == null
+    );
+
+    if (hasUnrated) {
+      alert("Please rate all activities before submitting.");
+      return;
+    }
+
+    try {
       const requestOptions = {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: minute._id,
-
-          activities_each: tableDataEach,
+          userID: userID,
+          userName: userName,
+          tableData: tableData,
         }),
       };
+
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/admin/minute-each`,
         requestOptions
@@ -236,6 +233,7 @@ function EditMinuteMembers() {
       const data = await res.json();
 
       console.log(data);
+
       if (data.hasOwnProperty("error")) {
         setError(data.error);
         setShow(true);
@@ -243,6 +241,7 @@ function EditMinuteMembers() {
         setError("");
         setShow(true);
         alert("Updated");
+        loadLatestMinute();
       }
     } catch (e) {
       console.log(e);
@@ -689,7 +688,7 @@ function EditMinuteMembers() {
                 <Button
                   variant=""
                   type="submit"
-                  className="btn btn-primary  "
+                  className="btn btn-primary"
                   onClick={editMinute}
                 >
                   Save

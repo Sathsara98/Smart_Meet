@@ -53,6 +53,8 @@ const EditMinute1 = forwardRef((props, ref) => {
   const [meeting_objective, setMeetingObjective] = useState("");
   const [meeting_remarks, setMeetingRemarks] = useState("");
 
+  const isFinalized = props.minute.is_finalized;
+
   const [errors, setError] = useState({
     name: "",
     date: "",
@@ -170,6 +172,8 @@ const EditMinute1 = forwardRef((props, ref) => {
       handleCloseDialog();
     }
   };
+
+  const isRatingCompleted = props.minute.rating_completed;
 
   //Handle change overidder
   const handleChangeO = (event) => {
@@ -363,12 +367,9 @@ const EditMinute1 = forwardRef((props, ref) => {
 
           <div className="form-group col-9">
             <Form.Control
-              className="text-black "
-              required
+              disabled={isFinalized}
               name="name"
-              type="text"
               value={meeting_name}
-              placeholder="Enter Name..."
               onChange={handleChangeO}
             />
             <div className="text-red">{errors.name}</div>
@@ -380,11 +381,10 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black "
-              required
+              disabled={isFinalized}
               name="date"
-              type="date"
               value={meeting_date}
               onChange={handleChangeO}
             />
@@ -397,11 +397,10 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              required
-              className="text-black "
+              disabled={isFinalized}
               name="time"
-              type="time"
               value={meeting_time}
               onChange={handleChangeO}
             />
@@ -414,13 +413,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              required
-              className="text-black "
+              disabled={isFinalized}
               name="venue"
-              type="text"
               value={meeting_venue}
-              placeholder="Enter Venue..."
               onChange={handleChangeO}
             />
             <div className="text-red">{errors.venue}</div>
@@ -446,13 +443,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </div>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="name"
+            disabled={isFinalized}
             multiple
-            onChange={setPrivatechips}
             options={options}
-            placeholder="Choose attendies..."
             selected={private_chips}
           />
         </div>
@@ -465,13 +460,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </div>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="name"
+            disabled={isFinalized}
             multiple
-            onChange={setPublicchips}
             options={options}
-            placeholder="Choose attendies..."
             selected={public_chips}
           />
         </div>
@@ -484,13 +477,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </div>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="academic_chips"
+            disabled={isFinalized}
             multiple
-            onChange={setAcademicchips}
             options={options}
-            placeholder="Choose attendies..."
             selected={academic_chips}
           />
         </div>
@@ -503,13 +494,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </div>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="association_chips"
+            disabled={isFinalized}
             multiple
-            onChange={setAssociationchips}
             options={options}
-            placeholder="Choose attendies..."
             selected={association_chips}
           />
         </div>
@@ -520,13 +509,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </h4>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="excused_chips"
+            disabled={isFinalized}
             multiple
-            onChange={setExcusedchips}
             options={options}
-            placeholder="Choose attendies..."
             selected={excused_chips}
           />
         </div>
@@ -537,13 +524,11 @@ const EditMinute1 = forwardRef((props, ref) => {
             </h4>
           </div>
 
+
           <Typeahead
-            id="basic-typeahead-multiple"
-            labelKey="absent_chips"
+            disabled={isFinalized}
             multiple
-            onChange={setAbsentchips}
             options={options}
-            placeholder="Choose attendies..."
             selected={absent_chips}
           />
         </div>
@@ -563,11 +548,10 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              required
-              className="text-black "
+              disabled={isFinalized}
               name="approvalDate"
-              type="date"
               value={meeting_approval_from}
               onChange={handleChangeO}
             />
@@ -579,12 +563,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black "
+              disabled={isFinalized}
               name="motion"
-              type="text"
               value={meeting_motion}
-              placeholder="Enter Here..."
               onChange={handleChangeO}
             />
           </div>
@@ -596,12 +579,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black "
+              disabled={isFinalized}
               name="motionBy"
-              type="text"
               value={meeting_motionby}
-              placeholder="Enter Here..."
               onChange={handleChangeO}
             />
           </div>
@@ -612,12 +594,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black "
+              disabled={isFinalized}
               name="proposedBy"
-              type="text"
               value={meeting_proposedby}
-              placeholder="Enter Here..."
               onChange={handleChangeO}
             />
           </div>
@@ -628,12 +609,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black "
+              disabled={isFinalized}
               name="secondedBy"
-              type="text"
               value={meeting_secondedby}
-              placeholder="Enter Here..."
               onChange={handleChangeO}
             />
           </div>
@@ -652,17 +632,16 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="form-group col-9">
+
             <Form.Control
-              className="text-black text-black "
+              disabled={isFinalized}
               name="objective"
-              type="text"
               value={meeting_objective}
-              placeholder="Enter here..."
               onChange={handleChangeO}
             />
           </div>
         </div>
-
+        {/* 
         <div className="form-row">
           <div className="form-group col-3">
             <Form.Label>Activity</Form.Label>
@@ -677,6 +656,8 @@ const EditMinute1 = forwardRef((props, ref) => {
               placeholder="Enter New Activity..."
               onChange={(e) => handleChangeO(e)}
             />
+
+
           </div>
         </div>
 
@@ -715,20 +696,12 @@ const EditMinute1 = forwardRef((props, ref) => {
         <div className="form-row d-flex justify-content-end">
 
           <Button
-            variant=""
-            type="submit"
+            disabled={isFinalized}
             onClick={() => addRow()}
-            className="btn  btn-primary"
           >
             <i class="fa fa-plus" aria-hidden="true"></i>
           </Button>
-        </div>
-
-
-
-
-
-
+        </div> */}
 
 
         {/* Table */}
@@ -797,16 +770,10 @@ const EditMinute1 = forwardRef((props, ref) => {
                         %
                       </span>
                     </td>
-                    <td className="view-in-web delete-icon">
+                    {/* <td className="view-in-web delete-icon">
                       <i class="fa fa-trash" aria-hidden="true" onClick={() => handleDeleteClick(index)}></i>
-                      {/* <Button
-                        variant=""
-                        className="  m-1 p-1"
-                        onClick={() => removeRow(index)}
-                      >
-                        <span aria-hidden="true">×</span>
-                      </Button> */}
-                    </td>
+                      
+                    </td> */}
                   </tr>
                 );
               })
@@ -866,12 +833,11 @@ const EditMinute1 = forwardRef((props, ref) => {
           </div>
 
           <div className="col-9">
+
             <Form.Control
-              className="text-black "
+              disabled={isFinalized}
               name="remarks"
-              type="text"
               value={meeting_remarks}
-              placeholder="Enter here..."
               onChange={handleChangeO}
             />
           </div>
@@ -918,19 +884,20 @@ const EditMinute1 = forwardRef((props, ref) => {
           >
             Delete
           </Button>
-          <Button
+          {/* <Button
             variant=""
             type="submit"
             className="btn btn-primary view-in-web ml-3 mr-3"
             onClick={(e) => editMinute(e)}
           >
             Save
-          </Button>
+          </Button> */}
 
           <Button
             variant=""
             onClick={() => props.bclick()}
             className="btn btn-ternitary view-in-web"
+            disabled={!isRatingCompleted}
           >
             Print
           </Button>
