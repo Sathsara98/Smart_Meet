@@ -20,6 +20,8 @@ import Auth from "../../authentication/Auth";
 import EditMinuteMembers from "./EditMinuteMembers";
 import EditMinute from "./EditMinute";
 import MinuteCard from "./MinuteCard";
+import "./Minute.css";
+import Footer from "../Footer/Footer";
 
 const pathToPage = ["Home", "User", "Minute"];
 
@@ -28,11 +30,13 @@ function Index() {
   const [userd, setUserId] = useState(Auth.getUserId());
   const [userRole, setUserRole] = useState(Auth.getUserLevel());
 
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
+
   const handleClose = () => setShow(false);
 
-  const handleShow = () => {
+  const handleShow = (meeting) => {
+    setSelectedMeeting(meeting);
     setShow(true);
-    console.log("Show True");
   };
   const [show2, setShow2] = useState(false);
   const handleClose2 = () => setShow2(false);
@@ -86,28 +90,32 @@ function Index() {
           <div className="row mb-2">
             <div className="col-md">
               <div className="d-flex justify-content-end">
-                
-                {Auth?.getUserLevel()!=="Committee Member" && Auth?.getUserLevel()!=="Administrator"?(
-                <Button variant="info"
-                className="btnPrimary " onClick={handleShow}>
-                  <i className="tim-icons fas fa-plus" /> Add New Minute
+
+                {/* {Auth?.getUserLevel() !== "Committee Member" && Auth?.getUserLevel() !== "Administrator" ? (
+                  <Button variant="info"
+                    className="btnPrimary " onClick={handleShow}>
+                    <i className="tim-icons fas fa-plus" /> Add New Minute
+                  </Button>
+                ) : null} */}
+                <Button variant=""
+                  className="btn btn-ternitary " onClick={handleShow}>
+                  <i className="tim-icons fas fa-plus" /> Create Minute
                 </Button>
-                  ):null}
-                  
+
               </div>
             </div>
           </div>
           <Row>
             {minuteList != null
               ? minuteList.map((minute, index) => {
-                  return (
-                    <MinuteCard
-                      key={index}
-                      minute={minute}
-                      more={showDetails}
-                    />
-                  );
-                })
+                return (
+                  <MinuteCard
+                    key={index}
+                    minute={minute}
+                    more={showDetails}
+                  />
+                );
+              })
               : null}
           </Row>
         </>
@@ -142,7 +150,7 @@ function Index() {
     <div className="wrapper">
       <SideBar minute={true} />
       <div className="main-panel">
-        <NavbarDashboard title="Minutes" />
+        <NavbarDashboard title="Minutes" subtitle="Create and View Meeting Minutes" />
         <div className="content">
           <Modal
             show={show}
@@ -159,7 +167,11 @@ function Index() {
               </h2>
             </Modal.Header>
             <Modal.Body>
-              <AddMinute close={handleClose} load={loadMinutes} />
+              <AddMinute
+                close={handleClose}
+                load={loadMinutes}
+                selectedMeeting={selectedMeeting}
+              />
             </Modal.Body>
             {/* <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
@@ -200,12 +212,19 @@ function Index() {
               </Button>
             </Modal.Footer> */}
           </Modal>
-          <BreadCrum path={pathToPage} />
-          <AdminCard>
-            <Container>
-              <Minute />
-            </Container>
-          </AdminCard>
+          {/* <BreadCrum path={pathToPage} /> */}
+          {/* <AdminCard className="minute-card-wrapper">
+
+            <Minute />
+
+          </AdminCard> */}
+
+          <div className="minute-card-wrapper">
+
+            <Minute />
+
+          </div>
+          <Footer />
         </div>
       </div>
     </div>

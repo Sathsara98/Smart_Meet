@@ -29,11 +29,11 @@ function MemberRatio() {
   return (
     <div className="mt-4">
       <span className="heading" style={styleTitle}>
-        The Ratio Of The Registered Users
+        Committee Composition
       </span>
       <Chart
-        height={"250px"}
-        width={"400px"}
+        height={"300px"}
+        width={"100%"}
         chartType="PieChart"
         loader={<div>Loading Chart</div>}
         data={[
@@ -44,7 +44,10 @@ function MemberRatio() {
           ["Academic", stats.Academic],
         ]}
         options={{
-          is3D: true,
+          is3D: false,
+          pieHole: 0.4,
+          legend: { position: "bottom", alignment: "center", maxLines: 4 },
+          chartArea: { height: "70%", top: 20 },
           animation: {
             startup: true,
             easing: "linear",

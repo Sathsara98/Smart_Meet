@@ -11,6 +11,14 @@ import {
   span,
   Table,
 } from "react-bootstrap";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button as MUIButton,
+} from "@material-ui/core";
 
 import { Formik } from "formik";
 import { getIn } from "formik";
@@ -18,6 +26,7 @@ import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Auth from "../../authentication/Auth";
+import "./Minute.css";
 function AddMinute(props) {
   var curr = new Date();
   var date = curr
@@ -51,10 +60,21 @@ function AddMinute(props) {
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [activityIndexToDelete, setActivityIndexToDelete] = useState(null);
+  const [hoverNo, setHoverNo] = useState(false);
+  const [hoverYes, setHoverYes] = useState(false);
 
   // curr.setDate(curr.getDate());
   useEffect(() => {
-    loadMembers();
+    let isMounted = true;
+
+    loadMembers(isMounted);
+    loadMeetings(isMounted);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const schema = yup.object({
@@ -80,7 +100,7 @@ function AddMinute(props) {
   const ratingChanged = (newRating) => {
     return newRating;
   };
-  
+
   //Table row management
   const addRow = () => {
     const newRow = {
@@ -143,7 +163,24 @@ function AddMinute(props) {
     }
   };
 
-  const loadMembers = () => {
+  const handleDeleteClick = (index) => {
+    setActivityIndexToDelete(index);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setActivityIndexToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (activityIndexToDelete !== null) {
+      removeRow(activityIndexToDelete);
+      handleCloseDialog();
+    }
+  };
+
+  const loadMembers = (isMounted = true) => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`, {
       method: "GET",
       headers: new Headers({
@@ -152,23 +189,89 @@ function AddMinute(props) {
     })
       .then((res) => res.json())
       .then((response) => {
-        var memarray = [];
+        if (!isMounted) return;
+
+        const privateMembers = [];
+        const publicMembers = [];
+        const academicMembers = [];
+        const associationMembers = [];
+        const allMembers = [];
+
         response.forEach((element) => {
-          memarray.push(element.name);
+          allMembers.push(element.name);
+
+          if (element.sector === "Private") {
+            privateMembers.push(element.name);
+          } else if (element.sector === "Public") {
+            publicMembers.push(element.name);
+          } else if (element.sector === "Academic") {
+            academicMembers.push(element.name);
+          } else if (element.sector === "Association") {
+            associationMembers.push(element.name);
+          }
         });
-        setOptions(memarray);
+
+        setPrivateOptions(privateMembers);
+        setPublicOptions(publicMembers);
+        setAcademicOptions(academicMembers);
+        setAssociationOptions(associationMembers);
+        setAllOptions(allMembers);
+      })
+      .catch((error) => console.log(error));
+  };
+  const loadMeetings = (isMounted = true) => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/meetings/`, {
+      method: "GET",
+      headers: new Headers({
+        Accept: "application/vnd.github.cloak-preview",
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (!isMounted) return;
+
+        if (Array.isArray(response)) {
+          setMeetings(response);
+        } else if (Array.isArray(response.data)) {
+          setMeetings(response.data);
+        } else if (Array.isArray(response.meetings)) {
+          setMeetings(response.meetings);
+        } else {
+          setMeetings([]);
+        }
       })
       .catch((error) => console.log(error));
   };
 
+  const [privateOptions, setPrivateOptions] = useState([]);
+  const [publicOptions, setPublicOptions] = useState([]);
+  const [academicOptions, setAcademicOptions] = useState([]);
+  const [associationOptions, setAssociationOptions] = useState([]);
+  const [allOptions, setAllOptions] = useState([]);
+
+  const [meetings, setMeetings] = useState([]);
+  const [selectedMeetingId, setSelectedMeetingId] = useState("");
+
+  const totalParticipants =
+    private_chips.length +
+    public_chips.length +
+    academic_chips.length +
+    association_chips.length;
+
+
   const addMinute = async (event) => {
     event.preventDefault();
+    if (!selectedMeetingId) {
+      alert("Please select a meeting.");
+      return;
+    }
     console.log("event");
     try {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          meetingId: selectedMeetingId,
           name: meeting_name,
           date: meeting_date,
           time: meeting_time,
@@ -187,6 +290,11 @@ function AddMinute(props) {
           objective: meeting_objective,
           activities: tableData,
           remarks: meeting_remarks,
+          isFinalized: true,
+          s_finalized: true,
+          total_participants: totalParticipants,
+          total_rated_participants: 0,
+          rating_completed: false
         }),
       };
       const res = await fetch(
@@ -195,6 +303,7 @@ function AddMinute(props) {
       );
 
       const data = await res.json();
+
 
       console.log(data);
       if (data.hasOwnProperty("error")) {
@@ -226,6 +335,47 @@ function AddMinute(props) {
           <div>
             <div className="form-row">
               <div className="form-group col-3">
+                <Form.Label>Meeting Date</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  as="select"
+                  value={selectedMeetingId}
+                  onChange={(e) => {
+                    const meetingId = e.target.value;
+                    setSelectedMeetingId(meetingId);
+
+                    const selectedMeeting = meetings.find((m) => m._id === meetingId);
+
+                    if (selectedMeeting) {
+                      setMeetingName(selectedMeeting.name || "");
+                      setMeetingDate(selectedMeeting.date || date);
+                      setMeetingTime(selectedMeeting.time || "");
+                      setMeetingVenue(selectedMeeting.venue || "");
+                    } else {
+                      setMeetingName("");
+                      setMeetingDate(date);
+                      setMeetingTime("");
+                      setMeetingVenue("");
+                    }
+                  }}
+                >
+                  <option value="">Select Meeting Date</option>
+                  {Array.isArray(meetings) &&
+                    meetings.map((meeting) => (
+                      <option key={meeting._id} value={meeting._id}>
+                        {meeting.date}
+                      </option>
+                    ))}
+                </Form.Control>
+              </div>
+            </div>
+
+
+
+            <div className="form-row">
+              <div className="form-group col-3">
                 <Form.Label>Name of Meeting</Form.Label>
               </div>
 
@@ -238,7 +388,7 @@ function AddMinute(props) {
                   placeholder="Enter Name..."
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.name}
+                  isInvalid={!!errors.name && touched.name}
                   isValid={touched.name && !errors.name}
                   autoComplete="off"
                 />
@@ -258,7 +408,7 @@ function AddMinute(props) {
                   value={meeting_date}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.date}
+                  isInvalid={!!errors.date && touched.date}
                   isValid={touched.date && !errors.date}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -267,7 +417,7 @@ function AddMinute(props) {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group" className="col-3">
+              <div className="form-group col-3">
                 <Form.Label>Time</Form.Label>
               </div>
 
@@ -275,11 +425,11 @@ function AddMinute(props) {
                 <Form.Control
                   required
                   name="time"
-                  type="time"
+                  type="text"
                   value={meeting_time}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.time}
+                  isInvalid={!!errors.time && touched.time}
                   isValid={touched.time && !errors.time}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -300,8 +450,8 @@ function AddMinute(props) {
                   value={meeting_venue}
                   placeholder="Enter Venue..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
-                  isInvalid={!!errors.venue}
+                  onBlur={handleBlur}
+                  isInvalid={!!errors.venue && touched.venue}
                   isValid={touched.venue && !errors.venue}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -312,41 +462,34 @@ function AddMinute(props) {
             <div className="w-100 mt-3">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Attendance</strong>
+                  className="">
+                  <strong className="section-header">Attendance</strong>
                 </div>
               </h4>
             </div>
             <div className="w-100 ">
-              <h4 className=" text-center " style={{ color: "#070707" }}>
-                <strong>Present</strong>
+              <h4 className="" style={{ color: "#070707" }}>
+                <strong className="attendence-sub-header">Present</strong>
               </h4>
             </div>
             <div>
-              <div className="form-row">
+              <div className="form-row approval-form-row">
                 <div className="form-group mb-0" as={Col}>
                   <Form.Label className="mb-0 mt-1">Private Sector</Form.Label>
                 </div>
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="private_chips"
                 multiple
                 onChange={setPrivatechips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={privateOptions}
+                placeholder="Choose private members..."
                 selected={private_chips}
               />
             </div>
             <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <div className="form-row approval-form-row">
+                <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Public Sector </Form.Label>
 
                   <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
@@ -354,36 +497,33 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="public_chips"
                 multiple
                 onChange={setPublicchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={publicOptions}
+                placeholder="Choose public members..."
                 selected={public_chips}
               />
             </div>
             <div>
-              <div className="form-row">
-                <div className="form-group" className="mb-0 mt-1" as={Col}>
+              <div className="form-row approval-form-row">
+                <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Academic</Form.Label>
 
                   <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
                 </div>
               </div>
 
+
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="academic_chips"
                 multiple
                 onChange={setAcademicchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={academicOptions}
+                placeholder="Choose academic members..."
                 selected={academic_chips}
               />
             </div>
             <div>
-              <div className="form-row">
+              <div className="form-row approval-form-row">
                 <div className="form-group mb-0 mt-1" as={Col}>
                   <Form.Label className="mb-0 mt-1">Association</Form.Label>
 
@@ -391,47 +531,45 @@ function AddMinute(props) {
                 </div>
               </div>
 
+
+
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="association_chips"
                 multiple
                 onChange={setAssociationchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={associationOptions}
+                placeholder="Choose association members..."
                 selected={association_chips}
               />
             </div>
             <div>
               <div className="w-100 mt-3 mb-0 ">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Excused</strong>
+                <h4 className="" style={{ color: "#070707" }}>
+                  <strong className="attendence-sub-header">Excused</strong>
                 </h4>
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="excused_chips"
+                id="excused-typeahead"
                 multiple
                 onChange={setExcusedchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={allOptions}
+                placeholder="Choose attendees..."
                 selected={excused_chips}
               />
             </div>
             <div>
               <div className="w-100 mt-3">
-                <h4 className=" text-center mb-2" style={{ color: "#070707" }}>
-                  <strong>Absent</strong>
+                <h4 className=" " style={{ color: "#070707" }}>
+                  <strong className="attendence-sub-header">Absent</strong>
                 </h4>
               </div>
 
               <Typeahead
-                id="basic-typeahead-multiple"
-                labelKey="absent_chips"
+                id="absent-typeahead"
                 multiple
                 onChange={setAbsentchips}
-                options={options}
-                placeholder="Choose attendies..."
+                options={allOptions}
+                placeholder="Choose attendees..."
                 selected={absent_chips}
               />
             </div>
@@ -439,35 +577,30 @@ function AddMinute(props) {
             <div className="w-100 mt-4">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Approval</strong>
+                  className=" ">
+                  <strong className="section-header">Approval</strong>
                 </div>
               </h4>
             </div>
 
-            <div className="form-row">
-              <div className="form-group" className="col-3">
+            <div className="form-row ">
+              <div className="form-group col-3">
                 <Form.Label>Approval from</Form.Label>
               </div>
 
               <div className="form-group col-9">
                 <Form.Control
                   required
-                  name="approvalDate"
+                  name="approval"
                   type="date"
                   value={meeting_approval_from}
                   onChange={handleChangeO}
                   onBlur={handleBlur}
-                  isInvalid={!!errors.date}
-                  isValid={touched.date && !errors.date}
+                  isInvalid={!!errors.approval && touched.approval}
+                  isValid={touched.approval && !errors.approval}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.date && touched.date && errors.date}
+                  {errors.approval && touched.approval && errors.approval}
                 </Form.Control.Feedback>
               </div>
             </div>
@@ -539,13 +672,8 @@ function AddMinute(props) {
             <div className="w-100 mt-4">
               <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                 <div
-                  className="pr-5 pb-2 pl-2 pt-1 "
-                  style={{
-                    backgroundColor: "#0A2057",
-                    borderEndEndRadius: "90px",
-                  }}
-                >
-                  <strong>Objective</strong>
+                  className="">
+                  <strong className="section-header">Objective</strong>
                 </div>
               </h4>
             </div>
@@ -561,10 +689,125 @@ function AddMinute(props) {
                   value={meeting_objective}
                   placeholder="Enter here..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
             </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Activity</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  className="border border-light rounded"
+                  as="textarea"
+                  name="rowActivity"
+                  value={row_activity}
+                  placeholder="Enter New Activity..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Action taken/ Action to be taken</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  className="border border-light rounded"
+                  as="textarea"
+                  name="rowAction"
+                  value={row_action}
+                  placeholder="Enter New Action..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group col-3">
+                <Form.Label>Responsibility</Form.Label>
+              </div>
+
+              <div className="form-group col-9">
+                <Form.Control
+                  name="rowResponsibility"
+                  value={row_responsibility}
+                  placeholder="Enter New Responsibility..."
+                  onChange={(e) => handleChangeO(e)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row d-flex justify-content-end">
+
+              <Button
+                variant=""
+                type="submit"
+                onClick={() => addRow()}
+                className="btn  btn-primary"
+              >
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </Button>
+            </div>
+
+
+            {/* <div className=" mt-4 mb-5">
+             
+              <div className="form-row">
+                <div className="col-12 form-group ">
+                  <Form.Label>Activity</Form.Label>
+                  <Form.Control
+                    className="border border-light rounded"
+                    as="textarea"
+                    name="rowActivity"
+                    value={row_activity}
+                    placeholder="Enter New Activity..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+
+                <div className="form-group col-12">
+                  <Form.Label>Action taken/ Action to be taken</Form.Label>
+                  <Form.Control
+                    className="border border-light rounded"
+                    as="textarea"
+                    name="rowAction"
+                    value={row_action}
+                    placeholder="Enter New Action..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+                <div className="form-group col-12">
+                  <Form.Label>Responsibility</Form.Label>
+                  <Form.Control
+                    name="rowResponsibility"
+                    value={row_responsibility}
+                    placeholder="Enter New Responsibility..."
+                    onChange={(e) => handleChangeO(e)}
+                  />
+                </div>
+              </div>
+              <div className="form-row d-flex justify-content-end">
+
+                <Button
+                  variant="success"
+                  type="submit"
+                  onClick={() => addRow()}
+                  className="btnPrimary col-2 "
+                >
+                  + Add Row
+                </Button>
+              </div>
+            </div> */}
+
+
+
+
             {/* Table */}
             <Table
               striped
@@ -606,7 +849,7 @@ function AddMinute(props) {
                       <td>
                         <Button
                           className="btnPrimary  m-1 p-1"
-                          onClick={() => removeRow(index)}
+                          onClick={() => handleDeleteClick(index)}
                         >
                           x
                         </Button>
@@ -617,52 +860,7 @@ function AddMinute(props) {
               </tbody>
               {/* <tbody>{tableDATA}</tbody> */}
             </Table>
-            <div className="border border-light p-2 mt-4 mb-5">
-              <Form.Label>
-                Add New Row - (This will not be appeared in final minute)
-              </Form.Label>
-              <div className="form-row">
-                <div className="col-6 form-group ">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowActivity"
-                    value={row_activity}
-                    placeholder="Enter New Activity..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
 
-                <div className="form-group col-6">
-                  <Form.Control
-                    className="border border-light rounded"
-                    as="textarea"
-                    name="rowAction"
-                    value={row_action}
-                    placeholder="Enter New Action..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-              </div>
-              <div className="form-row d-flex justify-content-between">
-                <div className="form-group col-9">
-                  <Form.Control
-                    name="rowResponsibility"
-                    value={row_responsibility}
-                    placeholder="Enter New Responsibility..."
-                    onChange={(e) => handleChangeO(e)}
-                  />
-                </div>
-                <Button
-                  variant="success"
-                  type="submit"
-                  onClick={() => addRow()}
-                  className="btnPrimary col-2 "
-                >
-                  + Add Row
-                </Button>
-              </div>
-            </div>
             <div className="form-row">
               <div className="form-group col-3">
                 <Form.Label>Closing Remarks</Form.Label>
@@ -675,7 +873,7 @@ function AddMinute(props) {
                   value={meeting_remarks}
                   placeholder="Enter here..."
                   onChange={handleChangeO}
-                  onBlur={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
             </div>
@@ -707,29 +905,79 @@ function AddMinute(props) {
               </div>
             </div>
             <div
-              className="form-row"
+              className="form-row d-flex justify-content-end"
               id="footer-modal-addMember"
-              className="d-flex justify-content-between"
             >
+
               <Button
-                variant="info"
+                variant=""
+                onClick={props.close}
+                className="btn-secondary mr-3 btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant=""
                 type="submit"
-                className="btnPrimary"
+                className="btn  btn-primary btn"
                 onClick={addMinute}
               >
                 Submit
-              </Button>
-              <Button
-                variant="danger"
-                onClick={props.close}
-                className="btnPrimary"
-              >
-                Cancel
               </Button>
             </div>
           </div>
         )}
       </Formik>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Activity"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this activity? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MUIButton
+            onClick={handleCloseDialog}
+            onMouseEnter={() => setHoverNo(true)}
+            onMouseLeave={() => setHoverNo(false)}
+            style={{
+              backgroundColor: hoverNo ? '#474849' : '#57585a',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            No
+          </MUIButton>
+          <MUIButton
+            onClick={handleConfirmDelete}
+            onMouseEnter={() => setHoverYes(true)}
+            onMouseLeave={() => setHoverYes(false)}
+            style={{
+              backgroundColor: hoverYes ? '#055a75' : '#0a7a96',
+              color: 'white',
+              padding: '6px 12px',
+              textTransform: 'none',
+              fontSize: '14px',
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }}
+          >
+            Yes
+          </MUIButton>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

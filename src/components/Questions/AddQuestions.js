@@ -1,77 +1,83 @@
-import React, { useEffect, useState } from "react";
-import { Container, Form, Col, Row, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Row, Col, Button } from "react-bootstrap";
+import "./Question.css";
 
-function AddQuestions(props) {
-  const [errormessage, setErrormessage] = useState("");
-  const [question, setQuestion] = useState("");
+function AddQuestions({ onAdd, disabled }) {
+  const [area, setArea] = useState("");
+  const [challenge, setChallenge] = useState("");
+  const [error, setError] = useState("");
 
-  const myChangeHandler = (event) => {
-    let val = event.target.value;
-    let name = event.target.name;
-    setQuestion(val);
-  };
-
-  const onSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
-    let err;
-
-    if (question == "") {
-      err = <strong style={{ color: "red" }}>Please enter something!</strong>;
-      setErrormessage(err);
-    }else if (question.split(" ").length < 2  ) {
-      err = <strong style={{ color: "red" }}>Please enter more than one word!</strong>;
-      setErrormessage(err);
-    } else {
-      try {
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            question: question,
-          }),
-        };
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/new-question`, requestOptions);
-
-        setQuestion("");
-        props.onChange();
-      } catch (e) {
-        console.log(e);
-      }
+    if (!area || !challenge.trim()) {
+      setError("Please select an area and enter a challenge!");
+      return;
     }
+    onAdd({ area, challenge });
+    setArea("");
+    setChallenge("");
+    setError("");
   };
+
+  if (disabled) {
+    return null;
+  }
 
   return (
-    <>
-      <Form noValidate>
-        <Form.Row>
-          <Form.Group as={Col}>
-            <Form.Label>Enter your query in the following area</Form.Label>
+    <Form className="form-challenge">
+      <Row className="">
 
+        {/* Development Area */}
+        <Col md={3}>
+          <Form.Group controlId="formArea" className="dev-area-dropdown">
+            <Form.Label>Development Area</Form.Label>
             <Form.Control
-              className="inputBackground "
-              name="question"
-              placeholder=""
-              as="textarea"
-              rows={3}
-              value={question}
-              required
-              onChange={myChangeHandler}
-              style={{ border: "none", backgroundColor: "#eefbfd" }}
-            />
-            {errormessage}
+              as="select"
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+
+            >
+              <option value="">Select...</option>
+              <option>Policy</option>
+              <option>R&D</option>
+              <option>Technology</option>
+              <option>Workforce</option>
+              <option>Productivity</option>
+              <option>Marketing</option>
+            </Form.Control>
           </Form.Group>
-        </Form.Row>
-        <Button
-          variant="info"
-          className="btnPrimary "
-          type="submit"
-          onClick={onSubmit}
-        >
-          Submit
-        </Button>
-      </Form>
-    </>
+        </Col>
+
+        {/* Challenge */}
+        <Col md={6}>
+          <Form.Group controlId="formChallenge">
+            <Form.Label>Challenge</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={challenge}
+              onChange={(e) => setChallenge(e.target.value)}
+
+            />
+          </Form.Group>
+        </Col>
+
+        {/* Add Button */}
+        <Col md={3} className="add-col-btn-wrapper">
+          <Button
+            variant=""
+            className="btn  btn-primary"
+            onClick={handleSubmit}
+          >
+            Add
+          </Button>
+        </Col>
+
+      </Row>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </Form>
+
   );
 }
 

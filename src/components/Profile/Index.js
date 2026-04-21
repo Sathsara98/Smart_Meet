@@ -3,13 +3,15 @@ import Model from "../../components/Model";
 import axios from "axios";
 import Auth from "../../authentication/Auth";
 import { useForm } from "react-hook-form";
+import TimeTable from "../NotAvailable/TimeTable";
 import {
   BreadCrum,
   SideBar,
   Navbar,
   AdminCard,
-  NavbarDashboard,
+  NavbarDashboard
 } from "../../components";
+import Footer from "../Footer/Footer";
 
 export default function Index() {
   // Create a reference to the hidden file input element
@@ -138,10 +140,10 @@ export default function Index() {
       .then((res) => res.json())
       .then((response) => {
         setUser(response);
-        if(response.userImage!=null){
+        if (response.userImage != null) {
           setCurrentFileShow(`${process.env.REACT_APP_BACKEND_URL}/` + response.userImage);
         }
-        
+
         setPreFileShow(response.userImage);
         setValue("name", response.name);
         setValue("email", response.email);
@@ -162,18 +164,25 @@ export default function Index() {
       sinfile.append("userID", userId);
       sinfile.append("previousImg", preFileShow);
 
-      console.log(preFileShow);
+      console.log("handleClick: Starting image upload, userId=", userId, "currentFile=", currentFile);
       axios
         .put(`${process.env.REACT_APP_BACKEND_URL}/users/user-image`, sinfile)
         .then((res) => {
+          console.log("handleClick: Upload successful, response=", res.data);
           setEditImg(false);
           setIsImgUploading(false);
           setPreFileShow(res.data.userImage);
         })
         .catch((error) => {
-          console.log(error);
+          console.error("handleClick: Upload failed, error=", error);
+          console.error("Error response data:", error.response?.data);
+          console.error("Full error object:", JSON.stringify(error.response?.data, null, 2));
+          console.error("Error status:", error.response?.status);
+          console.error("Error message:", error.message);
+          setIsImgUploading(false);
         });
     } else {
+      console.log("handleClick: Opening file picker");
       hiddenFileInput.current.click();
       setEditImg(true);
     }
@@ -240,14 +249,14 @@ export default function Index() {
       {model}
       <SideBar profile={true} />
       <div className="main-panel">
-        <NavbarDashboard title="Profile" />
-        <div className="content">
-          <BreadCrum path={pathToPage} />
+        <NavbarDashboard title="Profile" subtitle="Manage Your Profile" />
+        <div className="content content-profile">
+          {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="">
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-lg-4 pl-0">
                 <div className="card">
-                  <div className="card-body">
+                  <div className="card-body p-0">
                     <div className="d-flex flex-column align-items-center text-center">
                       <input
                         className=" px-3 py-2 text-sm  text-gray-700  rounded-full  appearance-none focus:outline-none focus:shadow-outline "
@@ -289,8 +298,9 @@ export default function Index() {
                                 <div>
                                   <button
                                     className="btn btn-link rounded-pill border border-light"
-                                    onClick={() => {setEditImg(false);
-                                     }}
+                                    onClick={() => {
+                                      setEditImg(false);
+                                    }}
                                   >
                                     <i className="fa fa-times"></i>
                                   </button>
@@ -338,17 +348,17 @@ export default function Index() {
                         <h4 className="text-muted">{user.workplace}</h4>
                       </div>
                     </div>
-                    <hr className="my-4" />
+                    {/* <hr className="my-4" /> */}
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8">
+              <div className="col-lg-8 pr-0">
                 <div className="card">
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="card-body">
+                  <form onSubmit={handleSubmit(onSubmit)} className="profile-form">
+                    <div className="card-body p-0">
                       <div className="row mb-3">
                         <div className="col-sm-3">
-                          <h6 className="mb-0">Full Name</h6>
+                          <h6 className="mb-0">Name</h6>
                         </div>
                         <div className="col-sm-9 text-secondary">
                           <input
@@ -536,12 +546,12 @@ export default function Index() {
                           </div>
                         </div>
                       </div>
-                      <div className="row">
-                        <div className="col-sm-3">
+                      <div className="row btn-row">
+                        <div className="col-sm-12">
                           {isEdit ? (
                             <button
                               type="submit"
-                              className="btn btn-info px-4 btnPrimary"
+                              className="btn  px-4 btn-primary"
                             >
                               Save Changes
                             </button>
@@ -549,21 +559,46 @@ export default function Index() {
                             <input
                               onClick={() => setIsEdit(true)}
                               type="button"
-                              className="btn btn-info btnPrimary"
+                              className="btn  btn-primary"
                               value="Edit"
                             ></input>
                           )}
                         </div>
-                        <div className="col-sm-9 text-secondary"></div>
+                        {/* <div className="col-sm-9 text-secondary"></div> */}
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
+            <div className="row">
+
+              <div className="card timeline-card-wrap">
+                <div className="card-body p-0">
+                  <h4 className="availability-title">My Weekly Availability</h4>
+                  <TimeTable />
+                </div>
+              </div>
+
+            </div>
+
           </AdminCard>
+          <Footer />
+          {/* <AdminCard>
+            <div className="row">
+
+              <div className="card timeline-card-wrap">
+                <div className="card-body">
+                  <TimeTable />
+                </div>
+              </div>
+
+            </div>
+          </AdminCard> */}
         </div>
       </div>
+
     </div>
+
   );
 }

@@ -1,13 +1,15 @@
 .member-card {
   /* Rectangle 26 */
-  width:15rem;
+  /* width:15rem; */
   height: 17rem;
-  margin-top: 1rem;
-  border-radius: 0.5px 43px;
-  background-color: slateblue;
+  /* margin-top: 1rem; */
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: -1px 2px 8px 0px rgb(176 176 176 / 20%), 0px -4px 8px 0 rgb(227 227 227 / 19%);
   transition: border-radius 0.6s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .member-card:hover {
@@ -18,25 +20,88 @@
 }
 
 .member-card[data="public"] {
-  background: linear-gradient(90deg, #00020d 1.56%, #070d43 100%);
+  background: #FFF8DA;
 }
+
 .member-card[data="private"] {
-  background: linear-gradient(90deg, #00020d 0%, #0939b5 100%);
+  background: #D5F1FF;
 }
+
 .member-card[data="academic"] {
-  background: linear-gradient(
-    90deg,
-    #000000 -5.93%,
-    rgba(5, 94, 145, 0.81) 100%
-  );
+  background: #DEFFCF;
 }
+
 .member-card[data="association"] {
-  background: linear-gradient(90deg, #000000 -7.14%, #3dc9f9 100%);
+  background: #F6D8FF;
 }
+
+.member-card[data="public"]:hover {
+  box-shadow: 0px 1px 8px 0 #ffeb3b3d, 0px 1px 20px 0 #ffeb3b57;
+}
+
+.member-card[data="private"]:hover {
+  box-shadow: 0px 1px 8px 0 #03a9f436, 0px 1px 20px 0 #03a9f442;
+}
+
+.member-card[data="academic"]:hover {
+  box-shadow: 0px 1px 8px 0 #4caf504d, 0px 1px 20px 0 #4caf503d;
+}
+
+.member-card[data="association"]:hover {
+  box-shadow: 0px 1px 8px 0 #9c27b03b, 0px 1px 20px 0 #9c27b042;
+}
+
+
+.member-card[data="public"] h3 {
+  color: #bc9701;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.member-card[data="private"] h3 {
+  color: #2D8BBA;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.member-card[data="academic"] h3 {
+  color: #39b404;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.member-card[data="association"] h3 {
+  color: #CB6CE6;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.member-card[data="public"] i {
+  color: #bc9701;
+  font-weight: 600;
+}
+
+.member-card[data="private"] i {
+  color: #2D8BBA;
+  font-weight: 600;
+}
+
+.member-card[data="academic"] i {
+  color: #39b404;
+  font-weight: 600;
+}
+
+.member-card[data="association"] i {
+  color: #CB6CE6;
+  font-weight: 600;
+}
+
+
+
 .card-icon {
-  margin-top: 5rem;
+  /* margin-top: 5rem;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; */
   font-size: 50px;
   color: rgb(180, 180, 180);
 }
@@ -44,4 +109,17 @@
 .member-card h3 {
   margin-top: 20px;
   color: white;
+}
+
+.icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ffffff8c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-top: 4rem;
+  margin-left: auto;
+  margin-right: auto; */
 }

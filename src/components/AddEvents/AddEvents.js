@@ -50,6 +50,32 @@ class AddEvents extends Component {
       showError: false,
       questions: [],
     };
+    // If navigation provided a submissionState (from Questions submit), prefill questions/devArea
+    if (props && props.submissionState) {
+      try {
+        const s = props.submissionState;
+        console.log("AddEvents received submissionState:", s);
+        if (s.questions && Array.isArray(s.questions) && s.questions.length > 0) {
+          this.state.questions = s.questions.map((q, i) => ({
+            _id: q._id || `pre-${i}`,
+            body: q.body || q,
+            dArea: q.dArea || q.dArea,
+            disabled: false,
+          }));
+          console.log("AddEvents prefilled questions:", this.state.questions);
+        }
+        if (s.maxArea) {
+          this.state.devArea = s.maxArea;
+          console.log("AddEvents prefilled devArea:", s.maxArea);
+
+          setTimeout(() => {
+            this.calculateBestTime();
+          }, 0);
+        }
+      } catch (e) {
+        console.warn("Could not apply submissionState to AddEvents:", e);
+      }
+    }
     // this.handleClick = this.handleClick.bind(this);
     this.fetchQuestions = this.fetchQuestions.bind(this);
   }
@@ -62,6 +88,7 @@ class AddEvents extends Component {
   minIndex = 0;
 
   fetchUsers = async () => {
+    console.log("fetchUsers: Starting fetch...");
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/usersnat/`, {
       method: "GET",
       headers: new Headers({
@@ -69,47 +96,60 @@ class AddEvents extends Component {
         token: Auth.getToken(),
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log("fetchUsers: Received response status:", res.status);
+        return res.json();
+      })
       .then((response) => {
-        if (response)
+        console.log("fetchUsers: Response data:", response);
+        if (response) {
           this.setState(
             {
               usersNat: response,
               loading: false,
             },
-            this.calculateNatArray
+            () => {
+              // ✅ NOW compute best slot + members
+              console.log("fetchUsers: State set, calculating array...");
+              this.calculateNatArray();
+            }
           );
-        console.log(response);
+        } else {
+          console.log("fetchUsers: No response data");
+          this.setState({ loading: false });
+        }
       })
-
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.error("fetchUsers: Error occurred:", error);
+        this.setState({ loading: false });
+      });
   };
 
+
   calculateNatArray = () => {
-    this.state.usersNat.map((arr, i) => {
-      var nats = arr.nat;
-      for (var i = 0; i < 40; i++) {
+    console.log("calculateNatArray: Starting...");
+    // ✅ reset
+    this.arr2d = new Array(40).fill(0);
+    this.minIndex = 0;
+
+    this.state.usersNat.forEach((arr) => {
+      const nats = arr.nat;
+      for (let i = 0; i < 40; i++) {
         this.arr2d[i] = nats[i] + this.arr2d[i];
       }
     });
 
-    this.minIndex = this.arr2d.reduce(function (
-      highestIndex,
-      element,
-      index,
-      array
-    ) {
-      return element < array[highestIndex] ? index : highestIndex;
-    },
-    0);
+    this.minIndex = this.arr2d.reduce((best, el, idx, array) => {
+      return el > array[best] ? idx : best;
+    }, 0);
 
-    console.log(this.arr2d);
-    console.log(this.minIndex);
+    console.log("calculateNatArray: minIndex=", this.minIndex, "arr2d=", this.arr2d);
     this.getSlotFromIndex(this.minIndex);
   };
 
+
   getSlotFromIndex = (x) => {
-    console.log("slot : " + x);
+    console.log("getSlotFromIndex: x=", x, "devArea=", this.state.devArea);
     var slot;
     if (x < 5) {
       slot = "08:30 - 09:15  ";
@@ -136,7 +176,9 @@ class AddEvents extends Component {
       slot = "15:15 - 16:00  ";
       slot = slot + this.getDayFromIndex(x + 1 - 35);
     }
+    console.log("getSlotFromIndex: timeSlot=", slot);
     this.setState({ timeSlot: slot });
+    console.log("getSlotFromIndex: Calling getMembers with slot=", x);
     this.getMembers(x, this.state.devArea);
   };
   getDayFromIndex(x) {
@@ -158,6 +200,8 @@ class AddEvents extends Component {
   }
   //fetchUsers ->  getSlotFromIndex -> getMembers
   getMembers = (slot, da) => {
+    console.log("getMembers: slot=", slot, "devArea=", da);
+    this.membersToAdd = [];
     // var members = [];
     var publicS = 0;
     var privateS = 0;
@@ -165,16 +209,16 @@ class AddEvents extends Component {
     var academic = 0;
     var availableMembers = [];
     availableMembers[0] = this.state.usersNat.filter(function (el) {
-      return el.sector == "Private" && el.nat[slot] == 0;
+      return el.sector == "Private" && el.nat[slot] == 1;
     });
     availableMembers[1] = this.state.usersNat.filter(function (el) {
-      return el.sector == "Public" && el.nat[slot] == 0;
+      return el.sector == "Public" && el.nat[slot] == 1;
     });
     availableMembers[2] = this.state.usersNat.filter(function (el) {
-      return el.sector == "Academic" && el.nat[slot] == 0;
+      return el.sector == "Academic" && el.nat[slot] == 1;
     });
     availableMembers[3] = this.state.usersNat.filter(function (el) {
-      return el.sector == "Association" && el.nat[slot] == 0;
+      return el.sector == "Association" && el.nat[slot] == 1;
     });
     console.log(availableMembers);
     if (da == "Policy") {
@@ -228,34 +272,42 @@ class AddEvents extends Component {
       }
     }
 
-    console.log(this.membersToAdd);
-    this.setState({ meetingMembers: this.membersToAdd });
+    console.log("getMembers: Final membersToAdd=", this.membersToAdd);
+    this.setState({ meetingMembers: this.membersToAdd, loading: false }, () => {
+      console.log("getMembers: setState callback - loading should be false now, state.loading=", this.state.loading);
+    });
   };
 
   loadPublicMembers = (count, slot) => {
+    console.log("loadPublicMembers: count=", count, "slot=", slot);
     var secMembers = this.state.usersNat.filter(function (el) {
       return (
         el.sector == "Public" &&
-        el.nat[slot] == 0 &&
+        el.nat[slot] == 1 &&
         el.utype == "Committee Secretary"
       );
     });
 
     var otherMembers = this.state.usersNat.filter(function (el) {
-      return el.sector == "Public" && el.nat[slot] == 0;
+      return el.sector == "Public" && el.nat[slot] == 1;
     });
 
-    if (secMembers.length == 0) {
-      console.log("Secretaries Are Busy Find Next Slot");
-      this.arr2d[this.minIndex] = 99999;
-      this.calculateNatArray();
-    } else {
+    console.log("loadPublicMembers: secMembers found=", secMembers.length, "otherMembers found=", otherMembers.length);
+
+    // Add secretary if available
+    if (secMembers.length > 0) {
+      console.log("loadPublicMembers: Adding secretary");
       this.membersToAdd.push(secMembers[0]);
       count = count - 1;
-      for (var i = 0; i < otherMembers.length; i++) {
-        if (count > i) {
-          this.membersToAdd.push(otherMembers[i]);
-        }
+    } else {
+      console.log("loadPublicMembers: No Secretaries available");
+    }
+
+    // Always add other public members
+    console.log("loadPublicMembers: Adding", Math.min(count, otherMembers.length), "other public members");
+    for (var i = 0; i < otherMembers.length; i++) {
+      if (count > i) {
+        this.membersToAdd.push(otherMembers[i]);
       }
     }
   };
@@ -280,15 +332,15 @@ class AddEvents extends Component {
                 text: que.body,
               }),
             };
-            const res1 = await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
-              requestOptions
-            );
-            const data1 = await res1.json();
+            // const res1 = await fetch(
+            //   `${process.env.REACT_APP_BACKEND_URL}/admin/developing-area`,
+            //   requestOptions
+            // );
+            // const data1 = await res1.json();
             return {
               _id: que._id,
               body: que.body,
-              dArea: data1.SVM,
+              dArea: que.dArea,
               disabled: false,
             };
           });
@@ -379,7 +431,9 @@ class AddEvents extends Component {
   };
 
   componentDidMount() {
-    this.fetchQuestions();
+    if (!this.props.submissionState) {
+      this.fetchQuestions();
+    }
   }
 
   onMarkerDragEnd = (coord) => {
@@ -452,8 +506,9 @@ class AddEvents extends Component {
 
     const addNewEvent = async (event) => {
       // event.preventDefault();
-      console.log("addevent called");
-      console.log(event);
+      console.log("addNewEvent called");
+      console.log("Form values:", event);
+      console.log("Current state questions:", this.state.questions);
 
       const directionUrl =
         "https://www.google.com/maps?saddr=My+Location&daddr=" +
@@ -461,42 +516,30 @@ class AddEvents extends Component {
         "," +
         this.state.lng;
       try {
+        const payload = {
+          sector: this.state.devArea,
+          name: event.name,
+          venue: event.venue,
+          location: directionUrl,
+          time: this.state.timeSlot,
+          members: this.state.meetingMembers,
+          date: this.state.date,
+          questions: this.state.questions,
+        };
+        console.log("Sending event payload:", payload);
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sector: this.state.devArea,
-            name: event.name,
-            venue: event.venue,
-            location: directionUrl,
-            time: this.state.timeSlot,
-            members: this.state.meetingMembers,
-            date: this.state.date,
-            questions: this.state.questions,
-          }),
+          body: JSON.stringify(payload),
         };
         const res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/events/new`,
           requestOptions
-        ).then(async () => {
-          try {
-            const requestOptions = {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(this.state.questions),
-            };
-            return await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/questions-all`,
-              requestOptions
-            );
-          } catch (e) {
-            console.log(e);
-          }
-        });
+        );
 
         const data = await res.json();
 
-        console.log(data);
+        console.log("Event creation response:", data);
         if (data.hasOwnProperty("error")) {
           this.setState({ error: data.error, showError: true });
           // setError(data.error);
@@ -535,9 +578,9 @@ class AddEvents extends Component {
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Row>
                   <Form.Group as={Col}>
-                    <Form.Label>Event Sector</Form.Label>
+                    <Form.Label>Development Area</Form.Label>
                     <br />
-                    <span style={{ fontSize: 22 }}>
+                    <span style={{ fontWeight: 600 }}>
                       {this.state.loadingDevArea ? (
                         <div className="loader ml-4 mb-4">
                           Analyisng Development Area ...
@@ -550,7 +593,7 @@ class AddEvents extends Component {
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Event Name</Form.Label>
+                    <Form.Label>Meeting Name</Form.Label>
                     <Form.Control
                       required
                       name="name"
@@ -625,12 +668,12 @@ class AddEvents extends Component {
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Select First Day of the Week</Form.Label>
+                    <Form.Label>Date (Select First Day of the Week)</Form.Label>
                     <Form.Control
                       required
                       name="date"
                       type="date"
-                      placeholder=""
+                      placeholder="Select First Day of the Week"
                       onChange={(e) => {
                         this.checkDate(e);
                         handleChange(e);
@@ -648,31 +691,35 @@ class AddEvents extends Component {
                 </Form.Row>
 
                 <Form.Row>
-                  {this.state.loading ? (
-                    <div className="loader ml-4 mb-4">Loading...</div>
-                  ) : (
-                    <Form.Group as={Col}>
-                      <Form.Label>Time Slot</Form.Label>
+                  {this.state.date && (
+                    <>
+                      {this.state.loading ? (
+                        <div className="loader ml-4 mb-4">Loading...</div>
+                      ) : (
+                        <Form.Group as={Col}>
+                          <Form.Label>Time</Form.Label>
 
-                      <Form.Control
-                        className="inputBackground "
-                        name="question"
-                        placeholder=""
-                        disabled={true}
-                        value={this.state.timeSlot}
-                        required
-                        style={{ backgroundColor: "#ffffff" }}
-                      />
-                    </Form.Group>
+                          <Form.Control
+                            className="inputBackground "
+                            name="question"
+                            placeholder=""
+                            disabled={true}
+                            value={this.state.timeSlot}
+                            required
+                            style={{ backgroundColor: "#ffffff" }}
+                          />
+                        </Form.Group>
+                      )}
+                    </>
                   )}
                 </Form.Row>
 
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
                     <Form.Label>Members</Form.Label>
-                    <div className="row col-12 m-auto">
+                    <div className="row col-12 m-auto p-0">
                       {this.state.meetingMembers != null &&
-                      this.state.meetingMembers.length != 0 ? (
+                        this.state.meetingMembers.length != 0 ? (
                         this.state.meetingMembers.map((e) => {
                           return (
                             <MeetingMember
@@ -692,7 +739,7 @@ class AddEvents extends Component {
                 </Form.Row>
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Questions</Form.Label>
+                    <Form.Label>Challenges</Form.Label>
                     <div className=" col-12 m-auto">
                       {this.state.questions.length > 0 ? (
                         this.state.questions.map((e) => {
@@ -704,7 +751,7 @@ class AddEvents extends Component {
                         })
                       ) : (
                         <div className="loader ml-4 mb-4">
-                          Fetching Questions...
+                          Fetching Challenges...
                         </div>
                       )}
                     </div>
@@ -754,17 +801,19 @@ class AddEvents extends Component {
 
                 <Form.Row
                   id="footer-modal-addMember"
-                  className="d-flex justify-content-between"
+                  className="d-flex justify-content-end"
                 >
-                  <Button variant="info" type="submit" className="btnPrimary">
-                    Submit
-                  </Button>
+
                   <Button
-                    variant="danger"
+                    variant=""
                     onClick={this.props.close}
-                    className="btnPrimary"
+                    className="btn-secondary mr-3 btn btn"
                   >
                     Cancel
+                  </Button>
+
+                  <Button variant="" type="submit" className="btn  btn-primary btn btn">
+                    Submit
                   </Button>
                 </Form.Row>
               </Form>

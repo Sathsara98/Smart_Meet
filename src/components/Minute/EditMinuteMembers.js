@@ -16,6 +16,7 @@ import { getIn } from "formik";
 import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import Auth from "../../authentication/Auth";
+import "./Minute.css";
 function EditMinuteMembers() {
   var curr = new Date();
   var date = curr
@@ -33,6 +34,7 @@ function EditMinuteMembers() {
   const [absent_chips, setAbsentchips] = useState([]);
   const stars = [];
 
+  const [userName, setUserName] = useState("");
   const [tableData, setTableData] = useState([]);
   const [tableDataEach, setTableDataEach] = useState([]);
   const [meeting_name, setMeetingName] = useState("");
@@ -74,45 +76,47 @@ function EditMinuteMembers() {
 
   useEffect(() => {
     loadLatestMinute();
-    return () => {};
+    return () => { };
   }, []);
   const loadLatestMinute = async () => {
     setLoading(true);
-    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then((minute) => {
-        setMinute(minute);
-        setMeetingName(minute.meeting_name);
-        setMeetingDate(minute.meeting_date);
-        setMeetingTime(minute.meeting_time);
-        setMeetingVenue(minute.meeting_venue);
-        setPrivatechips(minute.present_private);
-        setPublicchips(minute.present_public);
-        setAcademicchips(minute.present_academic);
-        setAssociationchips(minute.present_association);
-        setExcusedchips(minute.excused);
-        setAbsentchips(minute.absent);
-        setMeetingApproval(minute.meeting_approval_from);
-        setMeetingMotion(minute.meeting_motion);
-        setMeetingMotionby(minute.meeting_motionBy);
-        setMeetingProposedBy(minute.meeting_proposedBy);
-        setMeetingSecondedBy(minute.meeting_secondedBy);
-        setMeetingObjective(minute.meeting_objective);
-        setTableData(minute.meeting_activities);
-        setMeetingRemarks(minute.meeting_remarks);
-        setTableDataEach(minute.meeting_activities_each);
-        return minute;
-      })
-      .then(function (minute) {
-        ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
-        fetchSingleUser(minute);
-      })
-      .catch((error) => console.log(error));
-    setLoading(false);
+    try {
+      const minute = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
+        .then((response) => response.json());
+
+      setMinute(minute);
+      setMeetingName(minute.meeting_name);
+      setMeetingDate(minute.meeting_date);
+      setMeetingTime(minute.meeting_time);
+      setMeetingVenue(minute.meeting_venue);
+      setPrivatechips(minute.present_private);
+      setPublicchips(minute.present_public);
+      setAcademicchips(minute.present_academic);
+      setAssociationchips(minute.present_association);
+      setExcusedchips(minute.excused);
+      setAbsentchips(minute.absent);
+      setMeetingApproval(minute.meeting_approval_from);
+      setMeetingMotion(minute.meeting_motion);
+      setMeetingMotionby(minute.meeting_motionBy);
+      setMeetingProposedBy(minute.meeting_proposedBy);
+      setMeetingSecondedBy(minute.meeting_secondedBy);
+      setMeetingObjective(minute.meeting_objective);
+      setTableData(minute.meeting_activities);
+      setMeetingRemarks(minute.meeting_remarks);
+      setTableDataEach(minute.meeting_activities_each);
+
+      ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
+      fetchSingleUser(minute);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
-  
+
+  console.log("USER ID:", userID);
+  console.log("USER NAME:", userName);
+
   const fetchSingleUser = async (meeting) => {
     console.log(meeting);
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/user`, {
@@ -124,6 +128,8 @@ function EditMinuteMembers() {
     })
       .then((res) => res.json())
       .then((response) => {
+        setUserName(response[0].name);
+
         if (response[0].sector === "Public") {
           if (meeting.present_public.includes(response[0].name)) {
             setIsAttended(true);
@@ -141,7 +147,6 @@ function EditMinuteMembers() {
             setIsAttended(true);
           }
         }
-        console.log(meeting.present_association);
       })
 
       .catch((error) => console.log(error));
@@ -198,35 +203,28 @@ function EditMinuteMembers() {
 
   const editMinute = async (event) => {
     event.preventDefault();
-    console.log("event");
-    try {
-      const activity_each = {
-        userID: userID,
-        tableData: tableData,
-      };
-      let isRated = false;
-      tableDataEach.forEach((element) => {
-        if (element.userID === userID) {
-          element.tableData = tableData;
-          isRated = true;
-        }
-      });
 
-      if (!isRated) {
-        tableDataEach.push(activity_each);
-        setTableDataEach(tableDataEach);
-      } else {
-        setTableDataEach(tableDataEach);
-      }
+    const hasUnrated = tableData.some(
+      (item) => item.rating === 0 || item.rating == null
+    );
+
+    if (hasUnrated) {
+      alert("Please rate all activities before submitting.");
+      return;
+    }
+
+    try {
       const requestOptions = {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: minute._id,
-
-          activities_each: tableDataEach,
+          userID: userID,
+          userName: userName,
+          tableData: tableData,
         }),
       };
+
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/admin/minute-each`,
         requestOptions
@@ -235,6 +233,7 @@ function EditMinuteMembers() {
       const data = await res.json();
 
       console.log(data);
+
       if (data.hasOwnProperty("error")) {
         setError(data.error);
         setShow(true);
@@ -242,13 +241,14 @@ function EditMinuteMembers() {
         setError("");
         setShow(true);
         alert("Updated");
+        loadLatestMinute();
       }
     } catch (e) {
       console.log(e);
     }
   };
-  const chipSubmit = () => {};
-  const chipRemove = () => {};
+  const chipSubmit = () => { };
+  const chipRemove = () => { };
   // const returnNum = (num) => {
   //   stars.push(parseInt(num));
   //   setStars(stars);
@@ -257,8 +257,8 @@ function EditMinuteMembers() {
   //     setStars(stars);
   //   }
   // };
-  if(!isAttended){
-    return(
+  if (!isAttended) {
+    return (
       <div>
         <h4 className="text-center">You have Zero Attended Meetings</h4>
       </div>
@@ -284,12 +284,12 @@ function EditMinuteMembers() {
             <div>
               <div className="form-row">
                 <div className="form-group col-3">
-                  <Form.Label>Name of Meeting</Form.Label>
+                  <Form.Label>Title</Form.Label>
                 </div>
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="name"
                     type="text"
@@ -310,7 +310,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="date"
                     type="date"
@@ -325,13 +325,13 @@ function EditMinuteMembers() {
                 </div>
               </div>
               <div className="form-row">
-                <div className="form-group" className="col-3">
+                <div className="form-group col-3">
                   <Form.Label>Time</Form.Label>
                 </div>
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="time"
                     type="time"
@@ -352,7 +352,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="venue"
                     type="text"
@@ -370,18 +370,15 @@ function EditMinuteMembers() {
               <div className="w-100 mt-3">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=""
+
                   >
-                    <strong>Attendance</strong>
+                    <strong className="section-header">Attendance</strong>
                   </div>
                 </h4>
               </div>
               <div className="w-100 ">
-                <h4 className=" text-center " style={{ color: "#070707" }}>
+                <h4 className=" " style={{ color: "#070707" }}>
                   <strong>Present</strong>
                 </h4>
               </div>
@@ -404,7 +401,7 @@ function EditMinuteMembers() {
               </div>
               <div>
                 <div className="form-row">
-                  <div className="form-group" className="mb-0 mt-1" as={Col}>
+                  <div className="form-group mb-0 mt-1" as={Col}>
                     <Form.Label className="mb-0 mt-1">
                       Public Sector{" "}
                     </Form.Label>
@@ -421,7 +418,7 @@ function EditMinuteMembers() {
               </div>
               <div>
                 <div className="form-row">
-                  <div className="form-group" className="mb-0 mt-1" as={Col}>
+                  <div className="form-group mb-0 mt-1" as={Col}>
                     <Form.Label className="mb-0 mt-1">Academic</Form.Label>
 
                     <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
@@ -452,7 +449,7 @@ function EditMinuteMembers() {
               <div>
                 <div className="w-100 mt-3 mb-0 ">
                   <h4
-                    className=" text-center mb-2"
+                    className=" mb-2"
                     style={{ color: "#070707" }}
                   >
                     <strong>Excused</strong>
@@ -468,7 +465,7 @@ function EditMinuteMembers() {
               <div>
                 <div className="w-100 mt-3">
                   <h4
-                    className=" text-center mb-2"
+                    className="  mb-2"
                     style={{ color: "#070707" }}
                   >
                     <strong>Absent</strong>
@@ -485,25 +482,22 @@ function EditMinuteMembers() {
               <div className="w-100 mt-4">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=""
+
                   >
-                    <strong>Approval</strong>
+                    <strong className="section-header">Approval</strong>
                   </div>
                 </h4>
               </div>
 
               <div className="form-row">
-                <div className="form-group" className="col-3">
+                <div className="form-group col-3">
                   <Form.Label>Approval from</Form.Label>
                 </div>
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="approvalDate"
                     type="date"
@@ -524,7 +518,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="motion"
                     type="text"
@@ -542,7 +536,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="motionBy"
                     type="text"
@@ -559,7 +553,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="proposedBy"
                     type="text"
@@ -576,7 +570,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="secondedBy"
                     type="text"
@@ -589,13 +583,10 @@ function EditMinuteMembers() {
               <div className="w-100 mt-4">
                 <h4 className=" separator_minute " style={{ color: "#FFFFFF" }}>
                   <div
-                    className="pr-5 pb-2 pl-2 pt-1 "
-                    style={{
-                      backgroundColor: "#0A2057",
-                      borderEndEndRadius: "90px",
-                    }}
+                    className=" "
+
                   >
-                    <strong>Objective</strong>
+                    <strong className="section-header">Objective</strong>
                   </div>
                 </h4>
               </div>
@@ -606,7 +597,7 @@ function EditMinuteMembers() {
 
                 <div className="form-group col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="objective"
                     type="text"
@@ -650,26 +641,26 @@ function EditMinuteMembers() {
                 <tbody>
                   {tableData != null
                     ? tableData.map((item, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{item.activity}</td>
-                            <td>{item.action}</td>
-                            <td>{item.responsibility}</td>
+                      return (
+                        <tr key={index}>
+                          <td>{item.activity}</td>
+                          <td>{item.action}</td>
+                          <td>{item.responsibility}</td>
 
-                            <td>
-                              <ReactStars
-                                count={5}
-                                value={item.rating}
-                                onChange={(e) => {
-                                  editRowRating(index, ratingChanged(e));
-                                }}
-                                size={17}
-                                activeColor="#ffd700"
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })
+                          <td>
+                            <ReactStars
+                              count={5}
+                              value={item.rating}
+                              onChange={(e) => {
+                                editRowRating(index, ratingChanged(e));
+                              }}
+                              size={17}
+                              activeColor="#ffd700"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
                     : null}
                 </tbody>
                 {/* <tbody>{tableDATA}</tbody> */}
@@ -682,7 +673,7 @@ function EditMinuteMembers() {
 
                 <div className="col-9">
                   <Form.Control
-                    style={{ backgroundColor: "#eefbfd" }}
+                    style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="remarks"
                     type="text"
@@ -693,11 +684,11 @@ function EditMinuteMembers() {
                 </div>
               </div>
 
-              <div className="form-row mt-5 ">
+              <div className="form-row mt-5 display-flex justify-content-end">
                 <Button
-                  variant="info"
+                  variant=""
                   type="submit"
-                  className="btnPrimary "
+                  className="btn btn-primary"
                   onClick={editMinute}
                 >
                   Save

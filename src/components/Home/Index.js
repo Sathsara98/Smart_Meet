@@ -7,7 +7,8 @@ import { BreadCrum, SideBar, Navbar, AdminCard } from "../";
 function Index() {
   return (
     <div className="wrapper">
-      <Navbar varient="transparent" />
+      {/* <Navbar varient="transparent" /> */}
+
       <div className="main-panel ">
         <Section1 />
         {/* <Section2 />

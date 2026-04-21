@@ -21,6 +21,7 @@ import {
 import Auth from "../authentication/Auth";
 import * as yup from "yup";
 import { Formik } from "formik";
+import Footer from "../components/Footer/Footer";
 
 const ManageMembers = () => {
   const [show, setShow] = useState(false);
@@ -69,7 +70,7 @@ const ManageMembers = () => {
       <SideBar members={true} addmembers={true} />
       <div className="main-panel">
         <div className="content">
-          <NavbarDashboard title="Members" />
+          <NavbarDashboard title="Committee Management" subtitle="View, organize, and manage your committees efficiently" />
           <Modal
             show={show}
             size="lg"
@@ -94,46 +95,47 @@ const ManageMembers = () => {
               </Button>
             </Modal.Footer> */}
           </Modal>
-          <BreadCrum path={pathToPage} />
+          {/* <BreadCrum path={pathToPage} /> */}
           <AdminCard title="Members">
-            <Container>
-              <div className="row mb-2">
-                <div className="col-md">
-                  <div className="d-flex justify-content-end">
-                    {Auth?.getUserLevel() !== "Committee Member" &&
+            {/* <Container> */}
+            <div className="row mb-2">
+              <div className="col-md">
+                <div className="d-flex justify-content-end">
+                  {Auth?.getUserLevel() !== "Committee Member" &&
                     Auth?.getUserLevel() !== "Committee Secretary" ? (
-                      <Button
-                        variant="info"
-                        className="btnPrimary "
-                        onClick={handleShow}
-                      >
-                        <i className="tim-icons fas fa-plus" /> Add New User
-                      </Button>
-                    ) : null}
-                  </div>
+                    <Button
+
+                      className="btn-primary "
+                      onClick={handleShow}
+                    >
+                      <i className="tim-icons fas fa-plus" /> Add New User
+                    </Button>
+                  ) : null}
                 </div>
               </div>
+            </div>
 
-              <Row className="d-flex justify-space-end">
-                <Col sm>
-                  <MemberCard type="public" text="Public Sector" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="private" text="Private Sector" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="academic" text="Academic" />
-                </Col>
-                <Col sm>
-                  <MemberCard type="association" text="Association" />
-                </Col>
-              </Row>
-            </Container>
+            <Row className="d-flex justify-space-end mt-4">
+              <Col sm>
+                <MemberCard type="public" text="Public Sector" />
+              </Col>
+              <Col sm>
+                <MemberCard type="private" text="Private Sector" />
+              </Col>
+              <Col sm>
+                <MemberCard type="academic" text="Academic" />
+              </Col>
+              <Col sm>
+                <MemberCard type="association" text="Association" />
+              </Col>
+            </Row>
+            {/* </Container> */}
             <br />
             <center className="mt-4">
               <MemberRatio />
             </center>
           </AdminCard>
+          <Footer />
         </div>
       </div>
     </div>

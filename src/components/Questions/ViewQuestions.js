@@ -1,166 +1,159 @@
-import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
-import { Card, Form, Col, Row, Button, Container } from "react-bootstrap";
-import Auth from "../../authentication/Auth";
-const ViewQuestions = forwardRef((props, ref) => {
-  const [questions, setquestions] = useState(props.questions);
-  const [delId, setDelId] = useState(null);
-  useEffect(() => {
-    setquestions(props.questions);
-  }, []);
-  useEffect(() => {
-    console.log(props.reaction);
-    setquestions(props.questions);
-  }, [props.questions]);
+import React, { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
 
-  function editComment(id) {
-    console.log(id);
+function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
+  const [editingId, setEditingId] = useState(null);
+  const [formState, setFormState] = useState({ dArea: "", body: "" });
 
-    const items = [...questions];
-    items.map((item) => {
-      if (item._id === id) {
-        if (item.disabled == false) {
-          item.disabled = true;
-        } else {
-          item.disabled = false;
-        }
-      }
-    });
-    setquestions(items);
-  }
-  function handleChange(index, event) {
-    const val = event.target.value;
-    const items = [...questions];
-    items.map((item) => {
-      if (item._id === index) {
-        item.body = val;
-      }
-      setquestions(items);
-    });
-  }
-  // useImperativeHandle(ref, (prop) => ({
-  //   delete(prop) {
-  //     deleteComment(null, prop);
-  //   },
-  // }));
-  async function deleteComment(id) {
-    props.show(
-      true,
-      "This step can not be undone!",
-      true,
-      async function (res) {
-        if (res == true) {
-          try {
-            const requestOptions = {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ id: id }),
-            };
-            await fetch(
-              `${process.env.REACT_APP_BACKEND_URL}/admin/questions`,
-              requestOptions
-            );
+  const startEdit = (q) => {
+    if (readOnly) return; // 🔒 block editing in read-only mode
+    setEditingId(q._id);
+    setFormState({ dArea: q.dArea, body: q.body });
+  };
 
-            props.onChange();
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      }
-    );
-  }
+  const cancelEdit = () => {
+    setEditingId(null);
+    setFormState({ dArea: "", body: "" });
+  };
 
-  async function updateComment(id) {
-    try {
-      const items = [...questions];
-      let ques = items
-        .filter((item) => item._id == id)
-        .map((item) => {
-          return item;
-        });
+  const saveEdit = () => {
+    if (!editingId || readOnly) return;
 
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-
-        body: JSON.stringify({
-          id: ques[0]._id,
-          message: ques[0].body,
-        }),
-      };
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/questions`, requestOptions);
-      props.show(true, "Question has updated!", false, function (res) {});
-      editComment(ques[0]._id);
-    } catch (e) {
-      console.log(e);
+    if (onUpdate) {
+      onUpdate(editingId, {
+        dArea: formState.dArea,
+        body: formState.body,
+      });
     }
-  }
-  if (props.loading == true) {
-    return <h1>Loading..</h1>;
-  }
-  return (
-    <div>
-      <br />
-      {questions.map((que, key) => (
-        <Card
-          key={que._id}
-          style={{ marginTop: "2%", backgroundColor: "#eefbfd" }}
-        >
-          <Card.Body>
-            <Card.Title style={{ fontWeight: "bolder" }}>
-              QUESTION {key + 1} - {que.dArea}
-              {Auth?.getUserLevel() !== "Committee Member" &&
-              Auth?.getUserLevel() !== "Committee Secretary" ? (
-                <span style={{ float: "right" }}>
-                  {!que.disabled ? (
-                    <i
-                      onClick={() => editComment(que._id)}
-                      className="far fa-edit "
-                    />
-                  ) : (
-                    <i
-                      onClick={() => updateComment(que._id)}
-                      className="fas fa-check "
-                    />
-                  )}
-                  &emsp;
-                  <i
-                    onClick={(e) => {
-                      deleteComment(que._id);
-                    }}
-                    className="far fa-trash-alt "
-                  ></i>
-                  &emsp;
-                </span>
-              ) : null}
-            </Card.Title>
 
-            <Card.Text>
-              <Form.Control
-                style={{
-                  backgroundColor: "transparent",
-                  color: "#37474F",
-                  fontSize: "1em",
-                }}
-                name="question"
-                placeholder=""
-                as="textarea"
-                rows={3}
-                value={que.body}
-                required
-                onChange={(e) => handleChange(que._id, e)}
-                disabled={que.disabled ? "" : "disabled"}
-              />
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      ))}
-    </div>
+    cancelEdit();
+  };
+
+  const handleChange = (field, value) => {
+    setFormState((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <TableContainer className="mt-4 mb-4 challenge-table">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell className="th-dev-area">
+              <b>Development Area</b>
+            </TableCell>
+            <TableCell className="th-chal">
+              <b>Challenge</b>
+            </TableCell>
+            <TableCell className="th-action">
+              <b>Actions</b>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {questions.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={3} align="center">
+                No challenges added yet.
+              </TableCell>
+            </TableRow>
+          )}
+
+          {questions.map((q) => (
+            <TableRow key={q._id}>
+              {/* Development Area */}
+              <TableCell>
+                {editingId === q._id && !readOnly ? (
+                  <select
+                    className="form-control"
+                    value={formState.dArea}
+                    onChange={(e) => handleChange("dArea", e.target.value)}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Policy">Policy</option>
+                    <option value="R&D">R&amp;D</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Workforce">Workforce</option>
+                    <option value="Productivity">Productivity</option>
+                    <option value="Marketing">Marketing</option>
+                  </select>
+                ) : (
+                  q.dArea
+                )}
+              </TableCell>
+
+              {/* Challenge body */}
+              <TableCell>
+                {editingId === q._id && !readOnly ? (
+                  <textarea
+                    className="form-control"
+                    rows={2}
+                    value={formState.body}
+                    onChange={(e) => handleChange("body", e.target.value)}
+                  />
+                ) : (
+                  q.body
+                )}
+              </TableCell>
+
+              {/* Actions */}
+              <TableCell className="action-col">
+                <div>
+                  {/* Read-only: no buttons at all */}
+                  {readOnly ? (
+                    <span className="text-muted">—</span>
+                  ) : editingId === q._id ? (
+                    <>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-suc mr-2"
+                        onClick={saveEdit}
+                      >
+                        <i className="fa fa-check" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-close"
+                        onClick={cancelEdit}
+                      >
+                        <i className="fa fa-times" aria-hidden="true" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-edit mr-2"
+                        onClick={() => startEdit(q)}
+                      >
+                        <i className="fa fa-pencil-alt"></i>
+
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-del"
+                        onClick={() => onDelete && onDelete(q._id)}
+                      >
+                        <i className="fa fa-trash" aria-hidden="true" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
-});
+}
 
 export default ViewQuestions;

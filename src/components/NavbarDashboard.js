@@ -47,16 +47,20 @@ function NavbarDashboard(props) {
   };
 
   const getUpcomingMeetings = (meetings) => {
-    var current_date = new Date();
-    var meetingsUpcoming = meetings.filter((m) => {
-      if (m.date != null && m.date != undefined && m.date.length > 3) {
-        var date = new Date(m.date);
-        if (date >= current_date) {
-          return m;
-        }
-      }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const meetingsUpcoming = meetings.filter((m) => {
+      if (!m.date) return false;
+
+      const meetingDate = new Date(m.date);
+      if (isNaN(meetingDate)) return false;
+
+      meetingDate.setHours(0, 0, 0, 0);
+      return meetingDate >= today;
     });
-    console.log(meetingsUpcoming);
+
+    console.log("Upcoming meetings:", meetingsUpcoming);
     setMeetings(meetingsUpcoming);
   };
   //model
@@ -88,7 +92,7 @@ function NavbarDashboard(props) {
   );
   return (
     <nav
-      className="navbar navbar-expand-lg fixed-top"
+      className="navbar navbar-expand-lg "
       data-color="orange ml-0 pl-0 pr-0 mr-0"
       id="navdash"
     >
@@ -97,8 +101,9 @@ function NavbarDashboard(props) {
         <div className="navbar-wrapper ml-0 pl-0">
           {BurgerMenu}
           <span style={{ fontSize: "1.613em" }}>
-            <b className="text-white align-middle">{props.title}</b>
+            <b className="title-main align-middle">{props.title}</b>
           </span>
+          <span className="subtitle">{props.subtitle}</span>
         </div>
         <button
           className="navbar-toggler m-0 p-0 float-right  text-white"
@@ -120,18 +125,26 @@ function NavbarDashboard(props) {
 
         <div className="collapse navbar-collapse" id="navigation">
           <ul className="navbar-nav ml-auto">
-            <li className="dropdown nav-item">
+            <li className="dropdown nav-item pr-0 ">
               <a
-                className="dropdown-toggle nav-link dropdownarrow"
+                className="dropdown-toggle nav-link dropdownarrow position-relative"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <i className={"fas fa-bell "} style={{ color: "white" }}></i>
+                <i className="fas fa-bell" style={{ color: "#1e1e1e" }}></i>
+
+                {/* 🔴 Badge */}
+                {meetings && meetings.length > 0 && (
+                  <span className="notif-badge">
+                    {meetings.length}
+                  </span>
+                )}
               </a>
+
               <ul
-                className="dropdown-menu dropdown-navbar"
-                style={{ marginRight: 80 }}
+                className="dropdown-menu dropdown-navbar notif-wrapper"
+                style={{}}
               >
                 {meetings == undefined || meetings.length == 0 ? (
                   <li className="nav-link">
@@ -142,23 +155,17 @@ function NavbarDashboard(props) {
                 ) : (
                   meetings.map((m) => {
                     return (
-                      <li className="nav-link">
-                        <a
-                          href="/"
-                          className="nav-item dropdown-item subdropdowns"
-                        >
-                          You Have A Scheduled <br /> Meeting On {m.date}
-                          {m.time.match(/.{1,13}/g)[1]}
-                          {" at "}
-                          {m.time.match(/.{1,13}/g)[0]}
-                        </a>
+                      <li className="nav-link" key={m._id}>
+                        <span className="nav-item dropdown-item subdropdowns">
+                          You have a scheduled meeting on {m.date} at {m.time}
+                        </span>
                       </li>
                     );
                   })
                 )}
               </ul>
             </li>
-            <li className="dropdown nav-item">
+            <li className="dropdown nav-item pr-0">
               <a
                 href="#"
                 className="dropdown-toggle nav-link dropdownarrow"
