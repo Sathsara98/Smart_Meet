@@ -5844,7 +5844,7 @@ a.badge-darker.focus {
 }
 
 .alert-heading {
-  color: #0D97B9;
+  color: #ec250d;
 }
 
 .alert-link {
@@ -5934,8 +5934,8 @@ a.badge-darker.focus {
 }
 
 .alert-danger {
-  color: #fd5d93;
-  background-color: #fd77a4;
+  color: #ec250d;
+  background-color: #e4e4e4;
   border-color: #fd77a4;
 }
 
@@ -21087,7 +21087,7 @@ Copyright (c) 2015 Daniel Eden
   /* height: calc(100vh - 216px); */
   /* subtract navbar height if you have one */
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  /* grid-template-rows: 1fr 1fr; */
   /* top = 50%, bottom = 50% */
   gap: 20px;
   padding-bottom: 10px;

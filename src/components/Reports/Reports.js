@@ -35,9 +35,10 @@ const downloadCsv = (rows, headers, filename) => {
 
 export default function Reports() {
     const [tabIndex, setTabIndex] = useState(0);
-    const [questions, setQuestions] = useState([]); // flattened submitted questions
+    const [events, setEvents] = useState([]); // flattened submitted questions
     const [minutes, setMinutes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [questions, setQuestions] = useState([]); // all questions (for trend/comparison tabs)
 
     // color map for development areas
     const areaColorMap = {
@@ -55,37 +56,53 @@ export default function Reports() {
         "July", "August", "September", "October", "November", "December",
     ];
 
-    const parseDate = (str) => (str ? new Date(str) : null);
+    const parseDate = (str) => {
+        if (!str) return null;
+        const d = new Date(str);
+        return isNaN(d.getTime()) ? null : d;
+    };
 
     useEffect(() => {
-        Promise.all([loadSubmittedQuestions(), loadMinutes()])
+        Promise.all([loadEvents(), loadMinutes()])
             .catch(console.error)
             .finally(() => setIsLoading(false));
     }, []);
 
-    const loadSubmittedQuestions = async () => {
-        const res = await fetch(
-            `${process.env.REACT_APP_BACKEND_URL}/questions/submitted-questions`
-        );
-        const data = await res.json();
+    const loadEvents = async () => {
+        try {
+            // Change from /admin/events/ to /events/
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all`);
+            const data = await res.json();
+            console.log("Events API response:", data);
 
-        // API returns: [{question, developmentArea, submissionDate}]
-        const rows = Array.isArray(data)
-            ? data.map((q) => ({
-                question: q.question ?? "",
-                developmentArea: q.developmentArea ?? "Unknown",
-                submissionDate: q.submissionDate ?? null,
-            }))
-            : [];
+            // Check if response is an error
+            if (!res.ok || data.error) {
+                console.error("Error loading events:", data.error || data);
+                setEvents([]);
+                return;
+            }
 
-        setQuestions(rows);
-        console.log("Submitted questions:", rows);
+            // Handle different response formats
+            if (Array.isArray(data)) {
+                setEvents(data);
+            } else if (Array.isArray(data.events)) {
+                setEvents(data.events);
+            } else if (data.data && Array.isArray(data.data)) {
+                setEvents(data.data);
+            } else {
+                console.warn("Unexpected events response format:", data);
+                setEvents([]);
+            }
+        } catch (e) {
+            console.error("Error fetching events:", e);
+            setEvents([]);
+        }
     };
-
     const loadMinutes = async () => {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minutes/`);
             const data = await res.json();
+            console.log("Minutes:", data);
             setMinutes(Array.isArray(data) ? data : []);
         } catch (e) {
             console.error(e);
@@ -105,36 +122,52 @@ export default function Reports() {
     const challengeYears = useMemo(() => {
         return Array.from(
             new Set(
-                questions
-                    .map((q) => parseDate(q.submissionDate)?.getFullYear())
-                    .filter(Boolean)
+                events
+                    .map((e) => parseDate(e.date)?.getFullYear())
+                    .filter((y) => y !== null && y !== undefined)
             )
         ).sort((a, b) => b - a);
-    }, [questions]);
+    }, [events]);
 
     useEffect(() => {
         if (!selYear && challengeYears.length > 0) setSelYear(challengeYears[0]);
     }, [challengeYears, selYear]);
 
     const filteredChallenges = useMemo(() => {
-        return questions.filter((q) => {
-            const d = parseDate(q.submissionDate);
+        const filteredEvents = events.filter((event) => {
+            const d = parseDate(event.date);
             if (!d) return false;
 
             if (challengeMode === "month") {
                 if (!selYear) return false;
-                return d.getFullYear() === Number(selYear) && d.getMonth() + 1 === Number(selMonth);
+                return (
+                    d.getFullYear() === Number(selYear) &&
+                    d.getMonth() + 1 === Number(selMonth)
+                );
             }
 
             // range
             if (!rangeStart || !rangeEnd) return false;
             const start = new Date(rangeStart);
             const end = new Date(rangeEnd);
-            // include whole end day
             end.setHours(23, 59, 59, 999);
+
             return d >= start && d <= end;
         });
-    }, [questions, challengeMode, selYear, selMonth, rangeStart, rangeEnd]);
+
+        return filteredEvents.flatMap((event) =>
+            (event.questions || []).map((q) => ({
+                question: q.body ?? "",
+                developmentArea: q.dArea ?? "Unknown",
+                meetingTitle: event.name ?? "",
+                meetingDate: event.date ?? null,
+                venue: event.venue ?? "",
+                sector: event.sector ?? "",
+            }))
+        );
+    }, [events, challengeMode, selYear, selMonth, rangeStart, rangeEnd]);
+
+
 
     // Chart data for Challenges tab (counts by developmentArea)
     const challengeChartData = useMemo(() => {
@@ -168,31 +201,55 @@ export default function Reports() {
     }, [challengeYears, trendYear]);
 
     const trendAreas = useMemo(() => {
-        return Array.from(new Set(questions.map((q) => q.developmentArea || "Unknown")));
-    }, [questions]);
+        return Array.from(
+            new Set(
+                events.flatMap((event) =>
+                    (event.questions || []).map((q) => q.dArea || "Unknown")
+                )
+            )
+        );
+    }, [events]);
+
+
 
     const trendData = useMemo(() => {
         if (!trendYear) return [["Month", ...trendAreas]];
 
         const data = [["Month", ...trendAreas]];
+
         for (let m = 1; m <= 12; m++) {
             const row = [MONTH_NAMES[m - 1]];
+
             trendAreas.forEach((area) => {
-                const total = questions.filter((q) => {
-                    const d = parseDate(q.submissionDate);
-                    return (
+                const total = events.reduce((sum, event) => {
+                    const d = parseDate(event.date);
+
+                    if (
                         d &&
                         d.getFullYear() === Number(trendYear) &&
-                        d.getMonth() + 1 === m &&
-                        (q.developmentArea || "Unknown") === area
-                    );
-                }).length;
+                        d.getMonth() + 1 === m
+                    ) {
+                        const count = (event.questions || []).filter(
+                            (q) => (q.dArea || "Unknown") === area
+                        ).length;
+
+                        return sum + count;
+                    }
+
+                    return sum;
+                }, 0);
+
                 row.push(total);
             });
+
             data.push(row);
         }
+
         return data;
-    }, [questions, trendYear, trendAreas]);
+    }, [events, trendYear, trendAreas]);
+
+
+
 
     const trendColors = useMemo(
         () => trendAreas.map((a) => areaColorMap[a] || areaColorMap.Unknown),
@@ -202,55 +259,101 @@ export default function Reports() {
     /** -------------------------
      *  YEARLY COMPARISON TAB
      *  ------------------------- */
-    const [compStart, setCompStart] = useState("");
-    const [compEnd, setCompEnd] = useState("");
+    const [compYear1, setCompYear1] = useState("");
+    const [compYear2, setCompYear2] = useState("");
+
+    useEffect(() => {
+        if (!compYear1 && challengeYears.length > 0) {
+            setCompYear1(challengeYears[0]);
+        }
+
+        if (!compYear2 && challengeYears.length > 1) {
+            setCompYear2(challengeYears[1]);
+        }
+    }, [challengeYears, compYear1, compYear2]);
+
+
+
 
     const comparisonAreas = useMemo(() => {
-        return Array.from(new Set(questions.map((q) => q.developmentArea || "Unknown")));
-    }, [questions]);
+        return Array.from(
+            new Set(
+                events.flatMap((event) =>
+                    (event.questions || []).map((q) => q.dArea || "Unknown")
+                )
+            )
+        );
+    }, [events]);
+
+
+
 
     const comparisonData = useMemo(() => {
-        if (!compStart || !compEnd) return [["Year", ...comparisonAreas]];
+        if (!compYear1 || !compYear2) {
+            return [["Development Area", "Year 1", "Year 2"]];
+        }
 
-        const start = new Date(compStart);
-        const end = new Date(compEnd);
-        end.setHours(23, 59, 59, 999);
+        const data = [["Development Area", String(compYear1), String(compYear2)]];
 
-        const years = Array.from(
-            new Set(
-                questions
-                    .map((q) => parseDate(q.submissionDate))
-                    .filter((d) => d && d >= start && d <= end)
-                    .map((d) => d.getFullYear())
-            )
-        ).sort((a, b) => a - b);
+        comparisonAreas.forEach((area) => {
+            const year1Count = events.reduce((sum, event) => {
+                const d = parseDate(event.date);
 
-        const data = [["Year", ...comparisonAreas]];
-        years.forEach((yr) => {
-            const row = [yr];
-            comparisonAreas.forEach((area) => {
-                const total = questions.filter((q) => {
-                    const d = parseDate(q.submissionDate);
+                if (d && d.getFullYear() === Number(compYear1)) {
                     return (
-                        d &&
-                        d.getFullYear() === yr &&
-                        d >= start &&
-                        d <= end &&
-                        (q.developmentArea || "Unknown") === area
+                        sum +
+                        (event.questions || []).filter(
+                            (q) => (q.dArea || "Unknown") === area
+                        ).length
                     );
-                }).length;
-                row.push(total);
-            });
-            data.push(row);
+                }
+
+                return sum;
+            }, 0);
+
+            const year2Count = events.reduce((sum, event) => {
+                const d = parseDate(event.date);
+
+                if (d && d.getFullYear() === Number(compYear2)) {
+                    return (
+                        sum +
+                        (event.questions || []).filter(
+                            (q) => (q.dArea || "Unknown") === area
+                        ).length
+                    );
+                }
+
+                return sum;
+            }, 0);
+
+            // 🔥 IMPORTANT: ensure numbers
+            data.push([
+                area,
+                Number(year1Count) || 0,
+                Number(year2Count) || 0
+            ]);
         });
 
         return data;
-    }, [questions, compStart, compEnd, comparisonAreas]);
+    }, [events, comparisonAreas, compYear1, compYear2]);
+
+
+
+
+
 
     const comparisonColors = useMemo(
         () => comparisonAreas.map((a) => areaColorMap[a] || areaColorMap.Unknown),
         [comparisonAreas]
     );
+
+    const hasComparisonData = useMemo(() => {
+        return comparisonData.length > 1 &&
+            comparisonData.slice(1).some(row => row.slice(1).some(val => val > 0));
+    }, [comparisonData]);
+
+
+
 
     /** -------------------------
      *  MEMBER PARTICIPATION TAB (unchanged)
@@ -272,24 +375,53 @@ export default function Reports() {
         if (!mpYear && minuteYears.length > 0) setMpYear(minuteYears[0]);
     }, [minuteYears, mpYear]);
 
-    const getAbsentList = () => {
-        const filtered = minutes.filter((m) => {
+    const getPresentMembersList = () => {
+        const filteredMinutes = minutes.filter((m) => {
             const d = parseDate(m.meeting_date);
-            return d && d.getFullYear() === Number(mpYear) && d.getMonth() + 1 === Number(mpMonth);
+            return (
+                d &&
+                d.getFullYear() === Number(mpYear) &&
+                d.getMonth() + 1 === Number(mpMonth)
+            );
         });
 
-        const rows = [];
-        filtered.forEach((m) => {
-            if (Array.isArray(m.absent)) {
-                m.absent.forEach((a) => {
-                    if (typeof a === "string") rows.push({ Name: a, Sector: "" });
-                    else if (a && typeof a === "object")
-                        rows.push({ Name: a.name || "", Sector: a.sector || "" });
+        const memberMap = new Map();
+
+        filteredMinutes.forEach((m) => {
+            const presentGroups = [
+                { sector: "Private", members: m.present_private || [] },
+                { sector: "Public", members: m.present_public || [] },
+                { sector: "Association", members: m.present_association || [] },
+                { sector: "Academic", members: m.present_academic || [] },
+            ];
+
+            presentGroups.forEach((group) => {
+                group.members.forEach((name) => {
+                    if (!memberMap.has(name)) {
+                        memberMap.set(name, {
+                            Name: name,
+                            Sector: group.sector,
+                            Meetings: 1,
+                        });
+                    } else {
+                        const existing = memberMap.get(name);
+                        existing.Meetings += 1;
+                        memberMap.set(name, existing);
+                    }
                 });
-            }
+            });
         });
-        return rows;
+
+        return Array.from(memberMap.values());
     };
+
+
+
+
+
+
+
+
 
     /** -------------------------
      *  PAGINATION (Challenges tab table)
@@ -443,7 +575,7 @@ export default function Reports() {
                                         options={{
                                             legend: { position: "none" },
                                             hAxis: { title: "Development Area" },
-                                            vAxis: { title: "Number of questions" },
+                                            vAxis: { title: "Number of challenges" },
                                         }}
                                     />
                                 </AdminCard>
@@ -455,9 +587,9 @@ export default function Reports() {
                                             <Table>
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell><b>Question</b></TableCell>
+                                                        <TableCell><b>Challenge</b></TableCell>
                                                         <TableCell><b>Development Area</b></TableCell>
-                                                        <TableCell><b>Submitted Date</b></TableCell>
+                                                        <TableCell><b>Meeting Date</b></TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -468,7 +600,7 @@ export default function Reports() {
                                                                 <TableCell>{row.question}</TableCell>
                                                                 <TableCell>{row.developmentArea}</TableCell>
                                                                 <TableCell>
-                                                                    {row.submissionDate ? new Date(row.submissionDate).toLocaleDateString() : ""}
+                                                                    {row.meetingDate ? new Date(row.meetingDate).toLocaleDateString() : ""}
                                                                 </TableCell>
                                                             </TableRow>
                                                         ))}
@@ -493,13 +625,13 @@ export default function Reports() {
                                                     const rows = filteredChallenges.map((q) => ({
                                                         Question: q.question || "",
                                                         "Development Area": q.developmentArea || "",
-                                                        "Submitted Date": q.submissionDate
-                                                            ? new Date(q.submissionDate).toISOString().slice(0, 10)
+                                                        "Meeting Date": q.meetingDate
+                                                            ? new Date(q.meetingDate).toISOString().slice(0, 10)
                                                             : "",
                                                     }));
                                                     downloadCsv(
                                                         rows,
-                                                        ["Question", "Development Area", "Submitted Date"],
+                                                        ["Question", "Development Area", "Meeting Date"],
                                                         "challenges.csv"
                                                     );
                                                 }}
@@ -543,13 +675,15 @@ export default function Reports() {
                                                     <TableRow>
                                                         <TableCell><b>Name</b></TableCell>
                                                         <TableCell><b>Sector</b></TableCell>
+                                                        <TableCell><b>No of Meetings Participated</b></TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {getAbsentList().map((r, idx) => (
+                                                    {getPresentMembersList().map((r, idx) => (
                                                         <TableRow key={idx} hover>
                                                             <TableCell>{r.Name}</TableCell>
                                                             <TableCell>{r.Sector}</TableCell>
+                                                            <TableCell>{r.Meetings}</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -559,7 +693,7 @@ export default function Reports() {
                                         <div className="mt-2" style={{ display: "flex", justifyContent: "flex-end" }}>
                                             <Button
                                                 size="sm"
-                                                onClick={() => downloadCsv(getAbsentList(), ["Name", "Sector"], "absentees.csv")}
+                                                onClick={() => downloadCsv(getPresentMembersList(), ["Name", "Sector", "Meetings"], "present_members.csv")}
                                             >
                                                 Export
                                             </Button>
@@ -602,7 +736,7 @@ export default function Reports() {
                                                 isStacked: true,
                                                 legend: { position: "top" },
                                                 hAxis: { title: "Month" },
-                                                vAxis: { title: "Number of questions" },
+                                                vAxis: { title: "Number of challenges" },
                                                 colors: trendColors,
                                             }}
                                         />
@@ -616,33 +750,71 @@ export default function Reports() {
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
                                     <div style={{ width: 200 }}>
-                                        <Form.Label>From</Form.Label>
-                                        <Form.Control type="date" value={compStart} onChange={(e) => setCompStart(e.target.value)} />
+                                        <Form.Label>Year 1</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            value={compYear1}
+                                            onChange={(e) => setCompYear1(e.target.value)}
+                                        >
+                                            {challengeYears.length === 0 ? (
+                                                <option value="">No data</option>
+                                            ) : (
+                                                challengeYears.map((y) => (
+                                                    <option key={y} value={y}>{y}</option>
+                                                ))
+                                            )}
+                                        </Form.Control>
                                     </div>
 
                                     <div style={{ width: 200 }}>
-                                        <Form.Label>To</Form.Label>
-                                        <Form.Control type="date" value={compEnd} onChange={(e) => setCompEnd(e.target.value)} />
+                                        <Form.Label>Year 2</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            value={compYear2}
+                                            onChange={(e) => setCompYear2(e.target.value)}
+                                        >
+                                            {challengeYears.length === 0 ? (
+                                                <option value="">No data</option>
+                                            ) : (
+                                                challengeYears.map((y) => (
+                                                    <option key={y} value={y}>{y}</option>
+                                                ))
+                                            )}
+                                        </Form.Control>
                                     </div>
                                 </div>
 
+
+
+
                                 <div className="mt-4">
                                     <AdminCard>
-                                        <Chart
-                                            width="100%"
-                                            height="400px"
-                                            chartType="ColumnChart"
-                                            data={comparisonData}
-                                            options={{
-                                                isStacked: true,
-                                                legend: { position: "top" },
-                                                hAxis: { title: "Year" },
-                                                vAxis: { title: "Number of questions" },
-                                                colors: comparisonColors,
-                                            }}
-                                        />
+                                        {!compYear1 || !compYear2 ? (
+                                            <div style={{ textAlign: "center", padding: "40px" }}>
+                                                <p>Please select both years to view comparison</p>
+                                            </div>
+                                        ) : !hasComparisonData ? (
+                                            <div style={{ textAlign: "center", padding: "40px" }}>
+                                                <p>No challenges found for the selected years</p>
+                                            </div>
+                                        ) : (
+                                            <Chart
+                                                width="100%"
+                                                height="400px"
+                                                chartType="ColumnChart"
+                                                data={comparisonData}
+                                                options={{
+                                                    legend: { position: "top" },
+                                                    hAxis: { title: "Development Area" },
+                                                    vAxis: { title: "Number of challenges" },
+                                                }}
+                                            />
+                                        )}
                                     </AdminCard>
                                 </div>
+
+
+
                             </div>
                         )}
 

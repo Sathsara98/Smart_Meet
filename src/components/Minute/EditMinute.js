@@ -896,7 +896,7 @@ const EditMinute1 = forwardRef((props, ref) => {
           <Button
             variant=""
             onClick={() => props.bclick()}
-            className="btn btn-ternitary view-in-web"
+            className="btn btn-ternitary view-in-web ml-3"
             disabled={!isRatingCompleted}
           >
             Print
