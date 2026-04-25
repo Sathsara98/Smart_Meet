@@ -498,7 +498,7 @@ export default function Reports() {
                                     <div className="mt-2" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                                         {challengeMode === "month" ? (
                                             <>
-                                                <div style={{ width: 200 }}>
+                                                <div style={{ width: 200 }} className="width-100">
                                                     <Form.Label>Year</Form.Label>
                                                     <Form.Control
                                                         as="select"
@@ -518,7 +518,7 @@ export default function Reports() {
                                                     </Form.Control>
                                                 </div>
 
-                                                <div style={{ width: 200 }}>
+                                                <div style={{ width: 200 }} className="width-100">
                                                     <Form.Label>Month</Form.Label>
                                                     <Form.Control
                                                         as="select"
@@ -536,7 +536,7 @@ export default function Reports() {
                                             </>
                                         ) : (
                                             <>
-                                                <div style={{ width: 200 }}>
+                                                <div style={{ width: 200 }} className="width-100">
                                                     <Form.Label>From</Form.Label>
                                                     <Form.Control
                                                         type="date"
@@ -548,7 +548,7 @@ export default function Reports() {
                                                     />
                                                 </div>
 
-                                                <div style={{ width: 200 }}>
+                                                <div style={{ width: 200 }} className="width-100">
                                                     <Form.Label>To</Form.Label>
                                                     <Form.Control
                                                         type="date"
@@ -648,7 +648,7 @@ export default function Reports() {
                         {tabIndex === 1 && (
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
-                                    <div style={{ width: 200 }}>
+                                    <div style={{ width: 200 }} className="width-100">
                                         <Form.Label>Year</Form.Label>
                                         <Form.Control as="select" value={mpYear} onChange={(e) => setMpYear(e.target.value)}>
                                             {minuteYears.map((y) => (
@@ -657,7 +657,7 @@ export default function Reports() {
                                         </Form.Control>
                                     </div>
 
-                                    <div style={{ width: 200 }}>
+                                    <div style={{ width: 200 }} className="width-100">
                                         <Form.Label>Month</Form.Label>
                                         <Form.Control as="select" value={mpMonth} onChange={(e) => setMpMonth(e.target.value)}>
                                             {[...Array(12)].map((_, i) => (
@@ -707,7 +707,7 @@ export default function Reports() {
                         {tabIndex === 2 && (
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
-                                    <div style={{ width: 260 }}>
+                                    <div style={{ width: 260 }} className="width-100">
                                         <Form.Label>Year</Form.Label>
                                         <Form.Control
                                             as="select"
@@ -749,7 +749,7 @@ export default function Reports() {
                         {tabIndex === 3 && (
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
-                                    <div style={{ width: 200 }}>
+                                    <div style={{ width: 200 }} className="width-100">
                                         <Form.Label>Year 1</Form.Label>
                                         <Form.Control
                                             as="select"
@@ -766,7 +766,7 @@ export default function Reports() {
                                         </Form.Control>
                                     </div>
 
-                                    <div style={{ width: 200 }}>
+                                    <div style={{ width: 200 }} className="width-100">
                                         <Form.Label>Year 2</Form.Label>
                                         <Form.Control
                                             as="select"

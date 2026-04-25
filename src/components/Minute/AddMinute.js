@@ -884,7 +884,7 @@ function AddMinute(props) {
               <div className="mt-5">
                 <span className="mt-5">
                   <span>
-                    <b>
+                    <b className="sign-line">
                       ....................................................................
                     </b>
                   </span>
@@ -895,7 +895,7 @@ function AddMinute(props) {
               <div className="mt-5">
                 <span className="mt-5">
                   <span>
-                    <b>
+                    <b className="sign-line">
                       ....................................................................
                     </b>
                   </span>

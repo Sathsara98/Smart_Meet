@@ -34,7 +34,7 @@ const Section1 = () => {
   } else {
     return (
       <>
-        <div class="container" >
+        <div class="container landing-container" >
 
 
           <div class="text-section">

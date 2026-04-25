@@ -17,9 +17,9 @@ function SideBar(props) {
   return (
     <>
       {/* Hamburger Icon (visible only on mobile) */}
-      <div className="menu-toggle" onClick={toggleSidebar}>
+      {/* <div className="menu-toggle" onClick={toggleSidebar}>
         <i className="fa fa-bars"></i>
-      </div>
+      </div> */}
 
       {/* Sidebar */}
       <div className={`sidebar ${isOpen ? "active" : ""}`} data="custom">

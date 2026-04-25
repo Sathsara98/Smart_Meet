@@ -849,7 +849,7 @@ const EditMinute1 = forwardRef((props, ref) => {
           <div className="mt-5 view-in-print ">
             <span className="mt-5  ">
               <span>
-                <b>
+                <b className="sign-line">
                   ....................................................................
                 </b>
               </span>
@@ -862,7 +862,7 @@ const EditMinute1 = forwardRef((props, ref) => {
           <div className="mt-5 view-in-print">
             <span className="mt-5">
               <span>
-                <b>
+                <b className="sign-line">
                   ....................................................................
                 </b>
               </span>

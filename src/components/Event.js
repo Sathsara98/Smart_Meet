@@ -29,7 +29,7 @@ function Event(props) {
   }, [])
 
   return (
-    <Card
+    <Card className="card-event"
       style={{
         marginTop: "2%",
         borderRadius: "15px",

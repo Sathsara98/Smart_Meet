@@ -115,7 +115,7 @@ const ManageMembers = () => {
               </div>
             </div>
 
-            <Row className="d-flex justify-space-end mt-4">
+            <Row className="d-flex justify-space-end mt-4 sector-cards">
               <Col sm>
                 <MemberCard type="public" text="Public Sector" />
               </Col>

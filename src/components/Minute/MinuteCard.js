@@ -11,7 +11,7 @@ import {
 import "./Minute.css";
 function MinuteCard(props) {
   return (
-    <Card
+    <Card className="card-minutes"
       style={{
         margin: "2% 10px 0%",
         borderRadius: "15px",

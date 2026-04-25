@@ -352,7 +352,7 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8 pr-0">
+              <div className="col-lg-8 pr-0 user-detail-wrapper">
                 <div className="card">
                   <form onSubmit={handleSubmit(onSubmit)} className="profile-form">
                     <div className="card-body p-0">

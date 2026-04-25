@@ -21119,3 +21119,112 @@ Copyright (c) 2015 Daniel Eden
   height: calc(90vh - 5rem);
   overflow-y: auto;
 } */
+
+@media (max-width:768px) {
+  .landing-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+  }
+
+  .landing-container .text-section {
+    padding-left: 0px;
+  }
+
+  .landing-container .image-section {
+    padding: 0px;
+  }
+
+  .container-login .login-image-section {
+    display: none;
+  }
+
+  .dev-cards-wrapper .col-md-2 {
+    padding: 5px 0px;
+  }
+
+  .content .content-card-wrapper {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+
+  .form-challenge .col-md-3,
+  .form-challenge .col-md-6 {
+    padding: 0px;
+  }
+
+  .footer {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 20px !important;
+  }
+
+  .modal-body {
+    padding: 0px;
+  }
+
+  .modal-body .content {
+    padding: 0px;
+  }
+
+  .modal-body .content .form-row {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    flex-direction: column;
+  }
+
+  div#footer-modal-addMember {
+    display: flex;
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  div#footer-modal-addMember button {
+    margin: 0 !important;
+  }
+
+  .sector-cards {
+    gap: 20px;
+  }
+
+  .filter-section {
+    margin: 0 !important;
+    margin-bottom: 20px !important;
+    flex-direction: column;
+  }
+
+  .width-100 {
+    width: 100% !important;
+  }
+
+  .user-detail-wrapper {
+    padding: 0px !important;
+  }
+
+  .profile-form .row .col-sm-3,
+  .profile-form .row h6,
+  .profile-form .row .col-sm-9,
+  .profile-form .row .col-sm-12 {
+    padding: 0 !important;
+  }
+
+  .timetable {
+    min-block-size: -webkit-fill-available;
+    overflow-x: auto;
+  }
+
+  .card-minutes,
+  .card-event {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+
+  .card-event:nth-child(1) {
+    padding-top: 20px;
+  }
+
+  .sign-line {
+    display: block;
+    text-align: center;
+  }
+}
