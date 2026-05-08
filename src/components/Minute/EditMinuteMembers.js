@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactChipInput from "react-chip-input";
+import { Typeahead } from "react-bootstrap-typeahead";
 import {
   Container,
   Form,
@@ -17,7 +18,9 @@ import * as yup from "yup";
 import ReactStars from "react-rating-stars-component";
 import Auth from "../../authentication/Auth";
 import "./Minute.css";
-function EditMinuteMembers() {
+import "react-bootstrap-typeahead/css/Typeahead.css";
+
+function EditMinuteMembers(props) {
   var curr = new Date();
   var date = curr
     .toLocaleString("fr-CA", { timeZone: "Asia/Colombo" })
@@ -75,44 +78,56 @@ function EditMinuteMembers() {
   });
 
   useEffect(() => {
-    loadLatestMinute();
-    return () => { };
-  }, []);
-  const loadLatestMinute = async () => {
+    if (props.minute) {
+      loadSelectedMinute(props.minute);
+    }
+  }, [props.minute]);
+
+
+  const loadSelectedMinute = async (selectedMinute) => {
     setLoading(true);
+
+
     try {
-      const minute = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/newest-minute/`)
-        .then((response) => response.json());
+      setMinute(selectedMinute);
+      setMeetingName(selectedMinute.meeting_name);
+      setMeetingDate(selectedMinute.meeting_date);
+      setMeetingTime(selectedMinute.meeting_time);
+      setMeetingVenue(selectedMinute.meeting_venue);
+      setPrivatechips(selectedMinute.present_private || []);
+      setPublicchips(selectedMinute.present_public || []);
+      setAcademicchips(selectedMinute.present_academic || []);
+      setAssociationchips(selectedMinute.present_association || []);
+      setExcusedchips(selectedMinute.excused || []);
+      setAbsentchips(selectedMinute.absent || []);
+      setMeetingApproval(selectedMinute.meeting_approval_from);
+      setMeetingMotion(selectedMinute.meeting_motion);
+      setMeetingMotionby(selectedMinute.meeting_motionBy);
+      setMeetingProposedBy(selectedMinute.meeting_proposedBy);
+      setMeetingSecondedBy(selectedMinute.meeting_secondedBy);
+      setMeetingObjective(selectedMinute.meeting_objective);
+      setTableData(selectedMinute.meeting_activities || []);
+      setMeetingRemarks(selectedMinute.meeting_remarks);
+      setTableDataEach(selectedMinute.meeting_activities_each || []);
 
-      setMinute(minute);
-      setMeetingName(minute.meeting_name);
-      setMeetingDate(minute.meeting_date);
-      setMeetingTime(minute.meeting_time);
-      setMeetingVenue(minute.meeting_venue);
-      setPrivatechips(minute.present_private);
-      setPublicchips(minute.present_public);
-      setAcademicchips(minute.present_academic);
-      setAssociationchips(minute.present_association);
-      setExcusedchips(minute.excused);
-      setAbsentchips(minute.absent);
-      setMeetingApproval(minute.meeting_approval_from);
-      setMeetingMotion(minute.meeting_motion);
-      setMeetingMotionby(minute.meeting_motionBy);
-      setMeetingProposedBy(minute.meeting_proposedBy);
-      setMeetingSecondedBy(minute.meeting_secondedBy);
-      setMeetingObjective(minute.meeting_objective);
-      setTableData(minute.meeting_activities);
-      setMeetingRemarks(minute.meeting_remarks);
-      setTableDataEach(minute.meeting_activities_each);
 
-      ratedBefore(minute.meeting_activities_each, minute.meeting_activities);
-      fetchSingleUser(minute);
+      ratedBefore(
+        selectedMinute.meeting_activities_each || [],
+        selectedMinute.meeting_activities || []
+      );
+
+
+      fetchSingleUser(selectedMinute);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+
+
+
 
   console.log("USER ID:", userID);
   console.log("USER NAME:", userName);
@@ -241,7 +256,9 @@ function EditMinuteMembers() {
         setError("");
         setShow(true);
         alert("Updated");
-        loadLatestMinute();
+        props.close();
+        props.load();
+        loadSelectedMinute(props.minute);
       }
     } catch (e) {
       console.log(e);
@@ -334,7 +351,7 @@ function EditMinuteMembers() {
                     style={{ backgroundColor: "#ffffff" }}
                     readOnly
                     name="time"
-                    type="time"
+                    type="text"
                     value={minute.meeting_time}
                     onBlur={handleBlur}
                     isInvalid={!!errors.time}
@@ -390,13 +407,20 @@ function EditMinuteMembers() {
                     </Form.Label>
                   </div>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
                   disabled
                   readOnly
                   className="m-0 p-0"
                   onSubmit={chipSubmit}
                   onRemove={chipRemove}
                   chips={private_chips}
+                /> */}
+                <Typeahead
+                  className="m-0 p-0"
+                  disabled
+                  multiple
+                  options={private_chips}
+                  selected={private_chips}
                 />
               </div>
               <div>
@@ -409,11 +433,18 @@ function EditMinuteMembers() {
                     <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
                   </div>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
                   className="m-0 p-0"
                   onSubmit={chipSubmit}
                   onRemove={chipRemove}
                   chips={public_chips}
+                /> */}
+                <Typeahead
+                  className="m-0 p-0"
+                  disabled
+                  multiple
+                  options={public_chips}
+                  selected={public_chips}
                 />
               </div>
               <div>
@@ -424,11 +455,18 @@ function EditMinuteMembers() {
                     <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
                   </div>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
+                    className="m-0 p-0"
+                    onSubmit={chipSubmit}
+                    onRemove={chipRemove}
+                    chips={academic_chips}
+                  /> */}
+                <Typeahead
                   className="m-0 p-0"
-                  onSubmit={chipSubmit}
-                  onRemove={chipRemove}
-                  chips={academic_chips}
+                  disabled
+                  multiple
+                  options={academic_chips}
+                  selected={academic_chips}
                 />
               </div>
               <div>
@@ -439,11 +477,18 @@ function EditMinuteMembers() {
                     <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
                   </div>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
                   className="m-0 p-0"
                   onSubmit={chipSubmit}
                   onRemove={chipRemove}
                   chips={association_chips}
+                /> */}
+                <Typeahead
+                  className="m-0 p-0"
+                  disabled
+                  multiple
+                  options={association_chips}
+                  selected={association_chips}
                 />
               </div>
               <div>
@@ -455,11 +500,18 @@ function EditMinuteMembers() {
                     <strong>Excused</strong>
                   </h4>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
                   className="m-0 p-0"
                   onSubmit={chipSubmit}
                   onRemove={chipRemove}
                   chips={excused_chips}
+                /> */}
+                <Typeahead
+                  className="m-0 p-0"
+                  disabled
+                  multiple
+                  options={excused_chips}
+                  selected={excused_chips}
                 />
               </div>
               <div>
@@ -471,11 +523,18 @@ function EditMinuteMembers() {
                     <strong>Absent</strong>
                   </h4>
                 </div>
-                <ReactChipInput
+                {/* <ReactChipInput
                   className="m-0 p-0"
                   onSubmit={chipSubmit}
                   onRemove={chipRemove}
                   chips={absent_chips}
+                /> */}
+                <Typeahead
+                  className="m-0 p-0"
+                  disabled
+                  multiple
+                  options={absent_chips}
+                  selected={absent_chips}
                 />
               </div>
 
@@ -631,7 +690,7 @@ function EditMinuteMembers() {
                     <th>Responsibility</th>
                     <th
                       style={{
-                        width: 90,
+                        width: 100,
                       }}
                     >
                       Rating

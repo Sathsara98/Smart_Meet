@@ -30,6 +30,8 @@ function Index() {
   const [userd, setUserId] = useState(Auth.getUserId());
   const [userRole, setUserRole] = useState(Auth.getUserLevel());
 
+  const [loggedUser, setLoggedUser] = useState(null);
+
   const [selectedMeeting, setSelectedMeeting] = useState(null);
 
   const handleClose = () => setShow(false);
@@ -50,7 +52,28 @@ function Index() {
 
   useEffect(() => {
     loadMinutes();
+    loadLoggedUser();
   }, []);
+
+  const loadLoggedUser = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: Auth.getUserId(),
+        }),
+      });
+
+
+      const data = await res.json();
+      setLoggedUser(data[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   const loadMinutes = async () => {
     const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minutes/`)
@@ -72,16 +95,62 @@ function Index() {
   console.log(minuteList[minuteList.length - 1]);
   const Minute = () => {
     if (userRole == "Committee Member") {
+      const participatedMinutes = minuteList
+        .filter((minute) => {
+          if (!loggedUser) return false;
+
+
+          if (loggedUser.sector === "Private") {
+            return minute.present_private?.includes(loggedUser.name);
+          }
+
+
+          if (loggedUser.sector === "Public") {
+            return minute.present_public?.includes(loggedUser.name);
+          }
+
+
+          if (loggedUser.sector === "Academic") {
+            return minute.present_academic?.includes(loggedUser.name);
+          }
+
+
+          if (loggedUser.sector === "Association") {
+            return minute.present_association?.includes(loggedUser.name);
+          }
+
+
+          return false;
+        })
+        .sort((a, b) => new Date(b.meeting_date) - new Date(a.meeting_date));
+
+
       return (
         <>
-          {minuteList != null ? (
-            <EditMinuteMembers minute1={minuteList[minuteList.length - 1]} />
-          ) : (
-            <div></div>
-          )}
+          <Row>
+            {participatedMinutes.length > 0 ? (
+              participatedMinutes.map((minute, index) => (
+                <MinuteCard
+                  key={index}
+                  minute={minute}
+                  more={showDetails}
+                  isLatest={index == 0}
+                />
+              ))
+            ) : (
+              <h4 className="text-center w-100">
+                No participated meeting minutes available
+              </h4>
+            )}
+          </Row>
         </>
       );
-    } else if (
+    }
+
+
+
+
+    else if (
       userRole == "Committee Secretary" ||
       userRole == "Administrator"
     ) {
@@ -197,11 +266,19 @@ function Index() {
               </h2>
             </Modal.Header>
             <Modal.Body>
-              <EditMinute
-                close={handleClose2}
-                minute={minute}
-                load={loadMinutes}
-              />
+              {userRole === "Committee Member" ? (
+                <EditMinuteMembers
+                  close={handleClose2}
+                  minute={minute}
+                  load={loadMinutes}
+                />
+              ) : (
+                <EditMinute
+                  close={handleClose2}
+                  minute={minute}
+                  load={loadMinutes}
+                />
+              )}
             </Modal.Body>
             {/* <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>

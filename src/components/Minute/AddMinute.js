@@ -64,6 +64,7 @@ function AddMinute(props) {
   const [activityIndexToDelete, setActivityIndexToDelete] = useState(null);
   const [hoverNo, setHoverNo] = useState(false);
   const [hoverYes, setHoverYes] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // curr.setDate(curr.getDate());
   useEffect(() => {
@@ -103,6 +104,11 @@ function AddMinute(props) {
 
   //Table row management
   const addRow = () => {
+    //validate inputs before adding
+    if (!row_activity || !row_action || !row_responsibility) {
+      alert("Please fill in all fields before adding a new row.");
+      return;
+    }
     const newRow = {
       activity: row_activity,
       action: row_action,
@@ -252,6 +258,14 @@ function AddMinute(props) {
   const [meetings, setMeetings] = useState([]);
   const [selectedMeetingId, setSelectedMeetingId] = useState("");
 
+  const canSubmit =
+    !!selectedMeetingId &&
+    !!meeting_name.trim() &&
+    !!meeting_date &&
+    !!meeting_time.trim() &&
+    !!meeting_venue.trim() &&
+    tableData.length > 0;
+
   const totalParticipants =
     private_chips.length +
     public_chips.length +
@@ -261,10 +275,28 @@ function AddMinute(props) {
 
   const addMinute = async (event) => {
     event.preventDefault();
+    setShow(false);
+    setError("");
     if (!selectedMeetingId) {
-      alert("Please select a meeting.");
+      setError("Please select a meeting");
+      setShow(true);
       return;
     }
+
+    if (tableData.length === 0) {
+      setError("Please add at least one activity");
+      setShow(true);
+      return;
+    }
+
+    if (!meeting_name.trim() || !meeting_date || !meeting_time.trim() || !meeting_venue.trim()) {
+      setError("Meeting name, date, time and venue are required");
+      setShow(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     console.log("event");
     try {
       const requestOptions = {
@@ -302,21 +334,29 @@ function AddMinute(props) {
         requestOptions
       );
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
-
-      console.log(data);
-      if (data.hasOwnProperty("error")) {
-        setError(data.error);
-        setShow(true);
-      } else {
-        setError("");
-        setShow(true);
-        props.close();
-        props.load();
+      if (!res.ok) {
+        const message =
+          data?.error?.message ||
+          data?.message ||
+          `Request failed with status ${res.status}`;
+        throw new Error(message);
       }
+
+      if (data?.error) {
+        throw new Error(data.error.message || JSON.stringify(data.error));
+      }
+
+      setError("");
+      setShow(false);
+      props.close();
+      props.load();
     } catch (e) {
-      console.log(e);
+      setError(e.message || "Unable to submit. Please try again.");
+      setShow(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -749,6 +789,11 @@ function AddMinute(props) {
                 variant=""
                 type="submit"
                 onClick={() => addRow()}
+                disabled={
+                  !row_activity.trim() ||
+                  !row_action.trim() ||
+                  !row_responsibility.trim()
+                }
                 className="btn  btn-primary"
               >
                 <i class="fa fa-plus" aria-hidden="true"></i>
@@ -848,10 +893,10 @@ function AddMinute(props) {
 
                       <td>
                         <Button
-                          className="btnPrimary  m-1 p-1"
+                          className=""
                           onClick={() => handleDeleteClick(index)}
                         >
-                          x
+                          <i class="fa fa-trash" aria-hidden="true"></i>
                         </Button>
                       </td>
                     </tr>

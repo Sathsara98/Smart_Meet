@@ -69,8 +69,9 @@ const ManageMembers = () => {
     <div className="wrapper">
       <SideBar members={true} addmembers={true} />
       <div className="main-panel">
+        <NavbarDashboard title="Committee Management" subtitle="View, organize, and manage your committees efficiently" />
         <div className="content">
-          <NavbarDashboard title="Committee Management" subtitle="View, organize, and manage your committees efficiently" />
+
           <Modal
             show={show}
             size="lg"

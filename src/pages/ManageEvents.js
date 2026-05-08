@@ -106,8 +106,9 @@ const ManageEvents = () => {
     <div className="wrapper">
       <SideBar events={true} />
       <div className="main-panel">
+        <NavbarDashboard title="Meetings" subtitle="View All Scheduled Meetings" />
         <div className="content">
-          <NavbarDashboard title="Meetings" subtitle="View All Scheduled Meetings" />
+
           <Modal
             show={show}
             size="lg"

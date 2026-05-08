@@ -72,3 +72,31 @@ h4.separator_minute {
         box-shadow: none !important;
     }
 }
+
+.latest-glow-btn {
+    animation: glowPulse 1.5s infinite;
+    box-shadow: 0 0 8px rgba(0, 150, 200, 0.8);
+}
+
+
+@keyframes glowPulse {
+    0% {
+        box-shadow: 0 0 6px rgba(0, 150, 200, 0.6);
+    }
+
+
+    50% {
+        box-shadow: 0 0 18px rgba(0, 150, 200, 1);
+        transform: scale(1.03);
+    }
+
+
+    100% {
+        box-shadow: 0 0 6px rgba(0, 150, 200, 0.6);
+    }
+}
+
+.btn:disabled {
+    background-color: #c1c1c1;
+    border-color: #b0b0b0;
+}

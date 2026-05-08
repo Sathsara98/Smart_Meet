@@ -729,17 +729,17 @@ const EditMinute1 = forwardRef((props, ref) => {
               <th
                 className="text-black "
                 style={{
-                  width: 90,
+                  width: 100,
                 }}
               >
                 Rating
               </th>
-              <th
+              {/* <th
                 className="view-in-web"
                 style={{
                   width: 20,
                 }}
-              ></th>
+              ></th> */}
             </tr>
           </thead>
           <tbody>

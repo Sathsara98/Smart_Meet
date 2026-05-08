@@ -81,7 +81,8 @@ function MinuteCard(props) {
             </div>
             <div className="col-md-2 minute-view-btn">
 
-              <Button className="btn  btn-primary float-right"
+              <Button
+                className={`btn btn-primary float-right ${props.isLatest ? "latest-glow-btn" : ""}`}
                 onClick={() => {
                   if (!props.minute.isFinalized) {
                     props.more(props.minute);
@@ -92,6 +93,8 @@ function MinuteCard(props) {
               >
                 View
               </Button>
+
+
             </div>
           </div>
         </Card.Body>
