@@ -332,7 +332,7 @@ function Index() {
           randd++;
         } else if (element.dArea == "Technology") {
           technology++;
-        } else if (element.dArea == "Work force") {
+        } else if (element.dArea == "Work force" || element.dArea == "Workforce") {
           workforce++;
         } else if (element.dArea == "Productivity") {
           productivity++;
@@ -413,13 +413,27 @@ function Index() {
           <div className="content">
             {/* <BreadCrum path={pathToPage} /> */}
             <Row className="mb-4 dev-cards-wrapper">
-              {["Policy", "R&D", "Technology", "Workforce", "Productivity", "Marketing"].map((area) => {
-                const count = questions.filter((q) => q.dArea === area).length;
+              {[
+                { name: "Policy", color: "#f3c612" },
+                { name: "R&D", color: "#0D97B9" },
+                { name: "Technology", color: "#9c9b9b" },
+                { name: "Workforce", color: "#7FD858" },
+                { name: "Productivity", color: "#CB6CE6" },
+                { name: "Marketing", color: "#54DDFE" },
+              ].map((area) => {
+
+                const count = questions.filter((q) => q.dArea === area.name).length;
+                const isMaxArea = questions.length > 0 && area.name === maxArea;
                 return (
                   <Col key={area} md={2}>
-                    <div className="p-3 text-center border rounded dev-card">
+                    <div
+                      className={`p-3 text-center rounded dev-card ${isMaxArea ? "dev-card-active" : ""
+                        }`}
+                      style={{ border: isMaxArea ? `1px solid ${area.color}` : "0.0625rem solid #e9ecef " }}
+                    >
+
                       <h3 className="m-0">{count}</h3>
-                      <h6 className="m-0">{area}</h6>
+                      <h6 className="m-0">{area.name}</h6>
 
                     </div>
                   </Col>

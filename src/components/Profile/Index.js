@@ -32,12 +32,15 @@ export default function Index() {
     setValue,
     formState: { errors },
   } = useForm({
-    name: "hi",
-    email: "",
-    phone: "",
-    sector: "",
-    workplace: "",
-    password: "",
+    defaultValues: {
+      name: "hi",
+      nic: "",
+      email: "",
+      phone: "",
+      sector: "",
+      workplace: "",
+      password: "",
+    },
   });
   const workPlaces = {
     public: [
@@ -146,6 +149,7 @@ export default function Index() {
 
         setPreFileShow(response.userImage);
         setValue("name", response.name);
+        setValue("nic", response.nic);
         setValue("email", response.email);
         setValue("phone", response.tel);
         setValue("sector", response.sector);
@@ -208,6 +212,8 @@ export default function Index() {
         body: JSON.stringify({
           id: Auth.getUserId(),
           name: data.name,
+          nic: data.nic.toUpperCase().trim(),
+          nic: data.nic.toUpperCase().trim(),
           email: data.email,
           tel: data.phone,
           sector: data.sector,
@@ -377,6 +383,40 @@ export default function Index() {
                       </div>
                       <div className="row mb-3">
                         <div className="col-sm-3">
+                          <h6 className="mb-0">NIC</h6>
+                        </div>
+
+
+                        <div className="col-sm-9 text-secondary">
+                          <input
+                            style={{
+                              backgroundColor: "transparent",
+                              color: "#37474F",
+                            }}
+                            type="text"
+                            className={`form-control ${errors.nic ? "is-invalid" : ""}`}
+                            disabled={!isEdit}
+                            {...register("nic", {
+                              required: "NIC is required",
+                              pattern: {
+                                value: /^([0-9]{9}[vVxX]|[0-9]{12})$/,
+                                message: "Enter valid NIC. Example: 123456789V or 200012345678",
+                              },
+                            })}
+                          />
+
+
+                          {errors.nic && (
+                            <div className="invalid-feedback">
+                              {errors.nic.message}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+
+                      <div className="row mb-3">
+                        <div className="col-sm-3">
                           <h6 className="mb-0">Email</h6>
                         </div>
                         <div className="col-sm-9 text-secondary">
@@ -389,9 +429,20 @@ export default function Index() {
                             className="form-control"
                             disabled={!isEdit}
                             {...register("email", {
-                              required: true,
+                              required: "Email is required",
+                              pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "Enter a valid email address",
+                              },
                             })}
+
                           />
+                          {errors.email && (
+                            <div className="invalid-feedback d-block">
+                              {errors.email.message}
+                            </div>
+                          )}
+
                         </div>
                       </div>
                       <div className="row mb-3">
@@ -408,9 +459,20 @@ export default function Index() {
                             className="form-control"
                             disabled={!isEdit}
                             {...register("phone", {
-                              required: true,
+                              required: "Phone number is required",
+                              pattern: {
+                                value: /^[0-9]{10}$/,
+                                message: "Phone number must have 10 digits",
+                              },
                             })}
+
                           />
+                          {errors.phone && (
+                            <div className="invalid-feedback d-block">
+                              {errors.phone.message}
+                            </div>
+                          )}
+
                         </div>
                       </div>
 

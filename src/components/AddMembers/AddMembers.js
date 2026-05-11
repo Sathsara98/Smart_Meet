@@ -62,6 +62,13 @@ const AddMembers = (props) => {
 
   const schema = yup.object({
     name: yup.string().required("Name is required!"),
+    nic: yup
+      .string()
+      .matches(
+        /^(?:\d{9}[VvXx]|\d{12})$/,
+        "NIC must be valid. Ex: 123456789V or 200012345678"
+      )
+      .required("NIC is required!"),
     email: yup
       .string()
       .email("Invalid Email : Ex example@example.com")
@@ -96,6 +103,7 @@ const AddMembers = (props) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           utype: event.role,
+          nic: event.nic.toUpperCase().trim(),
           name: event.name,
           email: event.email.toLowerCase(),
           tel: event.tel,
@@ -143,6 +151,7 @@ const AddMembers = (props) => {
         onSubmit={registerMember}
         initialValues={{
           name: "",
+          nic: "",
           email: "",
         }}
       >
@@ -157,7 +166,7 @@ const AddMembers = (props) => {
         }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Form.Row>
-              <Form.Group as={Col} controlId="formGridEmail">
+              <Form.Group as={Col} controlId="formGridName">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   required
@@ -171,12 +180,37 @@ const AddMembers = (props) => {
                   isInvalid={!!errors.name}
                 />
 
+
                 <Form.Control.Feedback type="invalid">
-                  {errors.name};
+                  {errors.name}
                 </Form.Control.Feedback>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridPassword">
+
+              <Form.Group as={Col} controlId="formGridNIC">
+                <Form.Label>NIC</Form.Label>
+                <Form.Control
+                  required
+                  name="nic"
+                  type="text"
+                  placeholder="NIC"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.nic}
+                  isValid={touched.nic && !errors.nic}
+                  isInvalid={!!errors.nic}
+                />
+
+
+                <Form.Control.Feedback type="invalid">
+                  {errors.nic}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
+
+
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   required
@@ -185,17 +219,19 @@ const AddMembers = (props) => {
                   placeholder="Email"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  value={values.email}
                   isInvalid={!!errors.email}
                   isValid={touched.email && !errors.email}
                 />
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.email}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Form.Row>
 
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridEmail">
+
+              <Form.Group as={Col} controlId="formGridTel">
                 <Form.Label>Telephone Number</Form.Label>
                 <Form.Control
                   type="tel"
@@ -203,15 +239,21 @@ const AddMembers = (props) => {
                   placeholder="Telephone Number"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  value={values.tel}
                   isInvalid={!!errors.tel}
                   isValid={touched.tel && !errors.tel}
                 />
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.tel}
                 </Form.Control.Feedback>
               </Form.Group>
+            </Form.Row>
 
-              <Form.Group as={Col} controlId="formGridPassword">
+
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridSector">
                 <Form.Label>Sector</Form.Label>
                 <Form.Control
                   as="select"
@@ -221,6 +263,7 @@ const AddMembers = (props) => {
                     handleChangeWork(e);
                   }}
                   onBlur={handleBlur}
+                  value={values.sector}
                   isInvalid={!!errors.sector}
                   isValid={touched.sector && !errors.sector}
                 >
@@ -230,14 +273,15 @@ const AddMembers = (props) => {
                   <option>Academic</option>
                   <option>Association</option>
                 </Form.Control>
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.sector}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Form.Row>
 
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridAddress1">
+
+              <Form.Group as={Col} controlId="formGridWorkplace">
                 <Form.Label>Workplace</Form.Label>
                 <Form.Control
                   as="select"
@@ -245,24 +289,31 @@ const AddMembers = (props) => {
                   placeholder="Workplace"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  value={values.workplace}
                   isInvalid={!!errors.workplace}
                   isValid={touched.workplace && !errors.workplace}
                 >
                   <option>Select Office</option>
                   {printWorkplaces}
                 </Form.Control>
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.workplace}
                 </Form.Control.Feedback>
               </Form.Group>
+            </Form.Row>
 
-              <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
+
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridRole">
                 <Form.Label>Member Role</Form.Label>
                 <Form.Control
                   as="select"
                   name="role"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  value={values.role}
                   isInvalid={!!errors.role}
                   isValid={touched.role && !errors.role}
                 >
@@ -271,20 +322,22 @@ const AddMembers = (props) => {
                   <option>Committee Secretary</option>
                   <option>Administrator</option>
                 </Form.Control>
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.role}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Form.Row>
 
-            <Form.Row>
-              <Form.Group as={Col}>
+
+              <Form.Group as={Col} controlId="formGridGender">
                 <Form.Label>Gender</Form.Label>
                 <Form.Control
                   as="select"
                   name="gender"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  value={values.gender}
                   isInvalid={!!errors.gender}
                   isValid={touched.gender && !errors.gender}
                 >
@@ -292,36 +345,34 @@ const AddMembers = (props) => {
                   <option>Male</option>
                   <option>Female</option>
                 </Form.Control>
+
+
                 <Form.Control.Feedback type="invalid">
                   {errors.gender}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Form.Group as={Col}></Form.Group>
             </Form.Row>
-            <Alert show={show} variant={error == "" ? "success" : "danger"}>
+
+
+            <Alert show={show} variant={error === "" ? "success" : "danger"}>
               <Alert.Heading>
-                {error != "" ? (
+                {error !== "" ? (
                   error
                 ) : (
                   <>
-                    Member Registered Successfully !
+                    Member Registered Successfully!
                     <p className="">
-                      Email containing loging details has been Successfully sent
-                      to the Member.
+                      Email containing login details has been successfully sent to the
+                      Member.
                     </p>
                   </>
                 )}
               </Alert.Heading>
 
-              {/* <hr /> */}
-              <div className="d-flex justify-content-end">
-                {error == "" ? (
-                  <Button
-                    onClick={() => setShow(false)}
 
-                    className="btn-Primary"
-                    onClick={props.close}
-                  >
+              <div className="d-flex justify-content-end">
+                {error === "" ? (
+                  <Button onClick={() => setShow(false)} className="btn-Primary" onClick={props.close}>
                     Done
                   </Button>
                 ) : (
@@ -336,23 +387,27 @@ const AddMembers = (props) => {
               </div>
             </Alert>
 
-            <Form.Row
-              id="footer-modal-addMember"
-              className="d-flex justify-content-end"
-            >
 
-              <Button
-
-                onClick={props.close}
-                className="btn-secondary"
+            {!show && (
+              <Form.Row
+                id="footer-modal-addMember"
+                className="d-flex justify-content-end"
               >
-                Cancel
-              </Button>
-              <Button type="submit" className="btn-primary ml-2">
-                Submit
-              </Button>
-            </Form.Row>
+                <Button onClick={props.close} className="btn-secondary">
+                  Cancel
+                </Button>
+
+
+                <Button type="submit" className="btn-primary ml-2">
+                  Submit
+                </Button>
+              </Form.Row>
+            )}
           </Form>
+
+
+
+
         )}
       </Formik>
 

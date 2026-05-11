@@ -6,11 +6,59 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  DialogContentText,
 } from "@material-ui/core";
+
+
+
+
+
+
+
 
 function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
   const [editingId, setEditingId] = useState(null);
   const [formState, setFormState] = useState({ dArea: "", body: "" });
+
+
+
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+
+  const [hoverNo, setHoverNo] = useState(false);
+  const [hoverYes, setHoverYes] = useState(false);
+
+
+  const handleDeleteClick = (id) => {
+    setSelectedDeleteId(id);
+    setDeleteDialogOpen(true);
+  };
+
+
+  const confirmDelete = () => {
+    if (onDelete && selectedDeleteId) {
+      onDelete(selectedDeleteId);
+    }
+
+
+    setDeleteDialogOpen(false);
+    setSelectedDeleteId(null);
+  };
+
+
+  const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setSelectedDeleteId(null);
+  };
+
+
+
 
   const startEdit = (q) => {
     if (readOnly) return; // 🔒 block editing in read-only mode
@@ -18,13 +66,22 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
     setFormState({ dArea: q.dArea, body: q.body });
   };
 
+
+
+
   const cancelEdit = () => {
     setEditingId(null);
     setFormState({ dArea: "", body: "" });
   };
 
+
+
+
   const saveEdit = () => {
     if (!editingId || readOnly) return;
+
+
+
 
     if (onUpdate) {
       onUpdate(editingId, {
@@ -33,12 +90,21 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
       });
     }
 
+
+
+
     cancelEdit();
   };
+
+
+
 
   const handleChange = (field, value) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
+
+
+
 
   return (
     <TableContainer className="mt-4 mb-4 challenge-table">
@@ -57,6 +123,9 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
           </TableRow>
         </TableHead>
 
+
+
+
         <TableBody>
           {questions.length === 0 && (
             <TableRow>
@@ -65,6 +134,9 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
               </TableCell>
             </TableRow>
           )}
+
+
+
 
           {questions.map((q) => (
             <TableRow key={q._id}>
@@ -89,6 +161,9 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
                 )}
               </TableCell>
 
+
+
+
               {/* Challenge body */}
               <TableCell>
                 {editingId === q._id && !readOnly ? (
@@ -102,6 +177,9 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
                   q.body
                 )}
               </TableCell>
+
+
+
 
               {/* Actions */}
               <TableCell className="action-col">
@@ -135,15 +213,25 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
                       >
                         <i className="fa fa-pencil-alt"></i>
 
+
+
+
                       </button>
+
+
+
 
                       <button
                         type="button"
                         className="btn btn-sm btn-del"
-                        onClick={() => onDelete && onDelete(q._id)}
+                        onClick={() => handleDeleteClick(q._id)}
                       >
                         <i className="fa fa-trash" aria-hidden="true" />
                       </button>
+
+
+
+
                     </>
                   )}
                 </div>
@@ -152,8 +240,60 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
           ))}
         </TableBody>
       </Table>
+      <Dialog open={deleteDialogOpen} onClose={cancelDelete}>
+        <DialogTitle id="alert-dialog-title">Delete Challenge</DialogTitle>
+
+
+
+
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this challenge?
+          </DialogContentText>
+        </DialogContent>
+
+
+
+
+        <DialogActions>
+          <Button onClick={cancelDelete} color="default" style={{
+            backgroundColor: hoverNo ? '#57585a' : '#6b6b6b',
+            color: 'white',
+            transition: 'background-color 0.2s ease',
+            cursor: 'pointer',
+            border: 'none'
+          }}
+
+            onMouseEnter={() => setHoverNo(true)}
+            onMouseLeave={() => setHoverNo(false)}
+          >
+            No
+          </Button>
+
+
+
+
+          <Button onClick={confirmDelete} color="secondary" variant="contained" style={{
+            backgroundColor: hoverYes ? '#0a7a96' : '#0D97B9',
+            color: 'white',
+            transition: 'background-color 0.2s ease',
+            cursor: 'pointer',
+            border: 'none'
+          }}>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+
     </TableContainer>
   );
 }
 
+
+
+
 export default ViewQuestions;
+

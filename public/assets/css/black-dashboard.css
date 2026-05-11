@@ -5847,6 +5847,10 @@ a.badge-darker.focus {
   color: #ec250d;
 }
 
+.alert-success .alert-heading {
+  color: #0D97B9 !important;
+}
+
 .alert-link {
   font-weight: 600;
 }

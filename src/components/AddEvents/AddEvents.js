@@ -281,19 +281,30 @@ class AddEvents extends Component {
       (el) => el.sector === "Association" && el.nat && el.nat[slot] === 1
     );
 
+
+    //secretary is mandatory
     const selected = [];
+
 
     selected.push(...privateMembers.slice(0, privateS));
 
-    if (publicSecretaries.length > 0) {
-      selected.push(publicSecretaries[0]);
-      selected.push(...publicOthers.slice(0, Math.max(publicS - 1, 0)));
-    } else {
-      selected.push(...publicOthers.slice(0, publicS));
+
+    // Committee Secretary is mandatory
+    if (publicSecretaries.length === 0) {
+      return [];
     }
+
+
+    selected.push(publicSecretaries[0]);
+    selected.push(...publicOthers.slice(0, Math.max(publicS - 1, 0)));
+
 
     selected.push(...academicMembers.slice(0, academic));
     selected.push(...associationMembers.slice(0, associate));
+
+
+
+
 
     const uniqueMembers = [];
     const seen = new Set();
@@ -480,8 +491,8 @@ class AddEvents extends Component {
     const schema = yup.object({
       name: yup.string().required("Name is required!"),
       date: yup.string().required("Week is required!"),
-      venue: yup.string().required("Venue is required!"),
-      location: yup.string().required("Location is required!"),
+      venue: yup.string().required("Meeting location is required!"),
+      location: yup.string().required("Venue is required!"),
     });
 
     const addNewEvent = async (event) => {
@@ -596,28 +607,11 @@ class AddEvents extends Component {
                   </Form.Group>
                 </Form.Row>
 
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridVenue">
-                    <Form.Label>Venue</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="venue"
-                      placeholder="Enter the venue"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.venue}
-                      isInvalid={!!errors.venue}
-                      isValid={touched.venue && !errors.venue}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.venue}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
+
 
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridLocation">
-                    <Form.Label>Venue Location</Form.Label>
+                    <Form.Label>Venue</Form.Label>
 
                     <Form.Control
                       type="text"
@@ -648,6 +642,42 @@ class AddEvents extends Component {
                       lng={this.state.lng}
                       camera={this.state.camZoom}
                     />
+                  </Form.Group>
+                </Form.Row>
+
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formGridVenue">
+                    <Form.Label>Meeting Location</Form.Label>
+
+
+                    <Form.Control
+                      as="select"
+                      name="venue"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.venue}
+                      isInvalid={!!errors.venue}
+                      isValid={touched.venue && !errors.venue}
+                    >
+                      <option value="">Select meeting location</option>
+                      <option value="Main Building – 1st Floor – Committee Meeting Room">
+                        Main Building – 1st Floor – Committee Meeting Room
+                      </option>
+                      <option value="Industry Development Building – 2nd Floor – Sector Coordination Room">
+                        Industry Development Building – 2nd Floor – Sector Coordination Room
+                      </option>
+                      <option value="Admin Building – 1st Floor – Board Room 01">
+                        Admin Building – 1st Floor – Board Room 01
+                      </option>
+                      <option value="Main Building – Ground Floor – Conference Room A">
+                        Main Building – Ground Floor – Conference Room A
+                      </option>
+                    </Form.Control>
+
+
+                    <Form.Control.Feedback type="invalid">
+                      {errors.venue}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Row>
 

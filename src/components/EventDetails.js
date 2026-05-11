@@ -53,22 +53,10 @@ function EventDetails(props) {
                 </Form.Group>
               </Form.Row>
 
+
               <Form.Row>
                 <Form.Group as={Col} controlId="formGridEmail">
                   <Form.Label>Venue</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="venue"
-                    placeholder="Enter the venue"
-                    value={props.event.venue}
-                    disabled={true}
-                    style={{ backgroundColor: "#ffffff" }}
-                  />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Venue Location</Form.Label>
                   <br />
                   <a
                     className="btn btnPrimary btn-secondary"
@@ -92,6 +80,23 @@ function EventDetails(props) {
                     /> */}
                 </Form.Group>
               </Form.Row>
+
+              <Form.Row>
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Label>Meeting Location</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="venue"
+                    placeholder="Enter the venue"
+                    value={props.event.venue}
+                    disabled={true}
+                    style={{ backgroundColor: "#ffffff" }}
+                  />
+                </Form.Group>
+              </Form.Row>
+
+
+
               <Form.Row>
                 <Form.Group as={Col}>
                   <Form.Label>Time</Form.Label>

@@ -10,7 +10,7 @@ function AddQuestions({ onAdd, disabled }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!area || !challenge.trim()) {
-      setError("Please select an area and enter a challenge!");
+      setError("Please select development area and enter a challenge!");
       return;
     }
     onAdd({ area, challenge });
@@ -28,7 +28,7 @@ function AddQuestions({ onAdd, disabled }) {
       <Row className="">
 
         {/* Development Area */}
-        <Col md={3}>
+        <Col md={3} className="pl-0">
           <Form.Group controlId="formArea" className="dev-area-dropdown">
             <Form.Label>Development Area</Form.Label>
             <Form.Control

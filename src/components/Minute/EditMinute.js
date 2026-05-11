@@ -544,7 +544,7 @@ const EditMinute1 = forwardRef((props, ref) => {
 
         <div className="form-row">
           <div className="form-group col-3">
-            <Form.Label>Approval from</Form.Label>
+            <Form.Label>Approval Date</Form.Label>
           </div>
 
           <div className="form-group col-9">
@@ -575,7 +575,7 @@ const EditMinute1 = forwardRef((props, ref) => {
 
         <div className="form-row">
           <div className="form-group col-3">
-            <Form.Label>Motion by</Form.Label>
+            <Form.Label>Motion By</Form.Label>
           </div>
 
           <div className="form-group col-9">

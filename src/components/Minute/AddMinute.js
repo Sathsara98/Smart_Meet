@@ -27,6 +27,7 @@ import ReactStars from "react-rating-stars-component";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Auth from "../../authentication/Auth";
 import "./Minute.css";
+import { set } from "react-hook-form";
 function AddMinute(props) {
   var curr = new Date();
   var date = curr
@@ -104,25 +105,53 @@ function AddMinute(props) {
 
   //Table row management
   const addRow = () => {
-    //validate inputs before adding
-    if (!row_activity || !row_action || !row_responsibility) {
-      alert("Please fill in all fields before adding a new row.");
+    setShow(false);
+    setError("");
+
+    if (!row_activity.trim()) {
+      setError("Activity is required.");
+      setShow(true);
       return;
     }
+
+    if (!row_action.trim()) {
+      setError("Action taken / action to be taken is required.");
+      setShow(true);
+      return;
+    }
+
+    if (!row_responsibility.trim()) {
+      setError("Responsibility is required.");
+      setShow(true);
+      return;
+    }
+
     const newRow = {
-      activity: row_activity,
-      action: row_action,
-      responsibility: row_responsibility,
+      activity: row_activity.trim(),
+      action: row_action.trim(),
+      responsibility: row_responsibility.trim(),
       rating: 0,
     };
-    tableData.push(newRow);
-    setTableData([...tableData]);
-    console.log(tableData);
+
+    setTableData((prevData) => [...prevData, newRow]);
 
     setRowActivity("");
     setRowAction("");
     setRowResponsibility("");
   };
+
+
+  //filter members based on sector for selected meeting
+  const getMembersBySector = (meeting, sectorName) => {
+    if (!meeting || !Array.isArray(meeting.members)) return [];
+
+    return meeting.members
+      .filter((member) => member.sector === sectorName)
+      .map((member) => member.name);
+  };
+
+
+
   const removeRow = (index) => {
     tableData.splice(index, 1);
     setTableData([...tableData]);
@@ -273,41 +302,66 @@ function AddMinute(props) {
     association_chips.length;
 
 
-  const addMinute = async (event) => {
-    event.preventDefault();
-    setShow(false);
-    setError("");
+  const validateMinuteForm = () => {
     if (!selectedMeetingId) {
-      setError("Please select a meeting");
-      setShow(true);
-      return;
+      return "Please select a meeting date.";
+    }
+
+    if (!meeting_name.trim()) {
+      return "Meeting name is required.";
+    }
+
+    if (!meeting_date) {
+      return "Meeting date is required.";
+    }
+
+    if (!meeting_time.trim()) {
+      return "Meeting time is required.";
+    }
+
+    if (!meeting_venue.trim()) {
+      return "Meeting venue is required.";
+    }
+
+    if (totalParticipants === 0) {
+      return "Please select at least one present participant.";
     }
 
     if (tableData.length === 0) {
-      setError("Please add at least one activity");
-      setShow(true);
-      return;
+      return "Please add at least one activity.";
     }
 
-    if (!meeting_name.trim() || !meeting_date || !meeting_time.trim() || !meeting_venue.trim()) {
-      setError("Meeting name, date, time and venue are required");
+    return "";
+  };
+
+
+
+  const addMinute = async (event) => {
+    event.preventDefault();
+
+    setShow(false);
+    setError("");
+
+    const validationMessage = validateMinuteForm();
+
+    if (validationMessage) {
+      setError(validationMessage);
       setShow(true);
       return;
     }
 
     setIsSubmitting(true);
 
-    console.log("event");
     try {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           meetingId: selectedMeetingId,
-          name: meeting_name,
+          name: meeting_name.trim(),
           date: meeting_date,
-          time: meeting_time,
-          venue: meeting_venue,
+          time: meeting_time.trim(),
+          venue: meeting_venue.trim(),
           private: private_chips,
           public: public_chips,
           academic: academic_chips,
@@ -326,9 +380,10 @@ function AddMinute(props) {
           s_finalized: true,
           total_participants: totalParticipants,
           total_rated_participants: 0,
-          rating_completed: false
+          rating_completed: false,
         }),
       };
+
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/admin/new-minute`,
         requestOptions
@@ -338,27 +393,27 @@ function AddMinute(props) {
 
       if (!res.ok) {
         const message =
-          data?.error?.message ||
           data?.message ||
-          `Request failed with status ${res.status}`;
-        throw new Error(message);
-      }
+          data?.error?.message ||
+          `Something went wrong. Status code: ${res.status}`;
 
-      if (data?.error) {
-        throw new Error(data.error.message || JSON.stringify(data.error));
+        throw new Error(message);
       }
 
       setError("");
       setShow(false);
+
       props.close();
       props.load();
     } catch (e) {
-      setError(e.message || "Unable to submit. Please try again.");
+      setError(e.message || "Unable to submit minute. Please try again.");
       setShow(true);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+
 
   return (
     <div>
@@ -373,6 +428,13 @@ function AddMinute(props) {
           errors,
         }) => (
           <div>
+            {show && error && (
+              <Alert variant="danger" className="mt-2">
+                {error}
+              </Alert>
+            )}
+
+
             <div className="form-row">
               <div className="form-group col-3">
                 <Form.Label>Meeting Date</Form.Label>
@@ -393,11 +455,52 @@ function AddMinute(props) {
                       setMeetingDate(selectedMeeting.date || date);
                       setMeetingTime(selectedMeeting.time || "");
                       setMeetingVenue(selectedMeeting.venue || "");
+
+                      const assignedPrivateMembers = getMembersBySector(selectedMeeting, "Private");
+                      const assignedPublicMembers = getMembersBySector(selectedMeeting, "Public");
+                      const assignedAcademicMembers = getMembersBySector(selectedMeeting, "Academic");
+                      const assignedAssociationMembers = getMembersBySector(selectedMeeting, "Association");
+
+                      setPrivateOptions(assignedPrivateMembers);
+                      setPublicOptions(assignedPublicMembers);
+                      setAcademicOptions(assignedAcademicMembers);
+                      setAssociationOptions(assignedAssociationMembers);
+
+                      setAllOptions([
+                        ...assignedPrivateMembers,
+                        ...assignedPublicMembers,
+                        ...assignedAcademicMembers,
+                        ...assignedAssociationMembers,
+                      ]);
+
+                      setPrivatechips([]);
+                      setPublicchips([]);
+                      setAcademicchips([]);
+                      setAssociationchips([]);
+                      setExcusedchips([]);
+                      setAbsentchips([]);
+
+
+
+
                     } else {
                       setMeetingName("");
                       setMeetingDate(date);
                       setMeetingTime("");
                       setMeetingVenue("");
+
+                      setPrivateOptions([]);
+                      setPublicOptions([]);
+                      setAcademicOptions([]);
+                      setAssociationOptions([]);
+                      setAllOptions([]);
+
+                      setPrivatechips([]);
+                      setPublicchips([]);
+                      setAcademicchips([]);
+                      setAssociationchips([]);
+                      setExcusedchips([]);
+                      setAbsentchips([]);
                     }
                   }}
                 >
@@ -435,7 +538,7 @@ function AddMinute(props) {
                 <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
               </div>
             </div>
-            <div className="form-row">
+            {/* <div className="form-row">
               <div className="form-group col-3">
                 <Form.Label>Date</Form.Label>
               </div>
@@ -455,7 +558,7 @@ function AddMinute(props) {
                   {errors.date && touched.date && errors.date}
                 </Form.Control.Feedback>
               </div>
-            </div>
+            </div> */}
             <div className="form-row">
               <div className="form-group col-3">
                 <Form.Label>Time</Form.Label>
@@ -625,7 +728,7 @@ function AddMinute(props) {
 
             <div className="form-row ">
               <div className="form-group col-3">
-                <Form.Label>Approval from</Form.Label>
+                <Form.Label>Approval Date</Form.Label>
               </div>
 
               <div className="form-group col-9">
@@ -663,7 +766,7 @@ function AddMinute(props) {
 
             <div className="form-row">
               <div className="form-group col-3">
-                <Form.Label>Motion by</Form.Label>
+                <Form.Label>Motion By</Form.Label>
               </div>
 
               <div className="form-group col-9">
@@ -787,7 +890,7 @@ function AddMinute(props) {
 
               <Button
                 variant=""
-                type="submit"
+                type="button"
                 onClick={() => addRow()}
                 disabled={
                   !row_activity.trim() ||
@@ -892,12 +995,13 @@ function AddMinute(props) {
                       <td>{item.responsibility}</td>
 
                       <td>
-                        <Button
+                        {/* <Button
                           className=""
                           onClick={() => handleDeleteClick(index)}
                         >
                           <i class="fa fa-trash" aria-hidden="true"></i>
-                        </Button>
+                        </Button> */}
+                        <i class="fa fa-trash" aria-hidden="true" onClick={() => handleDeleteClick(index)}></i>
                       </td>
                     </tr>
                   );
@@ -966,8 +1070,9 @@ function AddMinute(props) {
                 type="submit"
                 className="btn  btn-primary btn"
                 onClick={addMinute}
+                disabled={isSubmitting || !canSubmit}
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
           </div>
