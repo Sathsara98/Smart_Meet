@@ -156,24 +156,19 @@ function Index() {
     ) {
       return (
         <>
-          <div className="row mb-2">
-            <div className="col-md">
-              <div className="d-flex justify-content-end">
-
-                {/* {Auth?.getUserLevel() !== "Committee Member" && Auth?.getUserLevel() !== "Administrator" ? (
-                  <Button variant="info"
-                    className="btnPrimary " onClick={handleShow}>
-                    <i className="tim-icons fas fa-plus" /> Add New Minute
-                  </Button>
-                ) : null} */}
-                <Button variant=""
-                  className="btn btn-ternitary " onClick={handleShow}>
-                  <i className="tim-icons fas fa-plus" /> Create Minute
-                </Button>
-
-              </div>
-            </div>
+          <div className="d-flex justify-content-end">
+            {userRole === "Committee Secretary" && (
+              <Button
+                variant=""
+                className="btn btn-ternitary"
+                onClick={handleShow}
+              >
+                <i className="tim-icons fas fa-plus" /> Create Minute
+              </Button>
+            )}
           </div>
+
+
           <Row>
             {minuteList != null
               ? minuteList.map((minute, index) => {
@@ -189,7 +184,8 @@ function Index() {
           </Row>
         </>
       );
-    } else {
+    }
+    else {
       return (
         <div className="float-right  w-100 ">
           <h4 className="text-center" style={{ fontSize: "1.3em" }}>

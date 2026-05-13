@@ -107,6 +107,10 @@ function Login() {
 
           <div className="inner-wrapper d-flex flex-column justify-content-center">
 
+            <div>
+              <i class="fas fa-arrow-left back-arrow" onClick={() => setRedirect(true)}></i>
+            </div>
+
 
             <div className="d-flex justify-content-center logo-wrapper">
               <img src={govLogo} className="pb-3 ml-0 pl-0 logo-login" />
@@ -161,7 +165,7 @@ function Login() {
                           isValid={touched.email && !errors.email}
                         />
                       </div>
-                      <div className="text-center p-1 text-danger">
+                      <div className=" p-1 text-danger">
                         {errors.email}
                       </div>
                     </Form.Group>

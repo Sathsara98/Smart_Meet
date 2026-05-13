@@ -45,6 +45,8 @@ function ViewMembers(props) {
   const [hoverNo, setHoverNo] = useState(false);
   const [hoverYes, setHoverYes] = useState(false);
 
+
+
   const tableDATA = memberList.map((p, index) => {
     return (
       // <tr key={index}>
@@ -159,7 +161,12 @@ function ViewMembers(props) {
       <SideBar members={true} viewmembers={true} />
       <div className="main-panel">
         <NavbarDashboard title="Members" />
+
+
         <div className="content">
+          <div className="ml-3">
+            <i class="fas fa-arrow-left back-arrow" onClick={() => window.history.back()}></i>
+          </div>
           {/* <BreadCrum path={["Home", "Users", "View Members"]} /> */}
           <AdminCard title="View Members">
             {/* <table id="example" className="table table-bordered">

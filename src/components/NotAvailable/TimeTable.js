@@ -1,5 +1,6 @@
 import React, { useState, useEffect, H1 } from "react";
 import { Container, Form, Col, Row, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "./TimeTable.css";
 import Auth from "../../authentication/Auth";
 
@@ -9,6 +10,8 @@ function TimeTable() {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
   const [page, setPage] = useState(1);
+
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + Auth.getUserId(), {
@@ -63,6 +66,9 @@ function TimeTable() {
       const data = await res.json();
 
       console.log(data);
+
+      //show success dialog
+      setShowSuccessDialog(true);
       // if (data.hasOwnProperty("error")) {
       //   setError(data.error);
       //   setShow(true);
@@ -166,6 +172,54 @@ function TimeTable() {
           Save
         </Button>
       </div>
+      <Modal show={showSuccessDialog} onHide={() => setShowSuccessDialog(false)}>
+        <Modal.Body className="text-center p-4">
+          <div
+            style={{
+              width: "85px",
+              height: "85px",
+              borderRadius: "50%",
+              backgroundColor: "#006b1f",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px auto",
+            }}
+          >
+            <i
+              className="fa fa-check"
+              aria-hidden="true"
+              style={{
+                color: "white",
+                fontSize: "45px",
+              }}
+            ></i>
+          </div>
+
+
+          <h5 style={{ fontWeight: "bold", marginBottom: "10px" }}>
+            Availability Updated
+          </h5>
+
+
+          <p style={{ fontSize: "14px", color: "#555", marginBottom: "20px" }}>
+            Your weekly availability has been updated successfully.
+          </p>
+
+
+          <Button
+            variant="primary"
+            onClick={() => setShowSuccessDialog(false)}
+            style={{
+              padding: "6px 30px",
+            }}
+          >
+            OK
+          </Button>
+        </Modal.Body>
+
+
+      </Modal>
     </div>
   );
 }

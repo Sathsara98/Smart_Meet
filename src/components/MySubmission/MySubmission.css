@@ -1,7 +1,9 @@
 .MuiTab-textColorPrimary.Mui-selected {
     color: #0D97B9 !important;
-    border-bottom-color: #0D97B9;
+    border-bottom: 2px solid #0D97B9 !important;
 }
+
+
 
 .MuiTab-root {
     text-transform: none !important;

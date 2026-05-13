@@ -173,7 +173,10 @@ const EditMinute1 = forwardRef((props, ref) => {
     }
   };
 
-  const isRatingCompleted = props.minute.rating_completed;
+  const totalParticipants = props.minute.total_participants || 0;
+  const totalRatedParticipants = props.minute.total_rated_participants || 0;
+
+  const isRatingCompleted = totalParticipants > 0 && totalRatedParticipants >= totalParticipants;
 
   //Handle change overidder
   const handleChangeO = (event) => {

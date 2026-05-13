@@ -14,6 +14,7 @@ import {
     TablePagination,
     CircularProgress,
 } from "@material-ui/core";
+import Auth from "../../authentication/Auth";
 import { Chart } from "react-google-charts";
 import Footer from "../Footer/Footer";
 import Report from "./Report.css";
@@ -109,6 +110,39 @@ export default function Reports() {
             setMinutes([]);
         }
     };
+
+    const isAdministrator = Auth?.getUserLevel() === "Administrator";
+
+
+    const reportTabs = [
+        {
+            label: "Challenges",
+            key: "challenges",
+        },
+        ...(isAdministrator
+            ? [
+                {
+                    label: "Member Participation",
+                    key: "memberParticipation",
+                },
+            ]
+            : []),
+        {
+            label: "Yearly Trend",
+            key: "yearlyTrend",
+        },
+        {
+            label: "Yearly Comparison",
+            key: "yearlyComparison",
+        },
+    ];
+
+
+    const activeTabKey = reportTabs[tabIndex]?.key;
+
+
+
+
 
     /** -------------------------
      *  CHALLENGES TAB FILTERS
@@ -360,6 +394,7 @@ export default function Reports() {
      *  ------------------------- */
     const [mpYear, setMpYear] = useState("");
     const [mpMonth, setMpMonth] = useState(new Date().getMonth() + 1);
+    const [mpExcusedAbsentYear, setMpExcusedAbsentYear] = useState("");
 
     const minuteYears = useMemo(() => {
         return Array.from(
@@ -374,6 +409,10 @@ export default function Reports() {
     useEffect(() => {
         if (!mpYear && minuteYears.length > 0) setMpYear(minuteYears[0]);
     }, [minuteYears, mpYear]);
+
+    useEffect(() => {
+        if (!mpExcusedAbsentYear && minuteYears.length > 0) setMpExcusedAbsentYear(minuteYears[0]);
+    }, [minuteYears, mpExcusedAbsentYear]);
 
     const getPresentMembersList = () => {
         const filteredMinutes = minutes.filter((m) => {
@@ -416,8 +455,102 @@ export default function Reports() {
     };
 
 
+    const getYearlyExcusedAbsentMembersList = () => {
+        const filteredMinutes = minutes.filter((m) => {
+            const d = parseDate(m.meeting_date);
+            return d && d.getFullYear() === Number(mpExcusedAbsentYear);
+        });
 
+        const memberMap = new Map();
 
+        const getMemberSectorFromPresentLists = (m, name) => {
+            if ((m.present_private || []).includes(name)) return "Private";
+            if ((m.present_public || []).includes(name)) return "Public";
+            if ((m.present_academic || []).includes(name)) return "Academic";
+            if ((m.present_association || []).includes(name)) return "Association";
+            return "N/A";
+        };
+
+        const ensureMember = (name, sector = "N/A") => {
+            if (!memberMap.has(name)) {
+                memberMap.set(name, {
+                    "Member Name": name,
+                    Sector: sector,
+                    "Total Assigned Meetings": 0,
+                    Excused: 0,
+                    Absent: 0,
+                    "Total Missed": 0,
+                });
+            }
+
+            const existing = memberMap.get(name);
+
+            if (existing.Sector === "N/A" && sector !== "N/A") {
+                existing.Sector = sector;
+            }
+
+            return existing;
+        };
+
+        filteredMinutes.forEach((m) => {
+            const presentGroups = [
+                {
+                    sector: "Private",
+                    members: m.present_private || [],
+                },
+                {
+                    sector: "Public",
+                    members: m.present_public || [],
+                },
+                {
+                    sector: "Academic",
+                    members: m.present_academic || [],
+                },
+                {
+                    sector: "Association",
+                    members: m.present_association || [],
+                },
+            ];
+
+            // 1. Count present members as assigned meetings
+            presentGroups.forEach((group) => {
+                group.members.forEach((name) => {
+                    const existing = ensureMember(name, group.sector);
+                    existing["Total Assigned Meetings"] += 1;
+                    memberMap.set(name, existing);
+                });
+            });
+
+            // 2. Count excused members as assigned meetings + excused
+            (m.excused || []).forEach((name) => {
+                const sector = getMemberSectorFromPresentLists(m, name);
+                const existing = ensureMember(name, sector);
+
+                existing["Total Assigned Meetings"] += 1;
+                existing.Excused += 1;
+                existing["Total Missed"] += 1;
+
+                memberMap.set(name, existing);
+            });
+
+            // 3. Count absent members as assigned meetings + absent
+            (m.absent || []).forEach((name) => {
+                const sector = getMemberSectorFromPresentLists(m, name);
+                const existing = ensureMember(name, sector);
+
+                existing["Total Assigned Meetings"] += 1;
+                existing.Absent += 1;
+                existing["Total Missed"] += 1;
+
+                memberMap.set(name, existing);
+            });
+        });
+
+        // Show only members who have at least one excused or absent record
+        return Array.from(memberMap.values())
+            .filter((member) => member.Excused > 0 || member.Absent > 0)
+            .sort((a, b) => b["Total Missed"] - a["Total Missed"]);
+    };
 
 
 
@@ -460,15 +593,18 @@ export default function Reports() {
                                 textColor="primary"
                                 indicatorColor="primary"
                             >
-                                <Tab label="Challenges" />
-                                <Tab label="Member Participation" />
-                                <Tab label="Yearly Trend" />
-                                <Tab label="Yearly Comparison" />
+                                {reportTabs.map((tab) => (
+                                    <Tab key={tab.key} label={tab.label} />
+                                ))}
                             </Tabs>
+
+
+
+
                         </div>
 
                         {/* ------------------ Challenges tab ------------------ */}
-                        {tabIndex === 0 && (
+                        {activeTabKey === "challenges" && (
                             <div className="tabContainer">
                                 {/* Filters */}
                                 <div className="mt-3 d-flex justify-content-between filter-section">
@@ -645,66 +781,185 @@ export default function Reports() {
                         )}
 
                         {/* ------------------ Member Participation tab ------------------ */}
-                        {tabIndex === 1 && (
+
+                        {isAdministrator && activeTabKey === "memberParticipation" && (
                             <div className="tabContainer">
-                                <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
-                                    <div style={{ width: 200 }} className="width-100">
-                                        <Form.Label>Year</Form.Label>
-                                        <Form.Control as="select" value={mpYear} onChange={(e) => setMpYear(e.target.value)}>
-                                            {minuteYears.map((y) => (
-                                                <option key={y} value={y}>{y}</option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-
-                                    <div style={{ width: 200 }} className="width-100">
-                                        <Form.Label>Month</Form.Label>
-                                        <Form.Control as="select" value={mpMonth} onChange={(e) => setMpMonth(e.target.value)}>
-                                            {[...Array(12)].map((_, i) => (
-                                                <option key={i + 1} value={i + 1}>{MONTH_NAMES[i]}</option>
-                                            ))}
-                                        </Form.Control>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                    <AdminCard>
-                                        <TableContainer>
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell><b>Name</b></TableCell>
-                                                        <TableCell><b>Sector</b></TableCell>
-                                                        <TableCell><b>No of Meetings Participated</b></TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {getPresentMembersList().map((r, idx) => (
-                                                        <TableRow key={idx} hover>
-                                                            <TableCell>{r.Name}</TableCell>
-                                                            <TableCell>{r.Sector}</TableCell>
-                                                            <TableCell>{r.Meetings}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-
-                                        <div className="mt-2" style={{ display: "flex", justifyContent: "flex-end" }}>
-                                            <Button
-                                                size="sm"
-                                                onClick={() => downloadCsv(getPresentMembersList(), ["Name", "Sector", "Meetings"], "present_members.csv")}
-                                            >
-                                                Export
-                                            </Button>
+                                <div>
+                                    <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
+                                        <div style={{ width: 200 }} className="width-100">
+                                            <Form.Label>Year</Form.Label>
+                                            <Form.Control as="select" value={mpYear} onChange={(e) => setMpYear(e.target.value)}>
+                                                {minuteYears.map((y) => (
+                                                    <option key={y} value={y}>{y}</option>
+                                                ))}
+                                            </Form.Control>
                                         </div>
-                                    </AdminCard>
+
+                                        <div style={{ width: 200 }} className="width-100">
+                                            <Form.Label>Month</Form.Label>
+                                            <Form.Control as="select" value={mpMonth} onChange={(e) => setMpMonth(e.target.value)}>
+                                                {[...Array(12)].map((_, i) => (
+                                                    <option key={i + 1} value={i + 1}>{MONTH_NAMES[i]}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-2">
+                                        <AdminCard>
+                                            <TableContainer>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell><b>Name</b></TableCell>
+                                                            <TableCell><b>Sector</b></TableCell>
+                                                            <TableCell><b>No of Meetings Participated</b></TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {getPresentMembersList().map((r, idx) => (
+                                                            <TableRow key={idx} hover>
+                                                                <TableCell>{r.Name}</TableCell>
+                                                                <TableCell>{r.Sector}</TableCell>
+                                                                <TableCell>{r.Meetings}</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+
+                                            <div className="mt-2" style={{ display: "flex", justifyContent: "flex-end" }}>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() => downloadCsv(getPresentMembersList(), ["Name", "Sector", "Meetings"], "present_members.csv")}
+                                                >
+                                                    Export
+                                                </Button>
+                                            </div>
+                                        </AdminCard>
+                                    </div>
                                 </div>
+
+                                <div className="mt-4">
+                                    <div className="w-100 mt-3">
+                                        <h4
+                                            className="separator_minute"
+                                            style={{ color: "rgb(255, 255, 255)" }}
+                                        >
+                                            <div>
+                                                <strong className="section-header">
+                                                    Frequently Excused / Absent Members
+                                                </strong>
+                                            </div>
+                                        </h4>
+                                    </div>
+
+
+                                    <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
+                                        <div style={{ width: 200 }} className="width-100">
+                                            <Form.Label>Year</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                value={mpExcusedAbsentYear}
+                                                onChange={(e) => setMpExcusedAbsentYear(e.target.value)}
+                                            >
+                                                {minuteYears.length === 0 ? (
+                                                    <option value="">No data</option>
+                                                ) : (
+                                                    minuteYears.map((y) => (
+                                                        <option key={y} value={y}>
+                                                            {y}
+                                                        </option>
+                                                    ))
+                                                )}
+                                            </Form.Control>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="mt-2">
+                                        <AdminCard>
+                                            <TableContainer>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell><b>Name</b></TableCell>
+                                                            {/* <TableCell><b>Sector</b></TableCell> */}
+                                                            <TableCell><b>Total Meetings</b></TableCell>
+
+                                                            <TableCell><b>Excused</b></TableCell>
+                                                            <TableCell><b>Absent</b></TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+
+
+                                                    <TableBody>
+                                                        {getYearlyExcusedAbsentMembersList().length === 0 ? (
+                                                            <TableRow>
+                                                                <TableCell colSpan={5} align="center">
+                                                                    No records found for selected year
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ) : (
+                                                            getYearlyExcusedAbsentMembersList().map((r, idx) => (
+                                                                <TableRow key={idx} hover>
+                                                                    <TableCell>{r["Member Name"]}</TableCell>
+                                                                    {/* <TableCell>{r.Sector}</TableCell> */}
+                                                                    <TableCell>{r["Total Assigned Meetings"]}</TableCell>
+
+                                                                    <TableCell>{r.Excused}</TableCell>
+                                                                    <TableCell>{r.Absent}</TableCell>
+                                                                </TableRow>
+
+
+                                                            ))
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+
+
+                                            <div
+                                                className="mt-2"
+                                                style={{ display: "flex", justifyContent: "flex-end" }}
+                                            >
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        downloadCsv(
+                                                            getYearlyExcusedAbsentMembersList(),
+                                                            [
+                                                                "Member Name",
+                                                                "Sector",
+                                                                "Total Meetings",
+                                                                "Present",
+                                                                "Excused",
+                                                                "Absent",
+                                                            ],
+                                                            `frequently_excused_absent_members_${mpExcusedAbsentYear}.csv`
+                                                        )
+                                                    }
+                                                >
+                                                    Export
+                                                </Button>
+
+
+
+
+                                            </div>
+                                        </AdminCard>
+                                    </div>
+                                </div>
+
+
+
+
                             </div>
                         )}
 
+
                         {/* ------------------ Yearly Trend tab ------------------ */}
-                        {tabIndex === 2 && (
+                        {activeTabKey === "yearlyTrend" && (
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
                                     <div style={{ width: 260 }} className="width-100">
@@ -746,7 +1001,7 @@ export default function Reports() {
                         )}
 
                         {/* ------------------ Yearly Comparison tab ------------------ */}
-                        {tabIndex === 3 && (
+                        {activeTabKey === "yearlyComparison" && (
                             <div className="tabContainer">
                                 <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
                                     <div style={{ width: 200 }} className="width-100">

@@ -413,6 +413,15 @@ function AddMinute(props) {
     }
   };
 
+  const approvalMemberOptions = allOptions.filter(
+    (member) =>
+      !excused_chips.includes(member) &&
+      !absent_chips.includes(member)
+  );
+
+
+
+
 
 
   return (
@@ -456,6 +465,11 @@ function AddMinute(props) {
                       setMeetingTime(selectedMeeting.time || "");
                       setMeetingVenue(selectedMeeting.venue || "");
 
+                      setMeetingMotionby("");
+                      setMeetingProposedBy("");
+                      setMeetingSecondedBy("");
+
+
                       const assignedPrivateMembers = getMembersBySector(selectedMeeting, "Private");
                       const assignedPublicMembers = getMembersBySector(selectedMeeting, "Public");
                       const assignedAcademicMembers = getMembersBySector(selectedMeeting, "Academic");
@@ -488,6 +502,10 @@ function AddMinute(props) {
                       setMeetingDate(date);
                       setMeetingTime("");
                       setMeetingVenue("");
+
+                      setMeetingMotionby("");
+                      setMeetingProposedBy("");
+                      setMeetingSecondedBy("");
 
                       setPrivateOptions([]);
                       setPublicOptions([]);
@@ -694,7 +712,15 @@ function AddMinute(props) {
               <Typeahead
                 id="excused-typeahead"
                 multiple
-                onChange={setExcusedchips}
+                onChange={(selected) => {
+                  setExcusedchips(selected);
+
+
+                  if (selected.includes(meeting_motionby)) setMeetingMotionby("");
+                  if (selected.includes(meeting_proposedby)) setMeetingProposedBy("");
+                  if (selected.includes(meeting_secondedby)) setMeetingSecondedBy("");
+                }}
+
                 options={allOptions}
                 placeholder="Choose attendees..."
                 selected={excused_chips}
@@ -710,7 +736,15 @@ function AddMinute(props) {
               <Typeahead
                 id="absent-typeahead"
                 multiple
-                onChange={setAbsentchips}
+                onChange={(selected) => {
+                  setAbsentchips(selected);
+
+
+                  if (selected.includes(meeting_motionby)) setMeetingMotionby("");
+                  if (selected.includes(meeting_proposedby)) setMeetingProposedBy("");
+                  if (selected.includes(meeting_secondedby)) setMeetingSecondedBy("");
+                }}
+
                 options={allOptions}
                 placeholder="Choose attendees..."
                 selected={absent_chips}
@@ -770,14 +804,25 @@ function AddMinute(props) {
               </div>
 
               <div className="form-group col-9">
-                <Form.Control
+                {/* <Form.Control
                   name="motionBy"
                   type="text"
                   value={meeting_motionby}
                   placeholder="Enter Here..."
                   onChange={handleChangeO}
                   onBlur={handleBlur}
+                /> */}
+                <Typeahead
+                  id="motion-by-typeahead"
+                  options={approvalMemberOptions}
+                  placeholder="Choose members"
+                  selected={meeting_motionby ? [meeting_motionby] : []}
+                  onChange={(selected) => {
+                    setMeetingMotionby(selected.length > 0 ? selected[0] : "");
+                  }}
                 />
+
+
               </div>
             </div>
             <div className="form-row">
@@ -786,14 +831,24 @@ function AddMinute(props) {
               </div>
 
               <div className="form-group col-9">
-                <Form.Control
+                {/* <Form.Control
                   name="proposedBy"
                   type="text"
                   value={meeting_proposedby}
                   placeholder="Enter Here..."
                   onChange={handleChangeO}
                   onBlur={handleBlur}
+                /> */}
+                <Typeahead
+                  id="proposed-by-typeahead"
+                  options={approvalMemberOptions}
+                  placeholder="Choose members"
+                  selected={meeting_proposedby ? [meeting_proposedby] : []}
+                  onChange={(selected) => {
+                    setMeetingProposedBy(selected.length > 0 ? selected[0] : "");
+                  }}
                 />
+
               </div>
             </div>
             <div className="form-row">
@@ -802,14 +857,24 @@ function AddMinute(props) {
               </div>
 
               <div className="form-group col-9">
-                <Form.Control
+                {/* <Form.Control
                   name="secondedBy"
                   type="text"
                   value={meeting_secondedby}
                   placeholder="Enter Here..."
                   onChange={handleChangeO}
                   onBlur={handleBlur}
+                /> */}
+                <Typeahead
+                  id="seconded-by-typeahead"
+                  options={approvalMemberOptions}
+                  placeholder="Choose members"
+                  selected={meeting_secondedby ? [meeting_secondedby] : []}
+                  onChange={(selected) => {
+                    setMeetingSecondedBy(selected.length > 0 ? selected[0] : "");
+                  }}
                 />
+
               </div>
             </div>
             <div className="w-100 mt-4">
