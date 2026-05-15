@@ -178,6 +178,15 @@ const EditMinute1 = forwardRef((props, ref) => {
 
   const isRatingCompleted = totalParticipants > 0 && totalRatedParticipants >= totalParticipants;
 
+
+  console.log("participants", totalParticipants);
+  console.log("rated", totalRatedParticipants);
+  console.log("completed", isRatingCompleted);
+  console.log("minute", props.minute);
+  console.log("tableDataEach", tableDataEach);
+
+
+
   //Handle change overidder
   const handleChangeO = (event) => {
     if (event.target.name === "rowActivity") {

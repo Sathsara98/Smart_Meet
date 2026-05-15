@@ -71,7 +71,7 @@ function AddMinute(props) {
   useEffect(() => {
     let isMounted = true;
 
-    loadMembers(isMounted);
+    // loadMembers(isMounted);
     loadMeetings(isMounted);
 
     return () => {
@@ -146,7 +146,19 @@ function AddMinute(props) {
     if (!meeting || !Array.isArray(meeting.members)) return [];
 
     return meeting.members
-      .filter((member) => member.sector === sectorName)
+      .filter((member) => {
+        if (member.sector !== sectorName) return false;
+
+        // Do not load Committee Secretary under Public Sector
+        if (
+          sectorName === "Public" &&
+          member.utype === "Committee Secretary"
+        ) {
+          return false;
+        }
+
+        return true;
+      })
       .map((member) => member.name);
   };
 
@@ -254,6 +266,43 @@ function AddMinute(props) {
       })
       .catch((error) => console.log(error));
   };
+  // const loadMeetings = (isMounted = true) => {
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/meetings/`, {
+  //     method: "GET",
+  //     headers: new Headers({
+  //       Accept: "application/vnd.github.cloak-preview",
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((response) => {
+  //       if (!isMounted) return;
+
+  //       if (Array.isArray(response)) {
+  //         setMeetings(response);
+  //       } else if (Array.isArray(response.data)) {
+  //         setMeetings(response.data);
+  //       } else if (Array.isArray(response.meetings)) {
+  //         setMeetings(response.meetings);
+  //       } else {
+  //         setMeetings([]);
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+
+
+  // };
+
+  const isMeetingAssignedToLoggedSecretary = (meeting) => {
+    const loggedSecretary = Auth.getUserName()?.toLowerCase().trim();
+
+    return meeting.members?.some(
+      (member) =>
+        member.utype === "Committee Secretary" &&
+        member.name?.toLowerCase().trim() === loggedSecretary
+    );
+  };
+
+
   const loadMeetings = (isMounted = true) => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/meetings/`, {
       method: "GET",
@@ -265,18 +314,25 @@ function AddMinute(props) {
       .then((response) => {
         if (!isMounted) return;
 
+        let meetingList = [];
+
         if (Array.isArray(response)) {
-          setMeetings(response);
+          meetingList = response;
         } else if (Array.isArray(response.data)) {
-          setMeetings(response.data);
+          meetingList = response.data;
         } else if (Array.isArray(response.meetings)) {
-          setMeetings(response.meetings);
-        } else {
-          setMeetings([]);
+          meetingList = response.meetings;
         }
+
+        const filteredMeetings = meetingList.filter(isMeetingAssignedToLoggedSecretary);
+
+        setMeetings(filteredMeetings);
       })
       .catch((error) => console.log(error));
   };
+
+
+
 
   const [privateOptions, setPrivateOptions] = useState([]);
   const [publicOptions, setPublicOptions] = useState([]);
@@ -331,8 +387,50 @@ function AddMinute(props) {
       return "Please add at least one activity.";
     }
 
+    const allAttendance = [
+      ...private_chips,
+      ...public_chips,
+      ...academic_chips,
+      ...association_chips,
+      ...excused_chips,
+      ...absent_chips,
+    ];
+
+    const hasDuplicate = allAttendance.length !== new Set(allAttendance).size;
+
+    if (hasDuplicate) {
+      return "A member cannot be selected in more than one attendance category.";
+    }
+
+    if (meeting_motion.trim()) {
+      if (!meeting_motionby || !meeting_proposedby || !meeting_secondedby) {
+        return "Please select Motion By, Proposed By, and Seconded By.";
+      }
+    }
+
+    const approvalPeople = [
+      meeting_motionby,
+      meeting_proposedby,
+      meeting_secondedby,
+    ].filter(Boolean);
+
+    const hasDuplicateApprovalPeople =
+      approvalPeople.length !== new Set(approvalPeople).size;
+
+    if (hasDuplicateApprovalPeople) {
+      return "Motion By, Proposed By, and Seconded By must be different members.";
+    }
+
+
+
+
+    if (meeting_approval_from < meeting_date) {
+      return "Approval date cannot be before the meeting date.";
+    }
+
     return "";
   };
+
 
 
 
@@ -437,11 +535,7 @@ function AddMinute(props) {
           errors,
         }) => (
           <div>
-            {show && error && (
-              <Alert variant="danger" className="mt-2">
-                {error}
-              </Alert>
-            )}
+
 
 
             <div className="form-row">
@@ -1140,6 +1234,11 @@ function AddMinute(props) {
                 {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
+            {show && error && (
+              <Alert variant="danger" className="mt-2">
+                {error}
+              </Alert>
+            )}
           </div>
         )}
       </Formik>

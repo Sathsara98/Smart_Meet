@@ -112,6 +112,7 @@ export default function Reports() {
     };
 
     const isAdministrator = Auth?.getUserLevel() === "Administrator";
+    const isSecretary = Auth?.getUserLevel() === "Committee Secretary";
 
 
     const reportTabs = [
@@ -119,7 +120,7 @@ export default function Reports() {
             label: "Challenges",
             key: "challenges",
         },
-        ...(isAdministrator
+        ...(isAdministrator || isSecretary
             ? [
                 {
                     label: "Member Participation",
@@ -782,7 +783,7 @@ export default function Reports() {
 
                         {/* ------------------ Member Participation tab ------------------ */}
 
-                        {isAdministrator && activeTabKey === "memberParticipation" && (
+                        {(isAdministrator || isSecretary) && activeTabKey === "memberParticipation" && (
                             <div className="tabContainer">
                                 <div>
                                     <div className="mt-3 d-flex filter-section" style={{ gap: 16 }}>
