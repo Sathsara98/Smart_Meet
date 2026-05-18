@@ -69,6 +69,7 @@ export default function Reports() {
             .finally(() => setIsLoading(false));
     }, []);
 
+    //Load all challenges/events data when page loads
     const loadEvents = async () => {
         try {
             // Change from /admin/events/ to /events/
@@ -99,6 +100,8 @@ export default function Reports() {
             setEvents([]);
         }
     };
+
+    //Loads all finalized minutes
     const loadMinutes = async () => {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minutes/`);
@@ -111,6 +114,7 @@ export default function Reports() {
         }
     };
 
+    //check logged user role
     const isAdministrator = Auth?.getUserLevel() === "Administrator";
     const isSecretary = Auth?.getUserLevel() === "Committee Secretary";
 
@@ -153,6 +157,7 @@ export default function Reports() {
     const [selMonth, setSelMonth] = useState(new Date().getMonth() + 1);
     const [rangeStart, setRangeStart] = useState("");
     const [rangeEnd, setRangeEnd] = useState("");
+
 
     const challengeYears = useMemo(() => {
         return Array.from(
@@ -246,7 +251,7 @@ export default function Reports() {
     }, [events]);
 
 
-
+    //filter monthly challenges trend data by selected year
     const trendData = useMemo(() => {
         if (!trendYear) return [["Month", ...trendAreas]];
 
@@ -322,7 +327,7 @@ export default function Reports() {
 
 
 
-
+    //filter challenges between 2 selected years
     const comparisonData = useMemo(() => {
         if (!compYear1 || !compYear2) {
             return [["Development Area", "Year 1", "Year 2"]];
@@ -415,6 +420,7 @@ export default function Reports() {
         if (!mpExcusedAbsentYear && minuteYears.length > 0) setMpExcusedAbsentYear(minuteYears[0]);
     }, [minuteYears, mpExcusedAbsentYear]);
 
+    // Get present members list for selected month/year
     const getPresentMembersList = () => {
         const filteredMinutes = minutes.filter((m) => {
             const d = parseDate(m.meeting_date);

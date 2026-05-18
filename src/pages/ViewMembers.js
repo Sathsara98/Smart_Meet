@@ -64,7 +64,24 @@ function ViewMembers(props) {
       // </tr>
       <TableRow key={index}>
         <TableCell>{index + 1}</TableCell>
-        <TableCell></TableCell>
+        <TableCell>
+
+          <img
+            src={
+              p.userImage
+                ? `${process.env.REACT_APP_BACKEND_URL}/${p.userImage}`
+                : "/default-user.png"
+            }
+            alt={p.name}
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+          />
+
+        </TableCell>
         <TableCell>{p.name}</TableCell>
         <TableCell>{p.email}</TableCell>
         <TableCell>{p.tel}</TableCell>

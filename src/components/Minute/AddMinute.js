@@ -518,6 +518,23 @@ function AddMinute(props) {
   );
 
 
+  const presentMembers = [
+    ...private_chips,
+    ...public_chips,
+    ...academic_chips,
+    ...association_chips,
+  ];
+
+  const excusedOptions = allOptions.filter(
+    (member) =>
+      !presentMembers.includes(member) &&
+      !absent_chips.includes(member)
+  );
+
+  const absentOptions = allOptions.filter(
+    (member) => !presentMembers.includes(member) &&
+      !excused_chips.includes(member)
+  );
 
 
 
@@ -815,7 +832,7 @@ function AddMinute(props) {
                   if (selected.includes(meeting_secondedby)) setMeetingSecondedBy("");
                 }}
 
-                options={allOptions}
+                options={excusedOptions}
                 placeholder="Choose attendees..."
                 selected={excused_chips}
               />
@@ -839,7 +856,7 @@ function AddMinute(props) {
                   if (selected.includes(meeting_secondedby)) setMeetingSecondedBy("");
                 }}
 
-                options={allOptions}
+                options={absentOptions}
                 placeholder="Choose attendees..."
                 selected={absent_chips}
               />

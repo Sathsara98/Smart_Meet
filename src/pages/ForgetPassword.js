@@ -235,10 +235,10 @@ function Login() {
         <Modal.Header closeButton onClick={() => handleClose()}></Modal.Header>
         <Modal.Body>
           {" "}
-          <h2>Your Password Has Been Reset</h2>
-          <h3>An Email Containing Your New Password has been sent to you.</h3>
+          <h5 className="text-center mx-auto fw-bold" style="font-weight: bold;">Your Password Has Been Reset</h5>
+          <p>An Email Containing Your New Password has been sent to you.</p>
           <Button
-            className="mt-2 mx-auto btnPrimary login-button"
+            className="btn btn-primary"
             onClick={() => handleClose()}
           >
             <span

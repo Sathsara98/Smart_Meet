@@ -5,7 +5,8 @@ import { useHistory } from "react-router-dom";
 import Model from "../components/Model";
 function NavbarDashboard(props) {
   const [currentFile, setCurrentFile] = useState(undefined);
-  const [meetings, setMeetings] = useState();
+  //const [meetings, setMeetings] = useState();
+  const [notifications, setNotifications] = useState([]);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -15,10 +16,10 @@ function NavbarDashboard(props) {
 
 
   const history = useHistory();
-  useEffect(() => {
-    loadUser();
-    loadMeetings();
-  }, []);
+  // useEffect(() => {
+  //   loadUser();
+  //   loadMeetings();
+  // }, []);
   const loadUser = async () => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + Auth.getUserId(), {
       method: "GET",
@@ -36,40 +37,60 @@ function NavbarDashboard(props) {
       .catch((error) => console.log(error));
   };
 
-  const loadMeetings = async () => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/getMeetings/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: Auth.getUserId(),
-      }),
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        if (response != null) {
-          getUpcomingMeetings(response);
+  // const loadMeetings = async () => {
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/users/getMeetings/`, {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       id: Auth.getUserId(),
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((response) => {
+  //       if (response != null) {
+  //         getUpcomingMeetings(response);
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
+
+  const loadNotifications = () => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/notifications/user/${Auth.getUserId()}`,
+      {
+        headers: {
+          token: Auth.getToken(),
         }
       })
-      .catch((error) => console.log(error));
-  };
 
-  const getUpcomingMeetings = (meetings) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+      .then((res) => res.json())
+      .then((data) => {
+        setNotifications(data);
+      })
+      .catch(console.log);
+  }
+  useEffect(() => {
+    loadUser();
+    loadNotifications();
+  }, [])
 
-    const meetingsUpcoming = meetings.filter((m) => {
-      if (!m.date) return false;
 
-      const meetingDate = new Date(m.date);
-      if (isNaN(meetingDate)) return false;
+  // const getUpcomingMeetings = (meetings) => {
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
 
-      meetingDate.setHours(0, 0, 0, 0);
-      return meetingDate >= today;
-    });
+  //   const meetingsUpcoming = meetings.filter((m) => {
+  //     if (!m.date) return false;
 
-    console.log("Upcoming meetings:", meetingsUpcoming);
-    setMeetings(meetingsUpcoming);
-  };
+  //     const meetingDate = new Date(m.date);
+  //     if (isNaN(meetingDate)) return false;
+
+  //     meetingDate.setHours(0, 0, 0, 0);
+  //     return meetingDate >= today;
+  //   });
+
+  //   console.log("Upcoming meetings:", meetingsUpcoming);
+  //   setMeetings(meetingsUpcoming);
+  // };
   //model
   const [model, setModel] = useState(null);
   const returnModel = (show, body, confirmation, callback) => {
@@ -143,9 +164,9 @@ function NavbarDashboard(props) {
                   <i className="fas fa-bell" style={{ color: "#1e1e1e" }}></i>
 
                   {/* 🔴 Badge */}
-                  {meetings && meetings.length > 0 && (
+                  {notifications.length > 0 && (
                     <span className="notif-badge">
-                      {meetings.length}
+                      {notifications.length}
                     </span>
                   )}
                 </a>
@@ -154,18 +175,19 @@ function NavbarDashboard(props) {
                   className="dropdown-menu dropdown-navbar notif-wrapper"
                   style={{}}
                 >
-                  {meetings == undefined || meetings.length == 0 ? (
+                  {notifications.length == 0 ? (
                     <li className="nav-link">
-                      <a href="/" className="nav-item dropdown-item subdropdowns">
+                      {/* <a href="/" className="nav-item dropdown-item subdropdowns">
                         No notifications
-                      </a>
+                      </a> */}
+                      <span>No notifications</span>
                     </li>
                   ) : (
-                    meetings.map((m) => {
+                    notifications.map((n) => {
                       return (
-                        <li className="nav-link" key={m._id}>
+                        <li className="nav-link" key={n._id}>
                           <span className="nav-item dropdown-item subdropdowns">
-                            You have a scheduled meeting on {m.date} at {m.time}
+                            {n.message}
                           </span>
                         </li>
                       );
@@ -270,8 +292,8 @@ function NavbarDashboard(props) {
             }}
           >
             <i className="fas fa-bell" style={{ color: "#1e1e1e" }}></i>
-            {meetings && meetings.length > 0 && (
-              <span className="notif-badge">{meetings.length}</span>
+            {notifications.length > 0 && (
+              <span className="notif-badge">{notifications.length}</span>
             )}
           </button>
 
@@ -363,12 +385,12 @@ function NavbarDashboard(props) {
         {notificationOpen && (
           <div className="mobile-notification-panel">
             <h5>Notifications</h5>
-            {meetings == undefined || meetings.length == 0 ? (
+            {notifications.length == 0 ? (
               <p>No notifications</p>
             ) : (
-              meetings.map((m) => (
-                <div className="notification-item" key={m._id}>
-                  You have a scheduled meeting on {m.date} at {m.time}
+              notifications.map((n) => (
+                <div className="notification-item" key={n._id}>
+                  {n.message}
                 </div>
               ))
             )}
