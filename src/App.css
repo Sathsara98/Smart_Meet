@@ -719,3 +719,19 @@ button:focus {
 .MuiTableCell-head {
   font-weight: 600 !important;
 }
+
+.reason {
+  width: 80%;
+}
+
+.btn-outline {
+  border: 1px solid #0D97B9 !important;
+  color: #0D97B9 !important;
+  background-color: unset !important;
+}
+
+.btn-outline:hover {
+
+  color: #ffffff !important;
+  background-color: #0D97B9 !important;
+}

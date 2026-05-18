@@ -11,6 +11,8 @@ import {
 import * as yup from "yup";
 import { Formik } from "formik";
 import MeetingMember from "./MeetingMember";
+import Auth from "../authentication/Auth";
+import { useState } from "react";
 
 function EventDetails(props) {
   // Debug logging to understand what we're receiving
@@ -22,8 +24,63 @@ function EventDetails(props) {
     console.log("EventDetails questions length:", props.event?.questions?.length);
   }, [props.event]);
 
+  const [unableToAttend, setUnableToAttend] = useState(false);
+  const [unableReason, setUnableReason] = useState("");
+  const [alreadySubmittedExcuse, setAlreadySubmittedExcuse] = useState(false);
+
+  const [userRole, setUserRole] = useState(Auth.getUserLevel());
+
   // If there's no event (parent cleared it), render nothing to avoid accessing properties on null
   if (!props.event) return null;
+
+
+
+  const submitUnableToAttend = async () => {
+    if (alreadySubmittedExcuse) {
+      alert("You have already submitted an excuse for this meeting.");
+      return;
+    }
+    if (!unableReason.trim()) {
+      alert("Please enter reason");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/events/unable-to-attend/${props.event._id}/${Auth.getUserId()}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            token: Auth.getToken(),
+          },
+          body: JSON.stringify({
+            reason: unableReason,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert("Response submitted successfully");
+
+        setUnableToAttend(false);
+        setAlreadySubmittedExcuse(true);
+        setUnableReason("");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
+
+
+  const excusedMembers = props.event.members ? props.event.members.filter((member) => member.unableToAttend === true) : [];
+
+
 
   return (
     <div>
@@ -131,6 +188,95 @@ function EventDetails(props) {
                   </div>
                 </Form.Group>
               </Form.Row>
+
+              {userRole === "Committee Member" && (
+                <Form.Row className="flex-column mb-3">
+                  <div className="">
+                    <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <input
+                        type="checkbox"
+                        checked={unableToAttend || alreadySubmittedExcuse}
+                        disabled={alreadySubmittedExcuse}
+                        onChange={(e) => {
+                          setUnableToAttend(e.target.checked);
+
+                          if (!e.target.checked) {
+                            setUnableReason("");
+                          }
+                        }}
+                      />
+                      I am unable to attend this meeting
+                    </label>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    {
+                      unableToAttend && (
+                        <Form.Group className="reason mb-0">
+                          <Form.Control
+                            className="inputBackground "
+                            name="unableReason"
+                            placeholder="Enter reason for being unable to attend"
+                            value={unableReason}
+                            disabled={alreadySubmittedExcuse}
+                            onChange={(e) => setUnableReason(e.target.value)}
+                          />
+                        </Form.Group>
+                      )}
+                    {
+                      unableToAttend && (
+                        <Button
+                          variant=""
+                          onClick={submitUnableToAttend}
+                          disabled={alreadySubmittedExcuse}
+                          className="btn btn-outline"
+                        >
+                          {alreadySubmittedExcuse ? "Already Submitted" : "Submit"}
+                        </Button>
+                      )
+                    }
+                  </div>
+
+
+                </Form.Row>
+              )}
+
+
+              {userRole === "Administrator" && (
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>Excused Members</Form.Label>
+
+                    {excusedMembers.length > 0 ? (
+                      <table className="table table-bordered table-sm">
+                        <thead>
+                          <tr>
+                            <th>Member Name</th>
+                            <th>Sector</th>
+                            <th>Reason</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {excusedMembers.map((member, index) => (
+                            <tr key={index}>
+                              <td>{member.name}</td>
+                              <td>{member.sector}</td>
+                              <td>{member.unableReason}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p>No excused members for this meeting.</p>
+                    )}
+                  </Form.Group>
+                </Form.Row>
+              )}
+
+
+
+
+
               <Form.Row>
                 <Form.Group as={Col} controlId="formGridEmail">
                   <Form.Label>Challenges</Form.Label>

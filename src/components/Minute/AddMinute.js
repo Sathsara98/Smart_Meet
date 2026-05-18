@@ -28,6 +28,10 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import Auth from "../../authentication/Auth";
 import "./Minute.css";
 import { set } from "react-hook-form";
+import Multiselect from "multiselect-react-dropdown";
+
+
+
 function AddMinute(props) {
   var curr = new Date();
   var date = curr
@@ -538,6 +542,29 @@ function AddMinute(props) {
 
 
 
+  const removeSelectedMembers = (list, selected) => {
+    return list.filter((item) => !selected.includes(item));
+  };
+
+  const getPresentMembers = () => [
+    ...private_chips,
+    ...public_chips,
+    ...academic_chips,
+    ...association_chips,
+  ];
+
+  const getExcusedAbsentOptions = () => {
+    const presentMembers = getPresentMembers();
+
+    return allOptions.filter(
+      (member) =>
+        !presentMembers.includes(member) &&
+        !excused_chips.includes(member) &&
+        !absent_chips.includes(member)
+    );
+  };
+
+
 
   return (
     <div>
@@ -564,6 +591,75 @@ function AddMinute(props) {
                 <Form.Control
                   as="select"
                   value={selectedMeetingId}
+                  // onChange={(e) => {
+                  //   const meetingId = e.target.value;
+                  //   setSelectedMeetingId(meetingId);
+
+                  //   const selectedMeeting = meetings.find((m) => m._id === meetingId);
+
+                  //   if (selectedMeeting) {
+                  //     setMeetingName(selectedMeeting.name || "");
+                  //     setMeetingDate(selectedMeeting.date || date);
+                  //     setMeetingTime(selectedMeeting.time || "");
+                  //     setMeetingVenue(selectedMeeting.venue || "");
+
+                  //     setMeetingMotionby("");
+                  //     setMeetingProposedBy("");
+                  //     setMeetingSecondedBy("");
+
+
+                  //     const assignedPrivateMembers = getMembersBySector(selectedMeeting, "Private");
+                  //     const assignedPublicMembers = getMembersBySector(selectedMeeting, "Public");
+                  //     const assignedAcademicMembers = getMembersBySector(selectedMeeting, "Academic");
+                  //     const assignedAssociationMembers = getMembersBySector(selectedMeeting, "Association");
+
+                  //     setPrivateOptions(assignedPrivateMembers);
+                  //     setPublicOptions(assignedPublicMembers);
+                  //     setAcademicOptions(assignedAcademicMembers);
+                  //     setAssociationOptions(assignedAssociationMembers);
+
+                  //     setAllOptions([
+                  //       ...assignedPrivateMembers,
+                  //       ...assignedPublicMembers,
+                  //       ...assignedAcademicMembers,
+                  //       ...assignedAssociationMembers,
+                  //     ]);
+
+                  //     setPrivatechips(assignedPrivateMembers);
+                  //     setPublicchips(assignedPublicMembers);
+                  //     setAcademicchips(assignedAcademicMembers);
+                  //     setAssociationchips(assignedAssociationMembers);
+                  //     setExcusedchips([]);
+                  //     setAbsentchips([]);
+
+
+
+
+
+                  //   } else {
+                  //     setMeetingName("");
+                  //     setMeetingDate(date);
+                  //     setMeetingTime("");
+                  //     setMeetingVenue("");
+
+                  //     setMeetingMotionby("");
+                  //     setMeetingProposedBy("");
+                  //     setMeetingSecondedBy("");
+
+                  //     setPrivateOptions([]);
+                  //     setPublicOptions([]);
+                  //     setAcademicOptions([]);
+                  //     setAssociationOptions([]);
+                  //     setAllOptions([]);
+
+                  //     setPrivatechips([]);
+                  //     setPublicchips([]);
+                  //     setAcademicchips([]);
+                  //     setAssociationchips([]);
+                  //     setExcusedchips([]);
+                  //     setAbsentchips([]);
+                  //   }
+                  // }}
                   onChange={(e) => {
                     const meetingId = e.target.value;
                     setSelectedMeetingId(meetingId);
@@ -580,11 +676,31 @@ function AddMinute(props) {
                       setMeetingProposedBy("");
                       setMeetingSecondedBy("");
 
+                      const members = selectedMeeting.members || [];
 
-                      const assignedPrivateMembers = getMembersBySector(selectedMeeting, "Private");
-                      const assignedPublicMembers = getMembersBySector(selectedMeeting, "Public");
-                      const assignedAcademicMembers = getMembersBySector(selectedMeeting, "Academic");
-                      const assignedAssociationMembers = getMembersBySector(selectedMeeting, "Association");
+                      const assignedPrivateMembers = members
+                        .filter((member) => member.sector === "Private")
+                        .map((member) => member.name);
+
+                      const assignedPublicMembers = members
+                        .filter(
+                          (member) =>
+                            member.sector === "Public" &&
+                            member.utype !== "Committee Secretary"
+                        )
+                        .map((member) => member.name);
+
+                      const assignedAcademicMembers = members
+                        .filter((member) => member.sector === "Academic")
+                        .map((member) => member.name);
+
+                      const assignedAssociationMembers = members
+                        .filter((member) => member.sector === "Association")
+                        .map((member) => member.name);
+
+                      const unableMemberNames = members
+                        .filter((member) => member.unableToAttend === true)
+                        .map((member) => member.name);
 
                       setPrivateOptions(assignedPrivateMembers);
                       setPublicOptions(assignedPublicMembers);
@@ -598,40 +714,29 @@ function AddMinute(props) {
                         ...assignedAssociationMembers,
                       ]);
 
-                      setPrivatechips([]);
-                      setPublicchips([]);
-                      setAcademicchips([]);
-                      setAssociationchips([]);
-                      setExcusedchips([]);
-                      setAbsentchips([]);
+                      setExcusedchips(unableMemberNames);
 
+                      setPrivatechips(
+                        assignedPrivateMembers.filter((member) => !unableMemberNames.includes(member))
+                      );
 
+                      setPublicchips(
+                        assignedPublicMembers.filter((member) => !unableMemberNames.includes(member))
+                      );
 
+                      setAcademicchips(
+                        assignedAcademicMembers.filter((member) => !unableMemberNames.includes(member))
+                      );
 
-                    } else {
-                      setMeetingName("");
-                      setMeetingDate(date);
-                      setMeetingTime("");
-                      setMeetingVenue("");
+                      setAssociationchips(
+                        assignedAssociationMembers.filter((member) => !unableMemberNames.includes(member))
+                      );
 
-                      setMeetingMotionby("");
-                      setMeetingProposedBy("");
-                      setMeetingSecondedBy("");
-
-                      setPrivateOptions([]);
-                      setPublicOptions([]);
-                      setAcademicOptions([]);
-                      setAssociationOptions([]);
-                      setAllOptions([]);
-
-                      setPrivatechips([]);
-                      setPublicchips([]);
-                      setAcademicchips([]);
-                      setAssociationchips([]);
-                      setExcusedchips([]);
                       setAbsentchips([]);
                     }
                   }}
+
+
                 >
                   <option value="">Select Meeting Date</option>
                   {Array.isArray(meetings) &&
@@ -752,12 +857,19 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
+                id="private-present-typeahead"
                 multiple
-                onChange={setPrivatechips}
+                onChange={(selected) => {
+                  setPrivatechips(selected);
+                  setExcusedchips(removeSelectedMembers(excused_chips, selected));
+                  setAbsentchips(removeSelectedMembers(absent_chips, selected));
+                }}
                 options={privateOptions}
                 placeholder="Choose private members..."
                 selected={private_chips}
               />
+
+
             </div>
             <div>
               <div className="form-row approval-form-row">
@@ -769,12 +881,18 @@ function AddMinute(props) {
               </div>
 
               <Typeahead
+                id="public-present-typeahead"
                 multiple
-                onChange={setPublicchips}
+                onChange={(selected) => {
+                  setPublicchips(selected);
+                  setExcusedchips(removeSelectedMembers(excused_chips, selected));
+                  setAbsentchips(removeSelectedMembers(absent_chips, selected));
+                }}
                 options={publicOptions}
                 placeholder="Choose public members..."
                 selected={public_chips}
               />
+
             </div>
             <div>
               <div className="form-row approval-form-row">
@@ -787,12 +905,18 @@ function AddMinute(props) {
 
 
               <Typeahead
+                id="academic-present-typeahead"
                 multiple
-                onChange={setAcademicchips}
+                onChange={(selected) => {
+                  setAcademicchips(selected);
+                  setExcusedchips(removeSelectedMembers(excused_chips, selected));
+                  setAbsentchips(removeSelectedMembers(absent_chips, selected));
+                }}
                 options={academicOptions}
                 placeholder="Choose academic members..."
                 selected={academic_chips}
               />
+
             </div>
             <div>
               <div className="form-row approval-form-row">
@@ -806,12 +930,18 @@ function AddMinute(props) {
 
 
               <Typeahead
+                id="association-present-typeahead"
                 multiple
-                onChange={setAssociationchips}
+                onChange={(selected) => {
+                  setAssociationchips(selected);
+                  setExcusedchips(removeSelectedMembers(excused_chips, selected));
+                  setAbsentchips(removeSelectedMembers(absent_chips, selected));
+                }}
                 options={associationOptions}
                 placeholder="Choose association members..."
                 selected={association_chips}
               />
+
             </div>
             <div>
               <div className="w-100 mt-3 mb-0 ">
