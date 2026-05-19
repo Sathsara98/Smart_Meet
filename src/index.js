@@ -1,3 +1,5 @@
+// index.js is the app bootstrap file.
+// It starts React and renders the App component inside the HTML page.
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";

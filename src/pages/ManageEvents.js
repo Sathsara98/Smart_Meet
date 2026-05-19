@@ -1,3 +1,5 @@
+// ManageEvents page displays a list of scheduled meetings and allows the user to view details.
+// It also manages modals for adding a meeting and viewing meeting details.
 import React, { useRef, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import {
@@ -76,6 +78,7 @@ const ManageEvents = () => {
 
 
   const loadMembers = () => {
+    // Fetch the list of all events from the backend API
     fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
       headers: new Headers({

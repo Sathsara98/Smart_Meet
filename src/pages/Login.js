@@ -1,3 +1,5 @@
+// Login page lets a user enter email and password, then sends credentials to the backend.
+// If the backend returns a token, the user is redirected to the dashboard.
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Navbar } from "../components";
@@ -10,8 +12,12 @@ import backImg from "../assets/main_pg_img.png";
 import govLogo from "../assets/main logo.png";
 
 function Login() {
+  //stores login error message
   const [error, setError] = useState("");
+  //determines whether to redirect user to dashboard after successful login
   const [redirect, setRedirect] = useState(false);
+
+  //validate before submitting
   const schema = yup.object({
     email: yup
       .string()
@@ -20,18 +26,23 @@ function Login() {
     password: yup.string().required("Password is required!"),
   });
 
+  // This function is run when the user click login
   const login = async (event) => {
     console.log(event);
 
+    // Build request to send email/password to backend login API
     try {
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        //send email and password to backend
         body: JSON.stringify({
           email: event.email,
           password: event.password,
         }),
       };
+
+      // Make API call to backend
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/users/login`,
         requestOptions
@@ -39,6 +50,7 @@ function Login() {
 
       const data = await res.json();
 
+      // If backend sends accessToken, store it and redirect user to dashboard
       if (data.hasOwnProperty("accessToken")) {
         localStorage.setItem("token", data.accessToken);
         setRedirect(true);

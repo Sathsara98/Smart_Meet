@@ -1,3 +1,5 @@
+// ViewMembers page shows a table of registered users for a specific member type.
+// It allows deleting members when the current user has permission.
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useParams } from "react-router";
@@ -104,6 +106,7 @@ function ViewMembers(props) {
   });
 
   const handleDeleteClick = (memberId) => {
+    // Open confirmation dialog before deleting a member
     setMemberIdToDelete(memberId);
     setOpenDialog(true);
   };
@@ -155,6 +158,7 @@ function ViewMembers(props) {
   }
 
   const loadMembers = () => {
+    // Load users for the current type (from the URL) and update the member list state
     fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + type, {
       method: "GET",
       headers: new Headers({

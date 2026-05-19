@@ -5,6 +5,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  // ViewQuestions renders a list of challenge questions in a table.
+  // It supports editing and deleting questions unless readOnly is true.
   TableRow,
   Dialog,
   DialogTitle,
@@ -32,6 +34,7 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
   const [hoverNo, setHoverNo] = useState(false);
+  // Open the delete confirmation dialog for a specific question
   const [hoverYes, setHoverYes] = useState(false);
 
 
@@ -52,6 +55,7 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
   };
 
 
+  // Begin editing this question and prefill the form state
   const cancelDelete = () => {
     setDeleteDialogOpen(false);
     setSelectedDeleteId(null);
@@ -70,6 +74,7 @@ function ViewQuestions({ questions, onDelete, onUpdate, readOnly = false }) {
 
 
   const cancelEdit = () => {
+    // After saving, leave edit mode
     setEditingId(null);
     setFormState({ dArea: "", body: "" });
   };

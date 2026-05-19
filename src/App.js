@@ -1,6 +1,8 @@
+// App.js is the main entry point for the React application.
+// It sets up the page routes and decides which component to show
+// for each URL path in the browser.
 import React from "react";
 import "./App.css";
-import { Navbar } from "./components";
 import HomePage from "./components/Home/Index";
 import NotAvailable from "./components/NotAvailable/Index";
 import AddQuestion from "./components/Questions/Index";
@@ -16,16 +18,16 @@ import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import MySubmission from "./components/MySubmission/MySubmission";
 import Reports from "./components/Reports/Reports";
-import Footer from "./components/Footer/Footer";
 
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 
 function App() {
+  // The Router wraps the whole app and enables page routing.
+  // The Switch element chooses the first matching route.
   return (
     <Router>
       <Switch>
@@ -57,6 +59,7 @@ function App() {
           <Dashboard />
         </Route> */}
         <Route path="*">
+          {/* Default route: any unmatched path shows the home page */}
           <HomePage />
         </Route>
       </Switch>

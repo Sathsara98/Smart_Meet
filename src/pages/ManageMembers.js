@@ -1,3 +1,5 @@
+// ManageMembers.js shows the member management screen.
+// It uses state to open and close a modal and to register new members.
 import React, { useRef, useEffect, useState } from "react";
 import {
   BreadCrum,
@@ -24,6 +26,7 @@ import { Formik } from "formik";
 import Footer from "../components/Footer/Footer";
 
 const ManageMembers = () => {
+  // show state determines whether the "Register New Member" modal is visible.
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -32,6 +35,8 @@ const ManageMembers = () => {
   };
 
   const registerMember = async (event) => {
+    // This function sends a request to the backend to create a user.
+    // The event object contains the form fields entered by the person.
     // event.preventDefault();
     console.log(event);
     try {
@@ -55,6 +60,8 @@ const ManageMembers = () => {
       const data = await res.json();
 
       console.log(data);
+      // Here the code checks if the backend sent an error field.
+      // Right now it always opens the modal again.
       if (data.hasOwnProperty("error")) {
         setShow(true);
       } else {

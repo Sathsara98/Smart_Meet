@@ -1,3 +1,6 @@
+// PrivateRoute is a wrapper around normal React Router routes.
+// It checks if the user is logged in before showing a page.
+// If the user is not logged in, it sends them to the login page.
 import React from "react";
 import Auth from "../authentication/Auth";
 import { Redirect, Route } from "react-router-dom";
@@ -7,6 +10,7 @@ const PrivateRoute = ({ component: Component, role, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
+      // Check whether the user has a valid login token.
       const loggedIn = Auth.isAuthenticated();
       if (!loggedIn) {
         // not logged in so redirect to login page with the return url

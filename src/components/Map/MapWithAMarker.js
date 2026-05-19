@@ -1,3 +1,5 @@
+// MapWithAMarker renders a Google Map with a single draggable marker.
+// It receives the map center, marker coordinates, and a callback for drag events.
 import {
   withScriptjs,
   withGoogleMap,

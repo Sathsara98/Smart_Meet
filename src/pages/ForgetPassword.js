@@ -1,3 +1,5 @@
+// ForgetPassword page allows users to enter their email and request a password reset.
+// It shows a confirmation modal after the reset request succeeds.
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Navbar } from "../components";
@@ -64,6 +66,7 @@ function Login() {
   const reset = async (event) => {
     console.log(event.email);
 
+    // Build request to send email to backend forget-password endpoint
     try {
       const requestOptions = {
         method: "POST",
@@ -81,6 +84,7 @@ function Login() {
 
       console.log(data);
 
+      // If request succeeds, show the confirmation modal
       if (data) {
         setShow(true);
       }

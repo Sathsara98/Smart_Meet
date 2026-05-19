@@ -1,3 +1,5 @@
+// AddQuestions is a small form for adding a new challenge question.
+// It stores form fields locally and sends the data to the parent via onAdd.
 import React, { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import "./Question.css";
@@ -9,6 +11,7 @@ function AddQuestions({ onAdd, disabled }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validate inputs and send new question back to parent component
     if (!area || !challenge.trim()) {
       setError("Please select development area and enter a challenge!");
       return;
