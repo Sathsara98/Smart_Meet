@@ -1,3 +1,7 @@
+// Import React hooks.
+// useState stores changing data.
+// useEffect runs code when page loads.
+// useRef is imported but currently not used.
 import React, { useEffect, useState, useRef } from "react";
 import AddQuestion from "./AddQuestions";
 import ViewQuestion from "./ViewQuestions";
@@ -10,6 +14,8 @@ import {
   AdminCard,
   NavbarDashboard,
 } from "../../components";
+
+
 import {
   Container,
   Form,
@@ -20,58 +26,100 @@ import {
   Spinner,
 } from "react-bootstrap";
 
+
 import { useLocation, useHistory } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
+
 function Index() {
-  // const childRef = useRef();
+  // Stores all added challenges/questions.
   const [questions, setquestions] = useState([]);
+
+
+  // Controls loading message.
   const [loading, setLoading] = useState(true);
 
+
+  // These states store challenge counts by development area.
   let [technology, settechnology] = useState(0);
   let [workforce, setworkforce] = useState(0);
   let [productivity, setproductivity] = useState(0);
   let [marketing, setmarketing] = useState(0);
+
+
+  // Stores the development area with the highest number of challenges.
   const [maxArea, setmaxArea] = useState("");
 
+
+  // Used to read navigation data from previous page.
   const location = useLocation();
+
+
+  // Used to navigate to another page.
   const history = useHistory();
 
+
+  // Stores current submission ID.
+  // If null, this is a new submission.
   const [submissionId, setSubmissionId] = useState(null);
-  const [mode, setMode] = useState("create"); // 'create' | 'edit' | 'view'
 
-  // const submissionId = location.state?.submissionId || null;
-  // const mode = location.state?.mode || "create"; 
 
+  // Stores page mode.
+  // create = new submission
+  // edit = edit draft
+  // view = view completed submission
+  const [mode, setMode] = useState("create");
+
+
+  // If mode is view, user cannot edit.
   const isReadOnly = mode === "view";
 
+
+
+
+  // This runs when page first loads.
   useEffect(() => {
+    // Get data passed through navigation.
     const state = location.state || {};
 
+
+    // If submissionId exists, load existing submission.
     if (state.submissionId) {
       setSubmissionId(state.submissionId);
       setMode(state.mode || "edit");
       loadSubmission(state.submissionId);
     } else {
-      // new submission
+      // If no submissionId, start a new submission.
       setquestions([]);
       setmaxArea("");
       setLoading(false);
     }
 
-    // optional: clear navigation state so back/forward doesn’t replay it
+
+    // Clear navigation state.
+    // WHY: prevents old state from being reused when using browser back/forward.
     history.replace({ ...location, state: {} });
   }, []);
 
-  // load a single submission by id
+
+
+
+  // Load one submission by ID.
   const loadSubmission = async (id) => {
     setLoading(true);
+
+
     try {
+      // Get selected submission from backend.
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${id}`
       );
+
+
       const doc = await res.json();
-      // flatten doc.questions into your table structure
+
+
+      // Convert backend questions into frontend table format.
       const flattened =
         (doc.questions || []).map((q, index) => ({
           _id: q._id || `${doc._id}-${index}`,
@@ -80,7 +128,12 @@ function Index() {
           disabled: false,
         })) || [];
 
+
+      // Save questions to state.
       setquestions(flattened);
+
+
+      // Find highest-priority development area.
       findMax(flattened);
     } catch (e) {
       console.error("Error loading submission:", e);
@@ -90,8 +143,11 @@ function Index() {
   };
 
 
+
+
+  // This useEffect runs when submissionId or mode changes.
   useEffect(() => {
-    // create mode → start fresh
+    // If create mode, start fresh.
     if (!submissionId || mode === "create") {
       setquestions([]);
       setmaxArea("");
@@ -99,26 +155,42 @@ function Index() {
       return;
     }
 
-    // edit or view → load existing submission
+
+    // If edit or view mode, load existing submission.
     const fetchOne = async () => {
       setLoading(true);
+
+
       try {
         const res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`
         );
+
+
         const doc = await res.json();
+
+
         if (!res.ok) throw new Error(doc.message || "Error loading submission");
 
+
+        // Format backend question data.
         const flattened =
           Array.isArray(doc.questions) ?
             doc.questions.map((q, index) => ({
               _id: q._id || `${doc._id}-${index}`,
               body: q.body,
               dArea: q.dArea,
+
+
+              // Disable editing if mode is view.
               disabled: isReadOnly,
             })) : [];
 
+
         setquestions(flattened);
+
+
+        // Recalculate highest development area.
         findMax(flattened);
       } catch (e) {
         console.error(e);
@@ -128,21 +200,16 @@ function Index() {
       }
     };
 
+
     fetchOne();
   }, [submissionId, mode]);
 
 
-  // const handleAddQuestion = (newItem) => {
-  //   const newQuestion = {
-  //     _id: Date.now(),
-  //     body: newItem.challenge,
-  //     dArea: newItem.area,
-  //     disabled: false,
-  //   };
-  //   setquestions((prev) => [...prev, newQuestion]);
-  //   findMax([...questions, newQuestion]); 
-  // };
+
+
+  // Add a new challenge/question.
   const handleAddQuestion = (newItem) => {
+    // Create a new question object.
     const newQuestion = {
       _id: Date.now(),
       body: newItem.challenge,
@@ -150,59 +217,96 @@ function Index() {
       disabled: false,
     };
 
-    // use functional setState to avoid stale state
+
+    // Add new question to list.
+    // Functional setState is used to avoid old/stale state.
     setquestions((prev) => {
       const updatedList = [...prev, newQuestion];
+
+
+      // Update highest development area after adding.
       findMax(updatedList);
+
+
       return updatedList;
     });
-
   };
-  // DELETE one question
+
+
+
+
+  // Delete one question using question ID.
   const handleDeleteQuestion = (id) => {
     setquestions((prev) => {
+      // Remove selected question.
       const updated = prev.filter((q) => q._id !== id);
+
+
+      // Recalculate highest development area.
       findMax(updated);
+
+
       return updated;
     });
   };
 
-  // UPDATE one question
+
+
+
+  // Update one question.
   const handleUpdateQuestion = (id, updatedData) => {
     setquestions((prev) => {
+      // Find matching question and update it.
       const updated = prev.map((q) =>
         q._id === id ? { ...q, ...updatedData } : q
       );
+
+
+      // Recalculate highest development area.
       findMax(updated);
+
+
       return updated;
     });
   };
 
-  // 🔹 Build payload for draft or submit
+
+
+
+  // Build payload before saving draft or submitting.
+  // WHY: Backend expects questions, creator, status, and maxArea.
   const buildPayload = (statusValue) => ({
     questions: questions.map((q) => ({
       dArea: q.dArea,
       body: q.body,
     })),
-    createdBy: "Sathsara",
+    createdBy: "Administrator",
     status: statusValue,
     maxArea: maxArea,
   });
 
 
 
+
+  // Submit all challenges.
   const handleSubmitAll = async () => {
+    // User must add at least one challenge.
     if (questions.length === 0) {
       alert("Please add at least one question!");
       return;
     }
 
+
+    // Build submitted payload.
     const payload = buildPayload("submitted");
+
 
     try {
       let res;
+
+
       if (submissionId) {
-        // submit existing draft
+        // If submission already exists, update it.
         res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
           {
@@ -212,7 +316,7 @@ function Index() {
           }
         );
       } else {
-        // first-time submit
+        // If this is first submit, create new submission.
         res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
           {
@@ -223,19 +327,28 @@ function Index() {
         );
       }
 
+
       const data = await res.json();
+
+
       if (!res.ok) throw new Error(data.message || "Server Error");
 
+
+      // Show success popup.
       returnModel(true, "Challenges submitted successfully!", false, () => {
-        // after submitting clear form and open Add Event modal to create an event
+        // Clear form after submit.
         setquestions([]);
         findMax([]);
         setSubmissionId(null);
         setMode("create");
 
-        // navigate to ManageEvents and open AddEvents modal, passing submission data
+
+        // Navigate to event page after submitting challenges.
+        // WHY: After identifying maxArea, system can create meeting/event.
         try {
           const newSubmissionId = data?.data?._id || data?._id || null;
+
+
           history.push("/events/true", {
             submissionId: newSubmissionId,
             questions: payload.questions,
@@ -254,18 +367,25 @@ function Index() {
 
 
 
+  // Save current challenge list as draft.
   const handleSaveDraft = async () => {
+    // Cannot save empty draft.
     if (questions.length === 0) {
       alert("Please add at least one question before saving a draft!");
       return;
     }
 
+
+    // Build draft payload.
     const payload = buildPayload("draft");
+
 
     try {
       let res;
+
+
       if (submissionId) {
-        // ✏️ editing existing draft -> UPDATE
+        // If draft already exists, update it.
         res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/admin/questions/${submissionId}`,
           {
@@ -275,7 +395,7 @@ function Index() {
           }
         );
       } else {
-        // 🆕 new draft -> CREATE
+        // If new draft, create it.
         res = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/admin/new-question`,
           {
@@ -286,14 +406,20 @@ function Index() {
         );
       }
 
+
       const data = await res.json();
+
+
       if (!res.ok) throw new Error(data.message || "Server Error");
 
-      // if we just created it, remember its id so next save becomes UPDATE
+
+      // If draft was newly created, store its ID.
+      // WHY: Next Save Draft should update same draft, not create new one.
       if (!submissionId && data.data && data.data._id) {
         setSubmissionId(data.data._id);
         setMode("edit");
       }
+
 
       returnModel(true, "Draft saved successfully!", false, () => { });
     } catch (err) {
@@ -305,14 +431,20 @@ function Index() {
 
 
 
-
-
-
-
+  // Breadcrumb path.
+  // Currently breadcrumb is commented in JSX.
   const pathToPage = ["Home", "Admin", "Add Questions"];
+
+
+
+
+  // Find development area with highest number of challenges.
   const findMax = (data_new) => {
     setLoading(true);
     console.log(data_new);
+
+
+    // Count variables for each development area.
     let policy = 0;
     let randd = 0;
     let technology = 0;
@@ -320,11 +452,9 @@ function Index() {
     let productivity = 0;
     let marketing = 0;
 
+
     if (data_new != null) {
-      for (let index = 0; index < data_new.length; index++) {
-        const element = data_new[index];
-      }
-      const saman = data_new;
+      // Loop through questions and count by development area.
       data_new.forEach((element) => {
         if (element.dArea == "Policy") {
           policy++;
@@ -341,6 +471,8 @@ function Index() {
         }
       });
 
+
+      // Store all counts in one array.
       let dAreaArr = [
         policy,
         productivity,
@@ -349,13 +481,24 @@ function Index() {
         marketing,
         workforce,
       ];
+
+
       console.log(dAreaArr);
+
+
+      // Assume first value is max.
       let max = dAreaArr[0];
+
+
+      // Find highest count.
       dAreaArr.forEach((element) => {
         if (max < element) {
           max = element;
         }
       });
+
+
+      // Set maxArea based on highest count.
       if (max == policy) {
         setmaxArea("Policy");
       } else if (max == randd) {
@@ -370,10 +513,19 @@ function Index() {
         setmaxArea("Workforce");
       }
     }
+
+
     setLoading(false);
   };
 
+
+
+
+  // Model state for success messages.
   const [model, setModel] = useState(null);
+
+
+  // Reusable popup model function.
   const returnModel = (show, body, confirmation, callback) => {
     setModel(
       <Model
@@ -390,6 +542,11 @@ function Index() {
       />
     );
   };
+
+
+
+
+  // Show loading screen while data is loading.
   if (loading == true && maxArea == "") {
     return (
       <div className="text-center align-items-center">
@@ -397,21 +554,34 @@ function Index() {
           Loading ...
         </h3>
         <div>
-          {" "}
           {/* svg animation */}
-
         </div>
       </div>
     );
   } else {
     return (
       <div className="wrapper">
+        {/* Show popup model */}
         {model}
+
+
+        {/* Sidebar with questions menu active */}
         <SideBar questions={true} />
+
+
         <div className="main-panel">
-          <NavbarDashboard title="Add Challenges" subtitle="Submit Challenges to Shape Smarter Decisions" />
+          {/* Top navbar */}
+          <NavbarDashboard
+            title="Add Challenges"
+            subtitle="Submit Challenges to Shape Smarter Decisions"
+          />
+
+
           <div className="content">
             {/* <BreadCrum path={pathToPage} /> */}
+
+
+            {/* Development area summary cards */}
             <Row className="mb-4 dev-cards-wrapper">
               {[
                 { name: "Policy", color: "#f3c612" },
@@ -421,44 +591,54 @@ function Index() {
                 { name: "Productivity", color: "#CB6CE6" },
                 { name: "Marketing", color: "#54DDFE" },
               ].map((area) => {
-
+                // Count challenges for this development area.
                 const count = questions.filter((q) => q.dArea === area.name).length;
+
+
+                // Check whether this area is currently highest.
                 const isMaxArea = questions.length > 0 && area.name === maxArea;
+
+
                 return (
                   <Col key={area} md={2}>
                     <div
                       className={`p-3 text-center rounded dev-card ${isMaxArea ? "dev-card-active" : ""
                         }`}
-                      style={{ border: isMaxArea ? `1px solid ${area.color}` : "0.0625rem solid #e9ecef " }}
+                      style={{
+                        // Highlight highest-priority development area.
+                        border: isMaxArea
+                          ? `1px solid ${area.color}`
+                          : "0.0625rem solid #e9ecef "
+                      }}
                     >
-
+                      {/* Show count */}
                       <h3 className="m-0">{count}</h3>
-                      <h6 className="m-0">{area.name}</h6>
 
+
+                      {/* Show area name */}
+                      <h6 className="m-0">{area.name}</h6>
                     </div>
                   </Col>
                 );
               })}
             </Row>
-            <AdminCard title="Insert Questions" >
+
+
+            {/* Main challenge section */}
+            <AdminCard title="Insert Questions">
               <div style={{ minHeight: "350px" }}>
 
 
-                {/* <Alert variant={"secondary"}>
-                <Row>
-                  <Container as={Col}>
-                    <h4 className="text-center p-0 m-0">
-                      {questions.length > 0 ? (
-                        <strong>Developing area - {maxArea}</strong>) : null
-                      }
-                    </h4>
-                  </Container>
-                </Row>
-              </Alert> */}
+                {/* Add challenge form.
+                   Disabled when mode is view. */}
+                <AddQuestion
+                  onAdd={handleAddQuestion}
+                  disabled={mode === "view"}
+                />
 
 
-
-                <AddQuestion onAdd={handleAddQuestion} disabled={mode === "view"} />
+                {/* Display added challenges.
+                   Delete/update disabled in view mode. */}
                 <ViewQuestion
                   questions={questions}
                   onDelete={mode === "view" ? undefined : handleDeleteQuestion}
@@ -466,54 +646,18 @@ function Index() {
                   readOnly={mode === "view"}
                 />
 
-                {/* Table Section */}
-                {/* <table className="table mt-4">
-                  <thead>
-                    <tr>
-                      <th>Development Area</th>
-                      <th>Challenge</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {questions.map((q, i) => (
-                      <tr key={i}>
-                        <td>{q.dArea}</td>
-                        <td>{q.body}</td>
 
-                        
-                        <td className="text-center">
-
-                         
-                          <i
-                            className="far fa-edit mr-3"
-                            style={{ cursor: "pointer", fontSize: "18px" }}
-                            onClick={() => childRef.current?.editComment?.(q._id)}
-                          ></i>
-
-                          
-                          <i
-                            className="far fa-trash-alt"
-                            style={{ cursor: "pointer", fontSize: "18px", color: "red" }}
-                            onClick={() => childRef.current?.deleteComment?.(q._id)}
-                          ></i>
-
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-*/}
-
-                {/* <ViewQuestion
-                  questions={questions}
-                  onChange={fetchQuestions}
-                  loading={loading}
-                  show={(e, ee, ss, eee) => returnModel(e, ee, ss, eee)}
-                  ref={childRef}
-                ></ViewQuestion> */}
+                {/* Show buttons only if not view mode */}
                 {mode !== "view" && (
-                  <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "20px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: "10px",
+                      marginTop: "20px"
+                    }}
+                  >
+                    {/* Save as draft */}
                     <Button
                       variant=""
                       className="btn-secondary"
@@ -522,6 +666,9 @@ function Index() {
                     >
                       Save Draft
                     </Button>
+
+
+                    {/* Submit challenges */}
                     <Button
                       variant=""
                       className="btn-primary"
@@ -534,6 +681,9 @@ function Index() {
                 )}
               </div>
             </AdminCard>
+
+
+            {/* Footer */}
             <Footer />
           </div>
         </div>
@@ -543,3 +693,6 @@ function Index() {
 }
 
 export default Index;
+
+
+

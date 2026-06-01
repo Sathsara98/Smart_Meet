@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useLocation } from "react-router";
+
 import {
   BreadCrum,
   SideBar,
@@ -11,6 +12,7 @@ import {
   Event,
   EventDetails,
 } from "../components";
+
 import {
   Container,
   Card,
@@ -20,49 +22,99 @@ import {
   Alert,
   Modal,
 } from "react-bootstrap";
+
 import * as yup from "yup";
 import { Formik } from "formik";
 import backImg from "../assets/home_page/metal.jpg";
+
 import Auth from "../authentication/Auth";
+
 import { useParams } from "react-router";
+
 import Footer from "../components/Footer/Footer";
 
 
+// ManageEvents component.
+// Purpose:
+// 1. Display all scheduled meetings.
+// 2. Open Add Meeting modal when URL says true.
+// 3. Open Meeting Details modal when user clicks a meeting.
+// 4. Show only assigned meetings for Committee Members.
 const ManageEvents = () => {
+
+  // Read isOpen value from URL parameters.
+  // Example: /events/true means Add Meeting modal should open.
   const { isOpen } = useParams();
+
+  // Read navigation state passed from another page.
+  // Example: questions and maxArea passed after submitting challenges.
   const location = useLocation();
+
+  // Controls Add Meeting modal.
+  // If isOpen is "true", modal opens automatically.
   const [show, setShow] = useState(isOpen === "true" ? true : false);
 
 
+  // Close Add Meeting modal and details modal.
   const handleClose = () => {
+    // Close Add Meeting modal.
     setShow(false);
-    setShow2(false); // close EventDetails modal too
-    setEvent(null); // clear event data
-    // Store questions from submission for later use
+
+    // Close EventDetails modal too.
+    setShow2(false);
+
+    // Clear selected event details.
+    setEvent(null);
+
+    // Store questions from submitted challenge data.
+    // WHY: If a meeting does not already contain questions,
+    // we can attach submitted questions before showing details.
     if (location.state?.questions) {
       setSubmissionQuestions(location.state.questions);
       console.log("Stored submission questions:", location.state.questions);
     }
-    loadMembers(); // reload event list
+
+    // Reload meeting list after closing.
+    loadMembers();
   };
+
+
+  // Open Add Meeting modal.
   const handleShow = () => {
     setShow(true);
     console.log("Show True");
   };
 
 
+  // Controls View Meeting Details modal.
   const [show2, setShow2] = useState(false);
+
+  // Close View Meeting Details modal.
   const handleClose2 = () => setShow2(false);
+
+  // Open View Meeting Details modal.
   const handleShow2 = () => {
     setShow2(true);
     console.log("Show2 True");
   };
+
+  // Page state.
+  // Currently used as dependency to reload meetings.
   const [page, setPage] = useState(1);
+
+  // Stores all meetings/events loaded from backend.
   const [eventList, setEventList] = useState([]);
+
+  // Stores selected meeting/event for details modal.
   const [event, setEvent] = useState(null);
-  const [submissionQuestions, setSubmissionQuestions] = useState(null); // Store questions from submission
+
+  // Stores questions passed from challenge submission.
+  const [submissionQuestions, setSubmissionQuestions] = useState(null);
 
 
+  // This runs when component first loads.
+  // Logic:
+  // If URL parameter is true, open Add Meeting modal.
   useEffect(() => {
     if (isOpen === "true") {
       setShow(true);
@@ -70,11 +122,17 @@ const ManageEvents = () => {
       setShow(false);
     }
   }, []);
+
+
+  // This runs when page state changes.
+  // Logic:
+  // Load/reload meetings from backend.
   useEffect(() => {
     loadMembers();
   }, [page]);
 
 
+  // Load all meetings/events from backend.
   const loadMembers = () => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
@@ -84,31 +142,55 @@ const ManageEvents = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        // Save meeting list into state.
         setEventList(response);
+
         console.log(response);
       })
       .catch((error) => console.log(error));
   };
 
 
+  // Show selected meeting details.
   const showDetails = (event) => {
     console.log("Showing event details for:", event);
-    // If we have stored submission questions and the event doesn't have questions, add them
+
+    // If questions were passed from submission and selected event has no questions,
+    // add those questions to the event before showing details.
     if (submissionQuestions && !event.questions) {
       event.questions = submissionQuestions;
       console.log("Added submission questions to event:", event);
     }
+
+    // Save selected event.
     setEvent(event);
+
+    // Open details modal.
     setShow2(true);
   };
+
+
+  // Breadcrumb path.
+  // Currently breadcrumb is commented in JSX.
   const pathToPage = ["Home", "Users", "ManageEvents"];
+
   return (
     <div className="wrapper">
+
+      {/* Sidebar with Events menu active */}
       <SideBar events={true} />
+
       <div className="main-panel">
-        <NavbarDashboard title="Meetings" subtitle="View All Scheduled Meetings" />
+
+        {/* Top navbar */}
+        <NavbarDashboard
+          title="Meetings"
+          subtitle="View All Scheduled Meetings"
+        />
+
         <div className="content">
 
+          {/* Add Meeting modal */}
           <Modal
             show={show}
             size="lg"
@@ -121,19 +203,22 @@ const ManageEvents = () => {
             <Modal.Header closeButton style={{ justifyContent: "center" }}>
               <h2>Add Meeting Details</h2>
             </Modal.Header>
+
             <Modal.Body>
-              {/* pass submission state (if any) to AddEvents so it can prefill */}
-              <AddEvents close={handleClose} submissionState={location.state} />
+              {/* 
+               AddEvents component creates a new meeting.
+               submissionState is passed so AddEvents can prefill data
+               from submitted challenges, such as questions and maxArea.
+             */}
+              <AddEvents
+                close={handleClose}
+                submissionState={location.state}
+              />
             </Modal.Body>
-            {/* <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Save Changes
-              </Button>
-            </Modal.Footer> */}
           </Modal>
+
+
+          {/* View Meeting Details modal */}
           <Modal
             show={show2}
             size="lg"
@@ -143,43 +228,64 @@ const ManageEvents = () => {
             scrollable={true}
             aria-labelledby="contained-modal-title-vcenter"
           >
-            <Modal.Header closeButton onClick={handleClose2} style={{ justifyContent: "center" }}>
+            <Modal.Header
+              closeButton
+              onClick={handleClose2}
+              style={{ justifyContent: "center" }}
+            >
               <h2>View Meeting Details</h2>
             </Modal.Header>
+
             <Modal.Body>
-              <EventDetails close={handleClose2} event={event} />
+              {/* EventDetails displays full meeting details */}
+              <EventDetails
+                close={handleClose2}
+                event={event}
+              />
             </Modal.Body>
-            {/* <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Save Changes
-              </Button>
-            </Modal.Footer> */}
           </Modal>
+
+
+          {/* Breadcrumb is currently commented */}
           {/* <BreadCrum path={pathToPage} /> */}
+
+
+          {/* Add New Event button is currently commented.
+             Logic in comment:
+             Only users except Committee Member and Committee Secretary
+             could see Add New Event button.
+         */}
           {/* <div className="d-flex justify-content-end">
-            {Auth?.getUserLevel() !== "Committee Member" &&
-              Auth?.getUserLevel() !== "Committee Secretary" ? (
-              <Button
-                variant=""
-                className="btn btn-ternitary  btn"
-                onClick={handleShow}
-              >
-                <i className="tim-icons fas fa-plus" /> Add New Event
-              </Button>
-            ) : null}
-          </div> */}
+           {Auth?.getUserLevel() !== "Committee Member" &&
+             Auth?.getUserLevel() !== "Committee Secretary" ? (
+             <Button
+               variant=""
+               className="btn btn-ternitary  btn"
+               onClick={handleShow}
+             >
+               <i className="tim-icons fas fa-plus" /> Add New Event
+             </Button>
+           ) : null}
+         </div> */}
 
 
+          {/* Meetings list */}
           <Row>
             {eventList != null
               ? eventList.map((ev, index) => {
+                // isIn decides whether the current logged-in user can see this meeting.
                 var isIn = false;
+
+                // Check each member assigned to the meeting.
                 ev.members.forEach((element) => {
+
+                  // If user is not Committee Member,
+                  // allow viewing all meetings.
                   if (Auth?.getUserLevel() != "Committee Member") {
                     isIn = true;
+
+                    // If user is Committee Member,
+                    // show only meetings where their user ID exists in members list.
                   } else if (
                     Auth?.getUserLevel() === "Committee Member" &&
                     element._id === Auth?.getUserId()
@@ -187,18 +293,23 @@ const ManageEvents = () => {
                     isIn = true;
                   }
                 });
+
+                // If user is allowed to see this meeting, show Event card.
                 if (isIn) {
                   return (
-                    <Event key={index} event={ev} more={showDetails} />
+                    <Event
+                      key={index}
+                      event={ev}
+                      more={showDetails}
+                    />
                   );
                 }
               })
               : null}
           </Row>
+
+          {/* Footer */}
           <Footer />
-
-
-
         </div>
       </div>
     </div>
@@ -207,8 +318,4 @@ const ManageEvents = () => {
 
 
 export default ManageEvents;
-
-
-
-
 

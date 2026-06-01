@@ -10,6 +10,7 @@ import {
   NavbarDashboard,
   MemberRatio,
 } from "../../components";
+
 import {
   Container,
   Form,
@@ -20,6 +21,7 @@ import {
   Spinner,
   Toast,
 } from "react-bootstrap";
+
 import {
   Table,
   TableBody,
@@ -34,26 +36,53 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
+
 import Auth from "../../authentication/Auth";
+
 import Footer from "../Footer/Footer";
 
+
+// Main dashboard component.
 function Index() {
+
+  // Stores all meetings/events shown in dashboard calendar.
   const [eventList, setEventList] = useState([]);
+
+  // Stores selected event details.
+  // Currently this state is declared but not used in this file.
   const [event, setEvent] = useState(null);
+
+  // Controls page loading.
+  // true means data is still loading.
   const [isLoading, setLoading] = useState(true);
+
+  // Stores challenge submission records from backend.
   const [submissionData, setSubmissionData] = useState([]);
+
+  // Stores submitted questions/challenges.
   const [questions, setQuestions] = useState([]);
+
+  // Stores current table page number.
   const [page, setPage] = useState(0);
+
+  // Stores how many rows should show per page.
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+
+  // This function creates notification messages.
+  // Logic:
+  // Based on type, it shows different notification styles.
   const createNotification = (type) => {
     return () => {
       switch (type) {
         case "info":
           NotificationManager.info("Info message");
           break;
+
         case "success":
           NotificationManager.success("Success message", "Title here");
           break;
+
         case "warning":
           NotificationManager.warning(
             "Warning message",
@@ -61,6 +90,7 @@ function Index() {
             3000
           );
           break;
+
         case "error":
           NotificationManager.error("Error message", "Click me!", 5000, () => {
             alert("callback");
@@ -69,27 +99,50 @@ function Index() {
       }
     };
   };
+
+  // Breadcrumb path for dashboard.
+  // Currently breadcrumb display is commented in JSX.
   const pathToPage = ["Home", "Admin", "Dashboard"];
+
+
+  // useEffect runs once when dashboard page loads.
+  // Logic:
+  // 1. Load meeting events.
+  // 2. Load challenge submissions.
+  // 3. Load submitted questions for chart.
   useEffect(() => {
     loadEvents();
     loadSubmissions();
     loadQuestions();
   }, []);
 
+
+  // This function loads submitted questions/challenges.
+  // These questions are used to prepare the bar chart.
   const loadQuestions = async () => {
     try {
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/submitted-questions`);
+
+      // Convert response into JSON.
       const data = await res.json();
+
+      // If data is an array, save it.
+      // Otherwise save empty array to avoid errors.
       setQuestions(Array.isArray(data) ? data : []);
     }
     catch (err) {
+      // If request fails, show error in console and clear questions.
       console.error("Error fetching questions", err);
       setQuestions([]);
     }
   };
 
+
+  // This function loads all events/meetings from backend.
   const loadEvents = async () => {
+    // Start loading before API call.
     setLoading(true);
+
     await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/all/`, {
       method: "GET",
       headers: new Headers({
@@ -99,59 +152,102 @@ function Index() {
       .then((res) => res.json())
       .then((response) => {
 
-        //Filter event tht involves the logged user
+        // Logic:
+        // If logged-in user is a Committee Member,
+        // show only meetings where that member is included.
         if (Auth.getUserLevel() === "Committee Member") {
           var eventArr = [];
+
+          // Loop through all meetings.
           response.map(function (el) {
             var isUser = false;
+
+            // Check each member in the meeting.
             el.members.forEach((element) => {
               console.log(Auth?.getUserId() == element._id);
+
+              // If logged-in user's ID matches meeting member ID,
+              // this meeting belongs to the user.
               if (Auth?.getUserId() == element._id) {
                 isUser = true;
               }
             });
+
+            // Add meeting only if logged-in user is part of it.
             if (isUser) {
               eventArr.push(el);
             }
           });
+
+          // Save filtered meetings.
           setEventList(eventArr);
         } else {
+          // If user is admin/secretary, show all meetings.
           setEventList(response);
         }
       })
       .catch((error) => console.log(error));
+
+    // Stop loading after request finishes.
     setLoading(false);
   };
 
+
+  // This function loads challenge submission summary data.
+  // This data is used in the recent completed challenges table.
   const loadSubmissions = async () => {
     try {
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/challenges`);
+
+      // Convert backend response to JSON.
       const data = await res.json();
+
+      // Save submission data into state.
       setSubmissionData(data);
     } catch (err) {
+      // If request fails, show error in console.
       console.error("Error fetching submissions:", err);
     }
   };
 
+
+  // This function changes current table page.
   const handleChangePage = (_, newPage) => setPage(newPage);
+
+  // This function changes how many rows show per page.
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
+
+    // Reset to first page when rows per page changes.
     setPage(0);
   };
 
-  // Filter only completed submissions
+
+  // Filter only completed submissions.
+  // Logic:
+  // Dashboard table should show only completed challenge submissions.
   const completedSubmissions = submissionData.filter(
     (submission) => submission.status === "completed"
   );
 
-  // Prepare data for bar chart - count individual challenges by development area (all submissions)
+
+  // Prepare data for bar chart.
+  // Logic:
+  // Count how many questions/challenges belong to each development area.
   const developmentAreaCounts = {};
+
   questions.forEach((q) => {
+    // If development area is missing, use "Unknown".
     const area = q.developmentArea || "Unknown";
+
+    // Increase count for that development area.
     developmentAreaCounts[area] = (developmentAreaCounts[area] || 0) + 1;
   });
 
-  // Color mapping for development areas
+
+  // Color mapping for development areas.
+  // Logic:
+  // Each development area gets a different bar color in the chart.
   const areaColorMap = {
     "Policy": "#f3c612",
     "R&D": "#0D97B9",
@@ -161,7 +257,10 @@ function Index() {
     "Marketing": "#54DDFE",
   };
 
-  // Create chart data with color column for per-bar styling
+
+  // Create chart data in the format required by react-google-charts.
+  // First row contains column names.
+  // Other rows contain development area, challenge count, and bar color.
   const chartData = [
     ["Development Area", "Number of Challenges", { role: "style" }],
     ...Object.entries(developmentAreaCounts).map(([area, count]) => [
@@ -171,43 +270,50 @@ function Index() {
     ]),
   ];
 
+
   return (
     <div className="wrapper">
+
+      {/* Shows an info notification message.
+         Note: this runs while rendering the component. */}
       {NotificationManager.info("Info message")}
+
+      {/* Sidebar navigation */}
       <SideBar dashboard={true} />
+
+      {/* Show dashboard only after loading is completed */}
       {!isLoading ? (
         <div className="main-panel">
+
+          {/* Top navbar with logged-in user's name */}
           <NavbarDashboard
             title={'Hello, ' + Auth.getUserName() + '!'}
             subtitle="Welcome back to Meeting Management System"
           />
+
           <div className="content">
-            {/* <div
-              class="alert alert-info alert-dismissible fade show"
-              role="alert"
-            >
-              <strong>Holy guacamole!</strong> You should check in on some of
-              those fields below.
-              <button
-                type="button"
-                class="close"
-                data-dismiss="alert"
-                aria-label="Close"
-              >
-                <i class="fa fa-times-circle mt-2"></i>
-              </button>
-            </div> */}
+
+            {/* Breadcrumb is currently commented */}
             {/* <BreadCrum path={pathToPage} /> */}
 
+            {/* Old calendar card is currently commented */}
             {/* <AdminCard>
-              <Calender events={eventList != null ? eventList : null} />
-            </AdminCard> */}
+             <Calender events={eventList != null ? eventList : null} />
+           </AdminCard> */}
+
             <div className="dashboard-grid">
+
+              {/* First dashboard row: chart and calendar */}
               <div class="row g-4 dash-row pt-1">
-                {/* bar chart */}
+
+                {/* Bar chart section */}
                 <div class="col-lg-6">
                   <AdminCard>
-                    <div class="c-header fw-bold pb-2">Challenges by Development Area</div>
+                    <div class="c-header fw-bold pb-2">
+                      Challenges by Development Area
+                    </div>
+
+                    {/* If chart has data, display bar chart */}
                     {chartData.length > 1 ? (
                       <Chart
                         width={"100%"}
@@ -215,22 +321,28 @@ function Index() {
                         chartType="BarChart"
                         data={chartData}
                         options={{
-
                           titleTextStyle: { fontSize: 14, bold: false },
                           legend: { position: "none" },
+
+                          // Horizontal axis shows challenge count.
                           hAxis: {
                             title: "Number of Challenges",
                             titleTextStyle: { color: "#333" },
                             minValue: 0,
                           },
+
+                          // Vertical axis shows development area names.
                           vAxis: {
                             title: "Development Area",
                             titleTextStyle: { color: "#333" },
                           },
+
+                          // Controls bar width.
                           bar: { groupWidth: "75%" },
                         }}
                       />
                     ) : (
+                      // If there is no chart data, show message.
                       <div style={{ textAlign: "center", padding: "40px", color: "#999" }}>
                         No data available
                       </div>
@@ -238,48 +350,55 @@ function Index() {
                   </AdminCard>
                 </div>
 
-                {/* Calendar */}
+
+                {/* Upcoming meetings calendar section */}
                 <div class="col-lg-6">
                   <AdminCard>
                     <div class="c-header fw-bold pb-2">Upcoming Meetings</div>
+
+                    {/* Pass meeting list to calendar component */}
                     <Calender events={eventList != null ? eventList : []} height={300} />
                   </AdminCard>
                 </div>
 
-                {/* Countdown */}
-                {/* <div class="col-lg-3">
-                  <AdminCard>
-                    <div class="c-header fw-bold pb-2">Next Meeting</div>
-                    <canvas id="barChart"></canvas>
-                  </AdminCard>
-                </div> */}
-
               </div>
 
+
+              {/* Second dashboard row: recent challenges and member composition */}
               <div class="row  dash-row">
-                {/* Recent Challenges */}
+
+                {/* Recent completed challenges table */}
                 <div class="col-lg-9">
                   <AdminCard>
-                    <div class="c-header fw-bold pb-2">Recent Completed Challenges</div>
+                    <div class="c-header fw-bold pb-2">
+                      Recent Completed Challenges
+                    </div>
+
                     <TableContainer>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            {/* <TableCell><b>ID</b></TableCell> */}
                             <TableCell><b>No. of Challenges</b></TableCell>
                             <TableCell><b>Development Area</b></TableCell>
                             <TableCell><b>Status</b></TableCell>
                             <TableCell><b>Created Date</b></TableCell>
                           </TableRow>
                         </TableHead>
+
                         <TableBody>
+                          {/* Show only rows for current page */}
                           {completedSubmissions
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => (
                               <TableRow key={row.id} hover>
-                                {/* <TableCell>{row.id}</TableCell> */}
+
+                                {/* Number of challenges in submission */}
                                 <TableCell>{row.noOfChallenges}</TableCell>
+
+                                {/* Development area of submission */}
                                 <TableCell>{row.developmentArea}</TableCell>
+
+                                {/* Status chip */}
                                 <TableCell>
                                   <Chip
                                     label="Completed"
@@ -290,6 +409,8 @@ function Index() {
                                     }}
                                   />
                                 </TableCell>
+
+                                {/* Created date */}
                                 <TableCell>{row.createdDate}</TableCell>
                               </TableRow>
                             ))}
@@ -299,18 +420,23 @@ function Index() {
                   </AdminCard>
                 </div>
 
-                {/* Calendar */}
+
+                {/* Member composition chart/card */}
                 <div class="col-lg-3 mem-composition">
                   <AdminCard>
-                    <div class="c-header fw-bold pb-2 ">Member Composition</div>
+                    <div class="c-header fw-bold pb-2 ">
+                      Member Composition
+                    </div>
+
+                    {/* MemberRatio component shows member composition by sector */}
                     <MemberRatio />
                   </AdminCard>
                 </div>
 
-
               </div>
             </div>
 
+            {/* Footer section */}
             <Footer />
           </div>
         </div>
@@ -319,4 +445,6 @@ function Index() {
   );
 }
 
+
 export default Index;
+
