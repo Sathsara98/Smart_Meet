@@ -241,9 +241,8 @@ function ViewMembers(props) {
   };
 
 
-  // Load members by sector/type from backend.
   const loadMembers = () => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/` + type, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/${type}`, {
       method: "GET",
       headers: new Headers({
         Accept: "application/vnd.github.cloak-preview",
@@ -251,22 +250,32 @@ function ViewMembers(props) {
     })
       .then((res) => res.json())
       .then((response) => {
-        // Save members into state.
-        setMemberList(response);
+        console.log("Members response:", response);
 
-        // Stop loading.
+
+        // Make sure memberList is always an array
+        if (Array.isArray(response)) {
+          setMemberList(response);
+        } else {
+          setMemberList([]);
+        }
+
+
         setIsLoading(false);
-
-        console.log(response);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setMemberList([]);
+        setIsLoading(false);
+      });
   };
-
-
-  // Load members when page loads or page number changes.
   useEffect(() => {
     loadMembers();
-  }, [page]);
+  }, [type]);
+
+
+
+
 
 
   return (

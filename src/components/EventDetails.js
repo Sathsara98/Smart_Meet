@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Form,
@@ -49,6 +49,35 @@ function EventDetails(props) {
   // Stores logged-in user's role.
   // Example: Committee Member, Administrator, Committee Secretary.
   const [userRole, setUserRole] = useState(Auth.getUserLevel());
+
+  if (!props.event) return null;
+
+  //if selected meeting is not loaded yet, use empty array
+  const selectedMeetingMembers = props.event?.members || [];
+
+  // Count members by sector only for this selected meeting.
+  //parent send the clicked meeting as props.event
+  // props.event.members contains members assigned to the selected meeting.
+  const memberCount = {
+    Private: 0,
+    Public: 0,
+    Academic: 0,
+    Association: 0,
+  };
+
+  selectedMeetingMembers.forEach((member) => {
+    if (member.sector === "Private") {
+      memberCount.Private += 1;
+    } else if (member.sector === "Public") {
+      memberCount.Public += 1;
+    } else if (member.sector === "Academic") {
+      memberCount.Academic += 1;
+    } else if (member.sector === "Association") {
+      memberCount.Association += 1;
+    }
+  });
+
+
 
 
   // If event is missing, return nothing.
@@ -283,6 +312,15 @@ function EventDetails(props) {
                 </Form.Group>
               </Form.Row>
 
+              <Form.Row>
+                <div className="col-12 d-flex flex-wrap gap-3">
+                  <span>Private: {memberCount.Private}</span>
+                  <span>Public: {memberCount.Public}</span>
+                  <span> Academic: {memberCount.Academic}</span>
+                  <span>Association: {memberCount.Association}</span>
+                </div>
+              </Form.Row>
+
 
               {/* Committee member unable-to-attend section */}
               {userRole === "Committee Member" && (
@@ -430,6 +468,28 @@ function EventDetails(props) {
                   </div>
                 </Form.Group>
               </Form.Row>
+
+              {/* Agenda file section */}
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Label>Agenda File</Form.Label>
+                  <br />
+
+                  {props.event.agendaFile ? (
+                    <a
+                      className="btn btn-secondary"
+                      href={`${process.env.REACT_APP_BACKEND_URL}${props.event.agendaFile}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Agenda File
+                    </a>
+                  ) : (
+                    <p>No agenda file uploaded.</p>
+                  )}
+                </Form.Group>
+              </Form.Row>
+
 
 
               {/* Footer close button */}

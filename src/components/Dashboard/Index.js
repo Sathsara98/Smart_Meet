@@ -68,6 +68,48 @@ function Index() {
   // Stores how many rows should show per page.
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  // Stores start date for date range filter.
+  const [rangeStart, setRangeStart] = useState("");
+
+  // Stores end date for date range filter.
+  const [rangeEnd, setRangeEnd] = useState("");
+
+  const [minutes, setMinutes] = useState([]);
+
+  const [memberCount, setMemberCount] = useState(0);
+
+  // Helper function to convert date string into JavaScript Date object.
+  // WHY: Reports need to filter records by year, month, and date range.
+  const parseDate = (str) => {
+    if (!str) return null;
+
+    const d = new Date(str);
+
+    // If date is invalid, return null.
+    return isNaN(d.getTime()) ? null : d;
+  };
+
+  const loadMinutes = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin/minutes/`);
+      const data = await res.json();
+      setMinutes(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+      setMinutes([]);
+    }
+  };
+
+  const loadMemberCount = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`);
+      const data = await res.json();
+      setMemberCount(Array.isArray(data) ? data.length : 0);
+    } catch (e) {
+      console.error(e);
+      setMemberCount(0);
+    }
+  };
 
   // This function creates notification messages.
   // Logic:
@@ -104,6 +146,56 @@ function Index() {
   // Currently breadcrumb display is commented in JSX.
   const pathToPage = ["Home", "Admin", "Dashboard"];
 
+  // Filter meetings based on selected From Date and To Date.
+  const filteredMeetings = eventList.filter((event) => {
+    // Convert meeting date into JavaScript Date object.
+    const d = parseDate(event.date);
+
+    // If user did not select date range, show all meetings.
+    if (!rangeStart || !rangeEnd) return false;
+
+    // Convert selected From Date.
+    const start = new Date(rangeStart);
+
+    // Convert selected To Date.
+    const end = new Date(rangeEnd);
+
+    // Include full To Date until 11:59 PM.
+    end.setHours(23, 59, 59, 999);
+
+    // Keep only meetings inside selected date range.
+    return d && d >= start && d <= end;
+  });
+
+
+  // Get challenges from the filtered meetings.
+  // One meeting can have many questions/challenges.
+  const filteredChallenges = filteredMeetings.flatMap(
+    (meeting) => meeting.questions || []
+  );
+
+
+  // Filter meeting minutes based on selected From Date and To Date.
+  const filteredMinutes = minutes.filter((minute) => {
+    // Convert meeting minute date into JavaScript Date object.
+    const d = parseDate(minute.meeting_date);
+
+    // If user did not select date range, show all minutes.
+    if (!rangeStart || !rangeEnd) return false;
+
+    // Convert selected From Date.
+    const start = new Date(rangeStart);
+
+    // Convert selected To Date.
+    const end = new Date(rangeEnd);
+
+    // Include full To Date until 11:59 PM.
+    end.setHours(23, 59, 59, 999);
+
+    // Keep only minutes inside selected date range.
+    return d && d >= start && d <= end;
+  });
+
 
   // useEffect runs once when dashboard page loads.
   // Logic:
@@ -114,6 +206,8 @@ function Index() {
     loadEvents();
     loadSubmissions();
     loadQuestions();
+    loadMinutes();
+    loadMemberCount();
   }, []);
 
 
@@ -293,6 +387,57 @@ function Index() {
 
           <div className="content">
 
+            <div>
+              <AdminCard>
+                <div className="mt-2" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+
+                  {/* Start date filter */}
+                  <div style={{ width: 200 }} className="width-100">
+                    <Form.Label>From</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={rangeStart}
+                      onChange={(e) => {
+                        setRangeStart(e.target.value);
+                        setPage(0);
+                      }}
+                    />
+                  </div>
+
+
+                  {/* End date filter */}
+                  <div style={{ width: 200 }} className="width-100">
+                    <Form.Label>To</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={rangeEnd}
+                      onChange={(e) => {
+                        setRangeEnd(e.target.value);
+                        setPage(0);
+                      }}
+                    />
+                  </div>
+
+                </div>
+
+                <div className="row mt-2">
+                  <div className="col-4">
+                    Total Challenges: {filteredChallenges.length}
+                  </div>
+                  <div className="col-4">
+                    Total Meetings: {filteredMeetings.length}
+                  </div>
+                  <div>
+                    Total Minutes: {filteredMinutes.length}
+                  </div>
+                </div>
+
+
+              </AdminCard>
+              {/* Filter input fields */}
+
+            </div>
+
             {/* Breadcrumb is currently commented */}
             {/* <BreadCrum path={pathToPage} /> */}
 
@@ -311,6 +456,14 @@ function Index() {
                   <AdminCard>
                     <div class="c-header fw-bold pb-2">
                       Challenges by Development Area
+                    </div>
+
+                    <div style={{ fontSize: 8, display: "flex" }}>
+                      {Object.entries(developmentAreaCounts).map(([area, count]) => (
+                        <div key={area}>
+                          <strong>{area}</strong>: {count}
+                        </div>
+                      ))}
                     </div>
 
                     {/* If chart has data, display bar chart */}
@@ -347,6 +500,10 @@ function Index() {
                         No data available
                       </div>
                     )}
+
+                    <div>
+
+                    </div>
                   </AdminCard>
                 </div>
 
@@ -426,6 +583,9 @@ function Index() {
                   <AdminCard>
                     <div class="c-header fw-bold pb-2 ">
                       Member Composition
+                    </div>
+                    <div>
+                      Total Members: {memberCount}
                     </div>
 
                     {/* MemberRatio component shows member composition by sector */}

@@ -216,6 +216,10 @@ export default function Reports() {
             label: "Yearly Comparison",
             key: "yearlyComparison",
         },
+        {
+            label: "New",
+            key: "new",
+        },
     ];
 
 
@@ -840,6 +844,36 @@ export default function Reports() {
             .filter((member) => member.Excused > 0 || member.Absent > 0)
             .sort((a, b) => b["Total Missed"] - a["Total Missed"]);
     };
+
+    /** -------------------------
+    * New Tab
+    * ------------------------- */
+    // Filter meetings in the selected date range.
+    // WHY: New tab should show meeting count and meeting list,
+    // not challenge count.
+    const filteredNewMeetings = useMemo(() => {
+        // If From or To date is not selected, return empty list.
+        if (!rangeStart || !rangeEnd) return [];
+
+        // Convert selected From date into Date object.
+        const start = new Date(rangeStart);
+
+        // Convert selected To date into Date object.
+        const end = new Date(rangeEnd);
+
+        // Include the full selected end date until 11:59 PM.
+        end.setHours(23, 59, 59, 999);
+
+        // Return only meetings between From and To dates.
+        return events.filter((event) => {
+            // Convert meeting date into Date object.
+            const d = parseDate(event.date);
+
+            // Keep meeting only if date is valid and inside range.
+            return d && d >= start && d <= end;
+        });
+    }, [events, rangeStart, rangeEnd]);
+
 
 
     /** -------------------------
@@ -1576,6 +1610,172 @@ export default function Reports() {
                             </div>
                         )}
 
+                        {/* ------------------ New tab ------------------ */}
+                        {activeTabKey === "new" && (
+                            <div className="tabContainer">
+
+                                {/* Filter section */}
+                                <div className="mt-3 d-flex justify-content-between filter-section">
+
+
+
+
+                                    {/* Filter input fields */}
+                                    <div className="mt-2" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+
+                                        {/* Start date filter */}
+                                        <div style={{ width: 200 }} className="width-100">
+                                            <Form.Label>From</Form.Label>
+                                            <Form.Control
+                                                type="date"
+                                                value={rangeStart}
+                                                onChange={(e) => {
+                                                    setRangeStart(e.target.value);
+                                                    setPage(0);
+                                                }}
+                                            />
+                                        </div>
+
+
+                                        {/* End date filter */}
+                                        <div style={{ width: 200 }} className="width-100">
+                                            <Form.Label>To</Form.Label>
+                                            <Form.Control
+                                                type="date"
+                                                value={rangeEnd}
+                                                onChange={(e) => {
+                                                    setRangeEnd(e.target.value);
+                                                    setPage(0);
+                                                }}
+                                            />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {/* Chart section */}
+                                <AdminCard>
+                                    <h4 className="availability-title">
+                                        Total Meetings
+                                    </h4>
+
+                                    <h2>Count: {filteredNewMeetings.length}</h2>
+
+
+                                    {/* Meetings table */}
+                                    <div className="table-container-wrapper">
+
+                                        <TableContainer>
+                                            <Table>
+
+                                                {/* Table header */}
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <b>Meeting Name</b>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <b>Meeting Date</b>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <b>Meeting Time</b>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+
+                                                {/* Table body */}
+                                                <TableBody>
+                                                    {filteredNewMeetings.length === 0 ? (
+                                                        // Show message when no meetings are found.
+                                                        <TableRow>
+                                                            <TableCell colSpan={5} align="center">
+                                                                No meetings found for selected date range
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ) : (
+                                                        // Show only meetings for current pagination page.
+                                                        filteredNewMeetings
+                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                            .map((meeting, idx) => (
+                                                                <TableRow key={idx} hover>
+                                                                    {/* Meeting name */}
+                                                                    <TableCell>{meeting.name || ""}</TableCell>
+
+                                                                    {/* Meeting date */}
+                                                                    <TableCell>
+                                                                        {meeting.date
+                                                                            ? new Date(meeting.date).toLocaleDateString()
+                                                                            : ""}
+                                                                    </TableCell>
+
+                                                                    {/* Meeting time */}
+                                                                    <TableCell>{meeting.time || ""}</TableCell>
+
+                                                                </TableRow>
+                                                            ))
+                                                    )}
+                                                </TableBody>
+
+
+                                            </Table>
+                                        </TableContainer>
+
+
+                                        {/* Pagination for challenge table */}
+                                        <TablePagination
+                                            rowsPerPageOptions={[5, 10]}
+                                            component="div"
+
+                                            // Total number of filtered records.
+                                            count={filteredChallenges.length}
+
+                                            // Rows per page.
+                                            rowsPerPage={rowsPerPage}
+
+                                            // Current page.
+                                            page={page}
+
+                                            // Change page.
+                                            onPageChange={handleChangePage}
+
+                                            // Change rows per page.
+                                            onRowsPerPageChange={handleChangeRowsPerPage}
+                                        />
+
+
+                                        {/* Export button */}
+                                        <div className="mt-2 d-flex justify-content-end">
+                                            <Button
+                                                size="sm"
+                                                onClick={() => {
+                                                    // Prepare rows for CSV.
+                                                    const rows = filteredChallenges.map((q) => ({
+                                                        Question: q.question || "",
+                                                        "Development Area": q.developmentArea || "",
+                                                        "Meeting Date": q.meetingDate
+                                                            ? new Date(q.meetingDate).toISOString().slice(0, 10)
+                                                            : "",
+                                                    }));
+
+                                                    // Download challenges report as CSV.
+                                                    downloadCsv(
+                                                        rows,
+                                                        ["Question", "Development Area", "Meeting Date"],
+                                                        "challenges.csv"
+                                                    );
+                                                }}
+                                            >
+                                                Export
+                                            </Button>
+                                        </div>
+
+                                    </div>
+
+                                </AdminCard>
+
+
+
+                            </div>
+                        )}
 
                         {/* Footer */}
                         <Footer />

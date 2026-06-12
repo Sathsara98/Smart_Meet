@@ -44,11 +44,19 @@ const ManageMembers = () => {
   // Close Register New Member modal.
   const handleClose = () => setShow(false);
 
+  const [memberCount, setMemberCount] = useState(0);
+
   // Open Register New Member modal.
   const handleShow = () => {
     setShow(true);
     console.log("Show True");
   };
+
+
+  useEffect(() => {
+    loadMemberCount();
+  }, []);
+
 
 
   // This function is prepared to register a member directly.
@@ -112,6 +120,19 @@ const ManageMembers = () => {
       console.log(e);
     }
   };
+
+  const loadMemberCount = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register/`);
+      const data = await res.json();
+      setMemberCount(Array.isArray(data) ? data.length : 0);
+    } catch (e) {
+      console.error(e);
+      setMemberCount(0);
+    }
+  };
+
+
 
   // Breadcrumb path.
   // Currently breadcrumb is commented in JSX.
@@ -225,6 +246,10 @@ const ManageMembers = () => {
             <center className="mt-4">
               <MemberRatio />
             </center>
+
+            <div>
+              Total Members: {memberCount}
+            </div>
           </AdminCard>
 
           {/* Footer */}

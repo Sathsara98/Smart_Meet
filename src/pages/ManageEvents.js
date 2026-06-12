@@ -21,6 +21,7 @@ import {
   Button,
   Alert,
   Modal,
+  Form,
 } from "react-bootstrap";
 
 import * as yup from "yup";
@@ -32,6 +33,7 @@ import Auth from "../authentication/Auth";
 import { useParams } from "react-router";
 
 import Footer from "../components/Footer/Footer";
+import { get } from "react-hook-form";
 
 
 // ManageEvents component.
@@ -84,6 +86,12 @@ const ManageEvents = () => {
     setShow(true);
     console.log("Show True");
   };
+
+
+  // State for filtering by status.
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+
 
 
   // Controls View Meeting Details modal.
@@ -151,6 +159,42 @@ const ManageEvents = () => {
   };
 
 
+  // Get meeting status based on meeting date and time.
+  // Upcoming  = meeting date is after today
+  // Ongoing   = meeting date is today
+  // Completed = meeting date is before today
+  const getMeetingStatus = (date) => {
+    // Convert meeting date into JavaScript Date object.
+    const meetingDate = new Date(date);
+
+
+    // Get today's date.
+    const today = new Date();
+
+
+    // Remove time from both dates.
+    // WHY: We only compare the date, not current hour/minute.
+    meetingDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+
+    // If meeting date is after today, meeting is upcoming.
+    if (meetingDate > today) {
+      return "Upcoming";
+    }
+
+
+    // If meeting date is before today, meeting is completed.
+    if (meetingDate < today) {
+      return "Completed";
+    }
+
+
+    // If meeting date is today, meeting is ongoing.
+    return "Ongoing";
+  };
+
+
   // Show selected meeting details.
   const showDetails = (event) => {
     console.log("Showing event details for:", event);
@@ -169,10 +213,35 @@ const ManageEvents = () => {
     setShow2(true);
   };
 
+  //stored text for search input
+  const [searchText, setSearchText] = useState("");
 
   // Breadcrumb path.
   // Currently breadcrumb is commented in JSX.
   const pathToPage = ["Home", "Users", "ManageEvents"];
+
+  // Filter meetings using search box.
+  // Search works by meeting name and meeting date.
+  const filteredEvents = eventList.filter((ev) => {
+    const search = searchText.toLowerCase();
+    const status = getMeetingStatus(ev.date);
+
+    // Filter by status first.
+    if (selectedStatus !== "all" && status !== selectedStatus) {
+      return false;
+    }
+
+    // If search box is empty, show all meetings.
+    if (!search) return true;
+
+    return (
+      ev.name?.toLowerCase().includes(search) ||
+      ev.date?.toLowerCase().includes(search)
+    );
+  });
+
+
+
 
   return (
     <div className="wrapper">
@@ -268,11 +337,47 @@ const ManageEvents = () => {
            ) : null}
          </div> */}
 
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {/* Search box section */}
+            <div className="mb-3" style={{ maxWidth: "350px" }}>
+
+              <Form.Control
+                type="text"
+                placeholder="Search by name or date"
+                value={searchText}
+                onChange={(e) => {
+                  // Save typed search text.
+                  setSearchText(e.target.value);
+
+
+                  // Reset table to first page after searching.
+                  setPage(0);
+                }}
+              />
+            </div>
+
+            <div className="mb-3" style={{ maxWidth: "250px" }}>
+              <Form.Control
+                as="select"
+                value={selectedStatus}
+                onChange={(e) => {
+                  console.log("Selected status:", e.target.value);
+                  setSelectedStatus(e.target.value);
+                  setPage(0);
+                }}
+              >
+                <option value="all">All</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Completed">Completed</option>
+              </Form.Control>
+            </div>
+          </div>
+
 
           {/* Meetings list */}
           <Row>
             {eventList != null
-              ? eventList.map((ev, index) => {
+              ? filteredEvents.map((ev, index) => {
                 // isIn decides whether the current logged-in user can see this meeting.
                 var isIn = false;
 

@@ -64,6 +64,12 @@ const ChallengePage = () => {
     // Stores how many rows should display per page.
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    //stored text for search input
+    const [searchText, setSearchText] = useState("");
+
+    //dev area filter state
+    const [selectedArea, setSelectedArea] = useState("all");
+
     // useHistory is used to navigate programmatically.
     // Example: redirect user to addquestion page.
     const history = useHistory();
@@ -139,16 +145,67 @@ const ChallengePage = () => {
     }, []);
 
 
-    // Filter data based on selected tab.
-    // Logic:
-    // If filter is "all", show all records.
-    // Otherwise show only records matching selected status.
-    const filteredData =
+    const developmentAreas = [
+        ...new Set(data.map((item) => item.developmentArea).filter(Boolean)),
+    ];
+
+
+    // First filter data based on selected tab.
+    // Example: All, Draft, Completed.
+    const tabFilteredData =
         filter === "all"
             ? data
             : data.filter(
                 (item) => item.status.toLowerCase() === filter.toLowerCase()
             );
+
+
+
+
+    // Then filter tab result using search box.
+    // User can search by:
+    // 1. Created Date
+    // 2. Development Area
+    const filteredData = tabFilteredData.filter((item) => {
+
+        // Development Area Filter
+        if (
+            selectedArea !== "all" &&
+            item.developmentArea !== selectedArea
+        ) {
+            return false;
+        }
+
+
+        // Convert search text to lowercase for easy matching.
+        const search = searchText.toLowerCase();
+
+
+        // Convert created date to lowercase string.
+        const createdDate = item.createdDate
+            ? item.createdDate.toLowerCase()
+            : "";
+
+
+        // Convert development area to lowercase string.
+        const developmentArea = item.developmentArea
+            ? item.developmentArea.toLowerCase()
+            : "";
+
+
+
+
+        // If search box is empty, show all tab-filtered records.
+        if (!search) return true;
+
+
+        // Show record if date or development area contains search text.
+        return (
+            createdDate.includes(search) ||
+            developmentArea.includes(search)
+        );
+    });
+
 
 
     // Change table page.
@@ -213,6 +270,46 @@ const ChallengePage = () => {
                             {/* Show only completed submissions */}
                             <Tab label="Completed" value="completed" />
                         </Tabs>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {/* Search box section */}
+                        <div className="mb-3" style={{ maxWidth: "350px" }}>
+
+                            <Form.Control
+                                type="text"
+                                placeholder="Search by date or development area"
+                                value={searchText}
+                                onChange={(e) => {
+                                    // Save typed search text.
+                                    setSearchText(e.target.value);
+
+
+                                    // Reset table to first page after searching.
+                                    setPage(0);
+                                }}
+                            />
+                        </div>
+
+
+                        <div className="mb-3" style={{ maxWidth: "250px" }}>
+                            <Form.Control
+                                as="select"
+                                value={selectedArea}
+                                onChange={(e) => {
+                                    setSelectedArea(e.target.value);
+                                    setPage(0);
+                                }}
+                            >
+                                <option value="all">All Development Areas</option>
+                                {developmentAreas.map((area) => (
+                                    <option key={area} value={area}>
+                                        {area}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </div>
+
                     </div>
 
 

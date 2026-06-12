@@ -869,28 +869,48 @@ class AddEvents extends Component {
 
 
       try {
-        // Payload means the data object sent to backend.
-        const payload = {
-          sector: this.state.devArea,
-          name: event.name,
-          venue: event.venue,
-          location: directionUrl,
-          time: this.state.timeSlot,
-          members: this.state.meetingMembers,
-          date: this.state.date,
-          questions: this.state.questions,
-        };
+        // FormData is required because we are sending a file.
+        const formData = new FormData();
 
+        // Meeting details.
+        formData.append("sector", this.state.devArea);
+        formData.append("name", event.name);
+        formData.append("venue", event.venue);
+        formData.append("location", directionUrl);
+        formData.append("time", this.state.timeSlot);
+        formData.append("date", this.state.date);
 
-        console.log("Sending event payload:", payload);
+        // Arrays must be converted to JSON strings.
+        formData.append(
+          "members",
+          JSON.stringify(this.state.meetingMembers)
+        );
 
+        formData.append(
+          "questions",
+          JSON.stringify(this.state.questions)
+        );
 
-        // Send new event data to backend API.
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/new`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        // Add agenda file if user selected one.
+        if (this.state.agendaFile) {
+          formData.append(
+            "agendaFile",
+            this.state.agendaFile
+          );
+        }
+
+        console.log("Sending meeting with agenda file");
+
+        // DO NOT send Content-Type.
+        // Browser automatically creates multipart/form-data.
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/events/new`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
 
 
         // Convert response to JSON.
@@ -1186,6 +1206,31 @@ class AddEvents extends Component {
                     </div>
                   </Form.Group>
                 </Form.Row>
+
+                {/* Agenda file upload section */}
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>Agenda File</Form.Label>
+
+                    <Form.Control
+                      type="file"
+                      name="agendaFile"
+
+                      // Store selected file in component state.
+                      onChange={(e) => {
+                        this.setState({
+                          agendaFile: e.target.files[0],
+                        });
+                      }}
+                    />
+
+                    <small className="text-muted">
+                      Upload meeting agenda file for members to view.
+                    </small>
+                  </Form.Group>
+                </Form.Row>
+
+
 
 
                 {/* Alert box for success or error message */}

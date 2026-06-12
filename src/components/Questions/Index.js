@@ -623,7 +623,9 @@ function Index() {
               })}
             </Row>
 
-
+            <div className="mb-3">
+              <h4>Total Challenges: {questions.length}</h4>
+            </div>
             {/* Main challenge section */}
             <AdminCard title="Insert Questions">
               <div style={{ minHeight: "350px" }}>
