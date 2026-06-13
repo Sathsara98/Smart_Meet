@@ -35,6 +35,10 @@ import {
   Button,
 } from "@material-ui/core";
 
+import {
+  Form,
+} from "react-bootstrap";
+
 import Auth from '../authentication/Auth';
 
 import Footer from "../components/Footer/Footer";
@@ -70,12 +74,37 @@ function ViewMembers(props) {
   // Used to change Yes button color on hover.
   const [hoverYes, setHoverYes] = useState(false);
 
+  //stored text for search input
+  const [searchText, setSearchText] = useState("");
+
+  const [selectedGender, setSelectedGender] = useState("all");
+
+  // Filter members using search box.
+  // Search works by  name
+  const filteredMembers = memberList.filter((member) => {
+    const search = searchText.toLowerCase();
+
+    //select gender for filtering
+    if (selectedGender !== "all" && member.gender?.toLowerCase() !== selectedGender) {
+      return false;
+    }
+
+
+    // If search box is empty, show all.
+    if (!search) return true;
+
+    return (
+      member.name?.toLowerCase().includes(search) ||
+      member.workplace?.toLowerCase().includes(search) ||
+      member.gender?.toLowerCase().includes(search)
+    );
+  });
 
   // Create table rows from memberList.
   // Logic:
   // For each member, display image, name, email, phone, gender, workplace,
   // and delete icon if logged-in user has permission.
-  const tableDATA = memberList.map((p, index) => {
+  const tableDATA = filteredMembers.map((p, index) => {
     return (
       /*
         Old normal HTML table row is commented.
@@ -303,6 +332,35 @@ function ViewMembers(props) {
 
           {/* Breadcrumb is currently commented */}
           {/* <BreadCrum path={["Home", "Users", "View Members"]} /> */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="mb-3" style={{ maxWidth: "350px" }}>
+
+              <Form.Control
+                type="text"
+                placeholder="Search by name"
+                value={searchText}
+                onChange={(e) => {
+                  // Save typed search text.
+                  setSearchText(e.target.value);
+                  console.log(e.target.value);
+
+                  // Reset table to first page after searching.
+                  setPage(0);
+                }}
+              />
+            </div>
+            <div className="d-flex align-items-center">
+              <Form.Check inline label="All" name="genderFilter" type="radio" id="all" value="all"
+                checked={selectedGender === "all"}
+                onChange={(e) => setSelectedGender(e.target.value)} />
+              <Form.Check inline label="Male" name="genderFilter" type="radio" id="male" value="male"
+                checked={selectedGender === "male"}
+                onChange={(e) => setSelectedGender(e.target.value)} />
+              <Form.Check inline label="Female" name="genderFilter" type="radio" id="female" value="female"
+                checked={selectedGender === "female"}
+                onChange={(e) => setSelectedGender(e.target.value)} />
+            </div>
+          </div>
 
           {/* Members table card */}
           <AdminCard title="View Members">
@@ -362,7 +420,7 @@ function ViewMembers(props) {
                 component="div"
 
                 // Total member count.
-                count={memberList.length}
+                count={filteredMembers.length}
 
                 // Always show 10 rows per page.
                 rowsPerPage={10}

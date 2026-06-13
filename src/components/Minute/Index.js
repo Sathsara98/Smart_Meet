@@ -18,6 +18,7 @@ import {
   Button,
   Alert,
   Modal,
+  Form,
 } from "react-bootstrap";
 
 import Auth from "../../authentication/Auth";
@@ -53,6 +54,10 @@ function Index() {
   // Close Create Minute modal.
   const handleClose = () => setShow(false);
 
+  //stored text for search input
+  const [searchText, setSearchText] = useState("");
+
+
   // Open Create Minute modal.
   // Also stores selected meeting.
   const handleShow = (meeting) => {
@@ -81,6 +86,36 @@ function Index() {
 
   // Stores selected minute when user clicks a minute card.
   const [minute, setMinute] = useState(null);
+
+  //Stores selected date for filtering minutes.
+  const [selectedDate, setSelectedDate] = useState("");
+
+  // Filter meetings using search box.
+  // Search works by meeting name and meeting date.
+  const filteredMinutes = minuteList.filter((minute) => {
+    const search = searchText.toLowerCase();
+
+    //date picker filter
+    if (selectedDate) {
+      const minuteDate = new Date(minute.meeting_date);
+      const pickedDate = new Date(selectedDate);
+
+      minuteDate.setHours(0, 0, 0, 0);
+      pickedDate.setHours(0, 0, 0, 0);
+
+      if (minuteDate >= pickedDate) {
+        return false;
+      }
+    }
+
+    // If search box is empty, show all meetings.
+    if (!search) return true;
+
+    return (
+      minute.meeting_name?.toLowerCase().includes(search) ||
+      minute.meeting_date?.toLowerCase().includes(search)
+    );
+  });
 
 
   // This runs when the page first loads.
@@ -246,8 +281,8 @@ function Index() {
 
 
           <Row>
-            {minuteList != null
-              ? minuteList.map((minute, index) => {
+            {filteredMinutes != null
+              ? filteredMinutes.map((minute, index) => {
                 return (
                   <MinuteCard
                     key={index}
@@ -379,6 +414,36 @@ function Index() {
           {/* Breadcrumb is currently commented */}
           {/* <BreadCrum path={pathToPage} /> */}
 
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="mb-3" style={{ maxWidth: "350px" }}>
+
+              <Form.Control
+                type="text"
+                placeholder="Search by name or date"
+                value={searchText}
+                onChange={(e) => {
+                  // Save typed search text.
+                  setSearchText(e.target.value);
+
+
+                  // Reset table to first page after searching.
+                  setPage(0);
+                }}
+              />
+            </div>
+
+            <div className="mb-3" style={{ maxWidth: "350px" }}>
+              <Form.Control
+                type="date"
+                value={selectedDate}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  console.log(e.target.value);
+                  setPage(0);
+                }}
+              />
+            </div>
+          </div>
 
           {/* Minute cards wrapper */}
           <div className="minute-card-wrapper">

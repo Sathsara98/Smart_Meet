@@ -56,6 +56,16 @@ const ManageEvents = () => {
   // If isOpen is "true", modal opens automatically.
   const [show, setShow] = useState(isOpen === "true" ? true : false);
 
+  // Stores selected month.
+  // Default is current month.
+  const [selMonth, setSelMonth] = useState("all");
+
+  // Month names used in dropdowns and trend chart.
+  const MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+  ];
+
 
   // Close Add Meeting modal and details modal.
   const handleClose = () => {
@@ -225,6 +235,12 @@ const ManageEvents = () => {
   const filteredEvents = eventList.filter((ev) => {
     const search = searchText.toLowerCase();
     const status = getMeetingStatus(ev.date);
+    const eventMonth = new Date(ev.date).getMonth() + 1;
+
+    // Filter by month first.
+    if (selMonth !== "all" && eventMonth !== Number(selMonth)) {
+      return false;
+    }
 
     // Filter by status first.
     if (selectedStatus !== "all" && status !== selectedStatus) {
@@ -354,6 +370,24 @@ const ManageEvents = () => {
                   setPage(0);
                 }}
               />
+            </div>
+            <div style={{ width: 200, display: "flex" }} className="width-100">
+              <Form.Control
+                as="select"
+                value={selMonth}
+                onChange={(e) => {
+                  console.log("Selected month:", e.target.value);
+                  setSelMonth(e.target.value);
+                  setPage(0);
+                }}
+              >
+                <option value="all">All Months</option>
+                {[...Array(12)].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {MONTH_NAMES[i]}
+                  </option>
+                ))}
+              </Form.Control>
             </div>
 
             <div className="mb-3" style={{ maxWidth: "250px" }}>

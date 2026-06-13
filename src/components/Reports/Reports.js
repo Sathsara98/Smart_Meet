@@ -23,6 +23,7 @@ import Auth from "../../authentication/Auth";
 import { Chart } from "react-google-charts";
 import Footer from "../Footer/Footer";
 import Report from "./Report.css";
+import { use } from "react";
 
 
 // Helper function for CSV export.
@@ -116,6 +117,7 @@ export default function Reports() {
         // If date is invalid, return null.
         return isNaN(d.getTime()) ? null : d;
     };
+
 
 
     // Runs when report page first loads.
@@ -352,6 +354,20 @@ export default function Reports() {
         ];
     }, [filteredChallenges]);
 
+    //count no of challenges by dev area after filters are applied
+    const developmentAreaCounts = useMemo(() => {
+        const counts = {};
+
+        filteredChallenges.forEach((challenge) => {
+            const area = challenge.developmentArea || "Unknown";
+            counts[area] = (counts[area] || 0) + 1;
+        });
+
+        return counts;
+    }, [filteredChallenges]);
+
+    //Total count of challenges by development area after filters are applied
+    const totalChallenges = useMemo(() => filteredChallenges.length, [filteredChallenges]);
 
     /** -------------------------
      *  YEARLY TREND TAB
@@ -1069,6 +1085,15 @@ export default function Reports() {
                                     <h4 className="availability-title">
                                         Challenges by Development Area
                                     </h4>
+
+                                    <div style={{ fontSize: 8, display: "flex" }}>
+                                        {Object.entries(developmentAreaCounts).map(([area, count]) => (
+                                            <div key={area}>
+                                                <strong>{area}</strong>: {count}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <h5>Total Challenges: {totalChallenges}</h5>
 
                                     {/* 
                                      ColumnChart displays challenge count by development area.
