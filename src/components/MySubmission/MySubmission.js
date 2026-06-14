@@ -70,6 +70,9 @@ const ChallengePage = () => {
     //dev area filter state
     const [selectedArea, setSelectedArea] = useState("all");
 
+    //challenge count state
+    const [challengeCountText, setChallengeCountText] = useState("");
+
     // useHistory is used to navigate programmatically.
     // Example: redirect user to addquestion page.
     const history = useHistory();
@@ -174,6 +177,15 @@ const ChallengePage = () => {
             item.developmentArea !== selectedArea
         ) {
             return false;
+        }
+
+        //filter by no.of challenges
+        if (challengeCountText !== "") {
+            const enteredNumber = Number(challengeCountText);
+            const itemChallengeCount = Number(item.noOfChallenges || 0);
+            if (itemChallengeCount <= enteredNumber) {
+                return false;
+            }
         }
 
 
@@ -289,6 +301,20 @@ const ChallengePage = () => {
                                     setPage(0);
                                 }}
                             />
+                        </div>
+
+                        <div>
+                            <Form.Control
+                                type="number"
+                                placeholder="Enter challenge count"
+                                value={challengeCountText}
+                                onChange={(e) => {
+                                    setChallengeCountText(e.target.value);
+                                    console.log("Entered number:", e.target.value);
+                                    setPage(0);
+                                }}
+                            />
+
                         </div>
 
 
@@ -430,7 +456,7 @@ const ChallengePage = () => {
                     <Footer />
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

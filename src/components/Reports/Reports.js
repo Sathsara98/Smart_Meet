@@ -24,6 +24,7 @@ import { Chart } from "react-google-charts";
 import Footer from "../Footer/Footer";
 import Report from "./Report.css";
 import { use } from "react";
+import { object } from "yup";
 
 
 // Helper function for CSV export.
@@ -722,6 +723,24 @@ export default function Reports() {
 
         return Array.from(memberMap.values());
     };
+
+
+    //count members in each sector for present members report
+    const memberSectorCounts = useMemo(() => {
+        const counts = {
+            Private: 0,
+            Public: 0,
+            Association: 0,
+            Academic: 0
+        };
+        getPresentMembersList().forEach((member) => {
+            if (counts.hasOwnProperty(member.Sector)) {
+                counts[member.Sector]++;
+            }
+        });
+        return counts;
+    }, [minutes, mpYear, mpMonth]);
+
     // Get yearly excused / absent members list.
     // Purpose:
     // This report helps the administrator identify members
@@ -1272,6 +1291,14 @@ export default function Reports() {
                                     {/* Present members table */}
                                     <div className="mt-2">
                                         <AdminCard>
+                                            <div>
+                                                <div>Private: {memberSectorCounts.Private || 0}</div>
+                                                <div>Public: {memberSectorCounts.Public || 0}</div>
+                                                <div>Association: {memberSectorCounts.Association || 0}</div>
+                                                <div>Academic: {memberSectorCounts.Academic || 0}</div>
+                                            </div>
+                                            <h5>Total: {getPresentMembersList().length} </h5>
+
                                             <TableContainer>
                                                 <Table>
 
